@@ -1079,13 +1079,53 @@
     </div>
 
     <!-- Add Income Modal -->
-    <div class="modal" id="addIngresoModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">💵 Agregar Ingreso</h2>
-                <button class="close-btn" onclick="closeModal('addIngresoModal')">×</button>
-            </div>
-            <form onsubmit="addIngreso(event)">
+    <form onsubmit="addIngreso(event)">
+    <div class="form-group">
+        <label class="form-label">Fuente de Ingreso</label>
+        <input type="text" class="form-input" id="ingresoFuente" placeholder="Ej: Salario Google, Freelance diseño" required>
+    </div>
+    
+    <div class="form-group">
+        <label class="form-label">Tipo de Contrato</label>
+        <select class="form-select" id="ingresoTipo" onchange="updateIngresoCalculation()" required>
+            <option value="laboral">💼 Contrato Laboral (Descuento 8%)</option>
+            <option value="servicios">💰 Prestación de Servicios (Descuento 28.5%)</option>
+            <option value="exento">🎁 Bonos/Otros (Sin descuento)</option>
+        </select>
+    </div>
+    
+    <div class="form-group">
+        <label class="form-label">Monto Bruto (COP)</label>
+        <input type="number" class="form-input" id="ingresoBruto" placeholder="0" onchange="updateIngresoCalculation()" required>
+    </div>
+    
+    <div class="form-group">
+        <label class="form-label">Frecuencia</label>
+        <select class="form-select" id="ingresoFrecuencia" required>
+            <option value="unico">Único</option>
+            <option value="mensual" selected>Mensual</option>
+            <option value="quincenal">Quincenal</option>
+            <option value="semanal">Semanal</option>
+        </select>
+    </div>
+    
+    <div class="info-box" id="ingresoCalculo" style="display: none;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span>Monto Bruto:</span>
+            <span id="displayBruto">$0</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span>Descuento Parafiscal:</span>
+            <span id="displayDescuento" style="color: var(--danger);">-$0</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-weight: 700; padding-top: 0.5rem; border-top: 1px solid var(--border);">
+            <span>Ingreso Neto:</span>
+            <span id="displayNeto" style="color: var(--secondary);">$0</span>
+        </div>
+    </div>
+    
+    <button type="submit" class="btn btn-primary" style="width:100%">Agregar Ingreso</button>
+</form>
                 <div class="form-group">
                     <label class="form-label">Tipo de Ingreso</label>
                     <select class="form-select" required>
@@ -1615,15 +1655,23 @@ async function loadIngresos() {
             
             data.forEach(ingreso => {
                 totalIngresos += parseFloat(ingreso.gross_amount || 0);
-                html += `
-                    <tr style="border-bottom: 1px solid var(--border);">
-                        <td style="padding: 1rem;">${ingreso.source}</td>
-                        <td style="padding: 1rem;">${ingreso.frequency}</td>
-                        <td style="padding: 1rem; text-align: right; font-weight: 600;">
-                            $${parseFloat(ingreso.gross_amount).toLocaleString('es-CO')}
-                        </td>
-                    </tr>
-                `;
+                const bruto = parseFloat(ingreso.gross_amount || 0);
+const neto = parseFloat(ingreso.net_amount || 0);
+const tipoLabel = ingreso.type === 'laboral' ? '💼' : ingreso.type === 'servicios' ? '💰' : '🎁';
+
+html += `
+    <tr style="border-bottom: 1px solid var(--border);">
+        <td style="padding: 1rem;">
+            <div style="font-weight: 600;">${ingreso.source}</div>
+            <div style="font-size: 0.85rem; color: var(--text-light);">${tipoLabel} ${ingreso.type}</div>
+        </td>
+        <td style="padding: 1rem;">${ingreso.frequency}</td>
+        <td style="padding: 1rem; text-align: right;">
+            <div style="font-weight: 600; color: var(--secondary);">$${neto.toLocaleString('es-CO')}</div>
+            <div style="font-size: 0.85rem; color: var(--text-light);">Bruto: $${bruto.toLocaleString('es-CO')}</div>
+        </td>
+    </tr>
+`;
             });
             
             html += `
@@ -1923,40 +1971,74 @@ async function deleteCategoria(categoriaId) {
         async function addIngreso(e) {
     e.preventDefault();
     
-    const form = e.target;
-    const tipoIngreso = form.querySelector('select').value;
-    const descripcion = form.querySelectorAll('input')[0].value;
-    const monto = parseFloat(form.querySelectorAll('input')[1].value);
-    const frecuencia = form.querySelectorAll('select')[1].value;
-    const fechaPago = form.querySelectorAll('input')[2].value;
+    const fuente = document.getElementById('ingresoFuente').value;
+    const tipo = document.getElementById('ingresoTipo').value;
+    const montoBruto = parseFloat(document.getElementById('ingresoBruto').value);
+    const frecuencia = document.getElementById('ingresoFrecuencia').value;
+    
+    // Calcular descuento según tipo
+    let porcentajeDescuento = 0;
+    if (tipo === 'laboral') porcentajeDescuento = 0.08; // 8%
+    else if (tipo === 'servicios') porcentajeDescuento = 0.285; // 28.5%
+    else porcentajeDescuento = 0; // Sin descuento
+    
+    const descuento = montoBruto * porcentajeDescuento;
+    const montoNeto = montoBruto - descuento;
     
     try {
-        // Guardar en Supabase
         const { data, error } = await supabaseClient
             .from('incomes')
             .insert([{
                 user_id: currentUser.id,
-                space_id: null, // Por ahora null, después implementaremos espacios
-                source: tipoIngreso,
-                type: 'exento', // Por ahora, después añadiremos parafiscales
-                frequency: frecuencia.toLowerCase(),
-                gross_amount: monto,
-                net_amount: monto, // Por ahora igual, después calculamos parafiscales
+                space_id: null,
+                source: fuente,
+                type: tipo,
+                frequency: frecuencia,
+                gross_amount: montoBruto,
+                net_amount: montoNeto,
             }]);
         
         if (error) throw error;
         
         alert('✅ Ingreso agregado exitosamente');
         closeModal('addIngresoModal');
-        form.reset();
+        e.target.reset();
+        document.getElementById('ingresoCalculo').style.display = 'none';
         
-        // Recargar lista de ingresos
         loadIngresos();
+        updateDashboard();
         
     } catch (error) {
         alert('❌ Error al guardar: ' + error.message);
         console.error('Error:', error);
     }
+}
+        // ============================================
+// UPDATE INGRESO CALCULATION
+// ============================================
+
+function updateIngresoCalculation() {
+    const tipo = document.getElementById('ingresoTipo').value;
+    const montoBruto = parseFloat(document.getElementById('ingresoBruto').value) || 0;
+    
+    if (montoBruto === 0) {
+        document.getElementById('ingresoCalculo').style.display = 'none';
+        return;
+    }
+    
+    // Calcular descuento
+    let porcentajeDescuento = 0;
+    if (tipo === 'laboral') porcentajeDescuento = 0.08;
+    else if (tipo === 'servicios') porcentajeDescuento = 0.285;
+    
+    const descuento = montoBruto * porcentajeDescuento;
+    const montoNeto = montoBruto - descuento;
+    
+    // Mostrar cálculo
+    document.getElementById('ingresoCalculo').style.display = 'block';
+    document.getElementById('displayBruto').textContent = `$${montoBruto.toLocaleString('es-CO')}`;
+    document.getElementById('displayDescuento').textContent = `-$${descuento.toLocaleString('es-CO')} (${(porcentajeDescuento * 100)}%)`;
+    document.getElementById('displayNeto').textContent = `$${montoNeto.toLocaleString('es-CO')}`;
 }
         // ============================================
 // UPDATE DASHBOARD FUNCTION
