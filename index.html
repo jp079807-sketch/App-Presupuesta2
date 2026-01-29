@@ -1339,6 +1339,9 @@
     document.getElementById('userName').textContent = userName;
     document.getElementById('userEmail').textContent = currentUser.email;
     document.getElementById('userNameInput').value = userName;
+    
+    // Cargar datos
+    loadIngresos(); // ← AGREGAR ESTA LÍNEA
 }
         // ============================================
         // NAVIGATION FUNCTIONS
@@ -1412,14 +1415,45 @@
             closeModal('inviteModal');
             e.target.reset();
         }
-
-        function addIngreso(e) {
-            e.preventDefault();
-            // TODO: Save to Supabase
-            alert('✅ Ingreso agregado exitosamente');
-            closeModal('addIngresoModal');
-            e.target.reset();
-        }
+        
+        async function addIngreso(e) {
+    e.preventDefault();
+    
+    const form = e.target;
+    const tipoIngreso = form.querySelector('select').value;
+    const descripcion = form.querySelectorAll('input')[0].value;
+    const monto = parseFloat(form.querySelectorAll('input')[1].value);
+    const frecuencia = form.querySelectorAll('select')[1].value;
+    const fechaPago = form.querySelectorAll('input')[2].value;
+    
+    try {
+        // Guardar en Supabase
+        const { data, error } = await supabaseClient
+            .from('incomes')
+            .insert([{
+                user_id: currentUser.id,
+                space_id: null, // Por ahora null, después implementaremos espacios
+                source: tipoIngreso,
+                type: 'exento', // Por ahora, después añadiremos parafiscales
+                frequency: frecuencia.toLowerCase(),
+                gross_amount: monto,
+                net_amount: monto, // Por ahora igual, después calculamos parafiscales
+            }]);
+        
+        if (error) throw error;
+        
+        alert('✅ Ingreso agregado exitosamente');
+        closeModal('addIngresoModal');
+        form.reset();
+        
+        // Recargar lista de ingresos
+        loadIngresos();
+        
+    } catch (error) {
+        alert('❌ Error al guardar: ' + error.message);
+        console.error('Error:', error);
+    }
+}
 
         function addGastoFijo(e) {
             e.preventDefault();
@@ -1436,6 +1470,45 @@
             closeModal('addCategoriaModal');
             e.target.reset();
         }
+        
+        async function addIngreso(e) {
+    e.preventDefault();
+    
+    const form = e.target;
+    const tipoIngreso = form.querySelector('select').value;
+    const descripcion = form.querySelectorAll('input')[0].value;
+    const monto = parseFloat(form.querySelectorAll('input')[1].value);
+    const frecuencia = form.querySelectorAll('select')[1].value;
+    const fechaPago = form.querySelectorAll('input')[2].value;
+    
+    try {
+        // Guardar en Supabase
+        const { data, error } = await supabaseClient
+            .from('incomes')
+            .insert([{
+                user_id: currentUser.id,
+                space_id: null, // Por ahora null, después implementaremos espacios
+                source: tipoIngreso,
+                type: 'exento', // Por ahora, después añadiremos parafiscales
+                frequency: frecuencia.toLowerCase(),
+                gross_amount: monto,
+                net_amount: monto, // Por ahora igual, después calculamos parafiscales
+            }]);
+        
+        if (error) throw error;
+        
+        alert('✅ Ingreso agregado exitosamente');
+        closeModal('addIngresoModal');
+        form.reset();
+        
+        // Recargar lista de ingresos
+        loadIngresos();
+        
+    } catch (error) {
+        alert('❌ Error al guardar: ' + error.message);
+        console.error('Error:', error);
+    }
+}
 
         // ============================================
         // THEME FUNCTIONS
