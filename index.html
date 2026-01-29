@@ -958,10 +958,14 @@
                     <span class="sidebar-section-arrow" id="user-arrow">▼</span>
                 </div>
                 <div class="sidebar-section-content" id="user-content">
-                    <p style="margin-bottom: 0.5rem;"><strong>Email:</strong> <span id="userEmail">-</span></p>
-                    <p style="margin-bottom: 1rem;"><strong>Nombre:</strong> <span id="userNameSettings">-</span></p>
-                    <button class="btn btn-primary" style="width: 100%;" onclick="handleLogout()">🚪 Cerrar Sesión</button>
-                </div>
+    <p style="margin-bottom: 0.5rem;"><strong>Email:</strong> <span id="userEmail">-</span></p>
+    <div style="margin-bottom: 1rem;">
+        <label class="form-label">Nombre</label>
+        <input type="text" class="form-input" id="userNameInput" placeholder="Tu nombre">
+        <button class="btn btn-primary btn-small" style="margin-top: 0.5rem;" onclick="updateUserName()">💾 Guardar Nombre</button>
+    </div>
+    <button class="btn btn-primary" style="width: 100%;" onclick="handleLogout()">🚪 Cerrar Sesión</button>
+</div>
             </div>
 
             <!-- Spaces -->
@@ -1327,16 +1331,15 @@
         }
 
         function showMainApp() {
-            document.getElementById('authScreen').style.display = 'none';
-            document.getElementById('mainApp').classList.add('active');
-            
-            // Update user info
-            const userName = currentUser.user_metadata?.name || currentUser.email.split('@')[0];
-            document.getElementById('userName').textContent = userName;
-            document.getElementById('userEmail').textContent = currentUser.email;
-            document.getElementById('userNameSettings').textContent = userName;
-        }
-
+    document.getElementById('authScreen').style.display = 'none';
+    document.getElementById('mainApp').classList.add('active');
+    
+    // Update user info
+    const userName = currentUser.user_metadata?.name || currentUser.email.split('@')[0];
+    document.getElementById('userName').textContent = userName;
+    document.getElementById('userEmail').textContent = currentUser.email;
+    document.getElementById('userNameInput').value = userName;
+}
         // ============================================
         // NAVIGATION FUNCTIONS
         // ============================================
