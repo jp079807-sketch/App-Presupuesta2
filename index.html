@@ -1451,6 +1451,48 @@
                 localStorage.setItem('theme', 'light');
             }
         }
+        // ============================================
+// UPDATE USER NAME FUNCTION
+// ============================================
+
+async function updateUserName() {
+    const newName = document.getElementById('userNameInput').value.trim();
+    
+    if (!newName) {
+        alert('❌ Por favor ingresa un nombre');
+        return;
+    }
+    
+    try {
+        // Update user metadata in Supabase Auth
+        const { data, error } = await supabaseClient.auth.updateUser({
+            data: { name: newName }
+        });
+        
+        if (error) throw error;
+        
+        // Update local user object
+        currentUser = data.user;
+        
+        // Update UI
+        document.getElementById('userName').textContent = newName;
+        
+        // Also try to update users table if it exists
+        try {
+            await supabaseClient
+                .from('users')
+                .update({ name: newName })
+                .eq('id', currentUser.id);
+        } catch (dbError) {
+            console.log('Users table update skipped');
+        }
+        
+        alert('✅ Nombre actualizado exitosamente');
+        
+    } catch (error) {
+        alert('❌ Error al actualizar: ' + error.message);
+    }
+}
     </script>
 </body>
 </html>
