@@ -6,34 +6,11 @@
     <title>Presupuesta2</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        :root {
-            --primary: #4F46E5;
-            --primary-light: #6366F1;
-            --secondary: #10B981;
-            --danger: #EF4444;
-            --bg: #F9FAFB;
-            --card: #FFFFFF;
-            --text: #1F2937;
-            --text-light: #6B7280;
-            --border: #E5E7EB;
-        }
-        
-        [data-theme="dark"] {
-            --primary: #6366F1;
-            --primary-light: #818CF8;
-            --secondary: #10B981;
-            --danger: #EF4444;
-            --bg: #111827;
-            --card: #1F2937;
-            --text: #F9FAFB;
-            --text-light: #9CA3AF;
-            --border: #374151;
-        }
-        
+        :root { --primary: #4F46E5; --primary-light: #6366F1; --secondary: #10B981; --danger: #EF4444; --bg: #F9FAFB; --card: #FFFFFF; --text: #1F2937; --text-light: #6B7280; --border: #E5E7EB; }
+        [data-theme="dark"] { --primary: #6366F1; --primary-light: #818CF8; --bg: #111827; --card: #1F2937; --text: #F9FAFB; --text-light: #9CA3AF; --border: #374151; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); transition: all 0.3s; }
         
-        /* Auth Screen */
+        /* Auth */
         .auth-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1rem; }
         .auth-card { background: var(--card); padding: 2rem; border-radius: 16px; max-width: 400px; width: 100%; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
         .auth-logo { text-align: center; margin-bottom: 2rem; }
@@ -42,78 +19,85 @@
         .auth-tab { flex: 1; padding: 0.75rem; border: none; background: var(--bg); border-radius: 8px; font-weight: 600; cursor: pointer; }
         .auth-tab.active { background: var(--primary); color: white; }
         
-        /* Main App */
+        /* Main */
         .app { display: none; }
         .app.active { display: block; }
         .header { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; padding: 1.5rem; position: sticky; top: 0; z-index: 100; }
         .header-content { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; }
         .logo { font-size: 1.5rem; font-weight: 700; }
         .user-menu { display: flex; gap: 1rem; align-items: center; }
-        .user-info { font-size: 0.9rem; }
-        .logout-btn { background: rgba(255,255,255,0.2); border: none; color: white; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; }
+        .settings-btn { background: rgba(255,255,255,0.2); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; }
         
-        .nav-menu { display: flex; gap: 1rem; padding: 1rem; background: var(--card); overflow-x: auto; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        .nav-item { padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; white-space: nowrap; font-weight: 500; transition: all 0.2s; }
+        .nav-menu { display: flex; gap: 1rem; padding: 1rem; background: var(--card); overflow-x: auto; }
+        .nav-item { padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; white-space: nowrap; font-weight: 500; }
         .nav-item:hover { background: var(--bg); }
         .nav-item.active { background: var(--primary); color: white; }
         
         .dashboard { padding: 2rem; max-width: 1400px; margin: 0 auto; }
         .page { display: none; }
         .page.active { display: block; }
-        
         .welcome h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
         .balance-card { background: linear-gradient(135deg, var(--secondary), #059669); color: white; padding: 2rem; border-radius: 16px; margin: 2rem 0; }
         .balance-amount { font-size: 2.5rem; font-weight: 700; }
-        
+        .grid { display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
         .card { background: var(--card); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
         .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
-        
-        .btn { padding: 0.75rem 1.5rem; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .btn { padding: 0.75rem 1.5rem; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
         .btn-primary { background: var(--primary); color: white; }
-        .btn-primary:hover { background: #4338CA; }
         .btn-small { padding: 0.5rem 1rem; font-size: 0.9rem; }
-        
         .form-group { margin-bottom: 1rem; }
-        .form-label { display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.9rem; }
-        .form-input, .form-select { width: 100%; padding: 0.75rem; border: 2px solid var(--border); border-radius: 8px; background: var(--card); color: var(--text); font-size: 1rem; }
-        .form-input:focus, .form-select:focus { outline: none; border-color: var(--primary); }
-        
-        .info-box { background: rgba(79, 70, 229, 0.05); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.9rem; color: var(--text-light); }
+        .form-label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
+        .form-input, .form-select { width: 100%; padding: 0.75rem; border: 2px solid var(--border); border-radius: 8px; background: var(--card); color: var(--text); }
+        .info-box { background: rgba(79, 70, 229, 0.05); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.9rem; }
         .empty-state { text-align: center; padding: 3rem; color: var(--text-light); }
-        .empty-state-icon { font-size: 4rem; opacity: 0.5; margin-bottom: 1rem; }
+        .empty-state-icon { font-size: 4rem; opacity: 0.5; }
+        .badge { padding: 0.5rem 1rem; border-radius: 12px; font-size: 0.9rem; font-weight: 600; display: inline-block; margin: 0.25rem; }
+        .badge-primary { background: rgba(79, 70, 229, 0.1); color: var(--primary); }
         
-        .loading { text-align: center; padding: 2rem; }
-        .spinner { border: 3px solid var(--border); border-top: 3px solid var(--primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .fab { position: fixed; bottom: 2rem; right: 2rem; width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; border: none; font-size: 2rem; cursor: pointer; box-shadow: 0 4px 20px rgba(79, 70, 229, 0.4); z-index: 50; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 1000; }
+        .modal.active { display: flex; }
+        .modal-content { background: var(--card); padding: 2rem; border-radius: 16px; max-width: 500px; width: 90%; max-height: 90vh; overflow-y: auto; }
+        .modal-header { display: flex; justify-content: space-between; margin-bottom: 1.5rem; }
+        .close-btn { background: none; border: none; font-size: 1.5rem; cursor: pointer; }
         
-        @media (max-width: 768px) {
-            .dashboard { padding: 1rem; }
-            .balance-amount { font-size: 1.8rem; }
-        }
+        .sidebar { position: fixed; right: -400px; top: 0; width: 400px; height: 100vh; background: var(--card); box-shadow: -4px 0 20px rgba(0,0,0,0.1); transition: right 0.3s; z-index: 200; overflow-y: auto; }
+        .sidebar.active { right: 0; }
+        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 150; }
+        .sidebar-overlay.active { display: block; }
+        .sidebar-header { padding: 1.5rem; background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; display: flex; justify-content: space-between; }
+        .sidebar-content { padding: 1rem; }
+        .sidebar-section { margin-bottom: 0.5rem; border-radius: 8px; background: var(--bg); }
+        .sidebar-section-header { padding: 1rem; cursor: pointer; display: flex; justify-content: space-between; }
+        .sidebar-section-content { max-height: 0; overflow: hidden; transition: max-height 0.3s; padding: 0 1rem; }
+        .sidebar-section-content.open { max-height: 1000px; padding: 1rem; }
+        .toggle-switch { position: relative; width: 50px; height: 26px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: var(--border); border-radius: 26px; transition: 0.4s; }
+        .toggle-slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px; background: white; border-radius: 50%; transition: 0.4s; }
+        input:checked + .toggle-slider { background: var(--primary); }
+        input:checked + .toggle-slider:before { transform: translateX(24px); }
+        
+        @media (max-width: 768px) { .sidebar { width: 100%; right: -100%; } .dashboard { padding: 1rem; } .balance-amount { font-size: 1.8rem; } .grid { grid-template-columns: 1fr; } }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const SUPABASE_URL = 'https://ctppigfvvqyizvzqfvzz.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN0cHBpZ2Z2dnF5aXp2enFmdnp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkzMDkzNDcsImV4cCI6MjA4NDg4NTM0N30.er70gArSteC92YMwk6GS7rD8EKlAKrrRn25vqtJRLas';
         window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        console.log('✅ Supabase conectado');
     </script>
 </head>
 <body>
-    <!-- AUTH SCREEN -->
     <div id="authScreen" class="auth-container">
         <div class="auth-card">
             <div class="auth-logo">
                 <h1>💰 Presupuesta2</h1>
-                <p style="color: var(--text-light);">Finanzas en pareja, simplificadas</p>
+                <p style="color: var(--text-light);">Finanzas en pareja</p>
             </div>
-            
             <div class="auth-tabs">
                 <button class="auth-tab active" onclick="showAuthTab('login')">Iniciar Sesión</button>
                 <button class="auth-tab" onclick="showAuthTab('register')">Registrarse</button>
             </div>
-            
-            <!-- LOGIN -->
             <form id="loginForm" onsubmit="handleLogin(event)">
                 <div class="form-group">
                     <label class="form-label">Email</label>
@@ -125,8 +109,6 @@
                 </div>
                 <button type="submit" class="btn btn-primary" style="width:100%">Entrar</button>
             </form>
-            
-            <!-- REGISTER -->
             <form id="registerForm" style="display:none" onsubmit="handleRegister(event)">
                 <div class="form-group">
                     <label class="form-label">Nombre</label>
@@ -142,19 +124,17 @@
                 </div>
                 <button type="submit" class="btn btn-primary" style="width:100%">Crear Cuenta</button>
             </form>
-            
             <div id="authMessage" style="margin-top:1rem;text-align:center;color:var(--danger);font-size:0.9rem;"></div>
         </div>
     </div>
 
-    <!-- MAIN APP -->
     <div id="mainApp" class="app">
         <header class="header">
             <div class="header-content">
                 <div class="logo">💰 Presupuesta2</div>
                 <div class="user-menu">
-                    <span class="user-info" id="userEmail"></span>
-                    <button class="logout-btn" onclick="handleLogout()">Salir</button>
+                    <span style="font-size:0.9rem" id="userEmail"></span>
+                    <button class="settings-btn" onclick="openSettings()">⚙️</button>
                 </div>
             </div>
         </header>
@@ -163,22 +143,28 @@
             <div class="nav-item active" onclick="showPage('dashboard', this)">📊 Dashboard</div>
             <div class="nav-item" onclick="showPage('ingresos', this)">💵 Ingresos</div>
             <div class="nav-item" onclick="showPage('gastos-fijos', this)">📌 Gastos Fijos</div>
+            <div class="nav-item" onclick="showPage('gastos-variables', this)">💸 Gastos Variables</div>
+            <div class="nav-item" onclick="showPage('categorias', this)">🏷️ Categorías</div>
         </nav>
 
         <main class="dashboard">
             <div id="dashboard" class="page active">
                 <div class="welcome">
                     <h1>Hola, <span id="userName"></span> 👋</h1>
-                    <p>Bienvenido a Presupuesta2</p>
+                    <p>Ciclo actual: 20 Dic 2025 - 19 Ene 2026</p>
                 </div>
                 <div class="balance-card">
                     <div>Balance este mes</div>
-                    <div class="balance-amount">$0</div>
+                    <div class="balance-amount">$1.250.000</div>
                 </div>
-                <div class="card">
-                    <div class="empty-state">
-                        <div class="empty-state-icon">📊</div>
-                        <p>Tu sistema de finanzas está listo</p>
+                <div class="grid">
+                    <div class="card">
+                        <h3>💰 Presupuestos</h3>
+                        <div class="empty-state"><div class="empty-state-icon">📊</div><p>Configura presupuestos</p></div>
+                    </div>
+                    <div class="card">
+                        <h3>⚠️ Próximos Pagos</h3>
+                        <div class="empty-state"><div class="empty-state-icon">📅</div><p>Sin pagos</p></div>
                     </div>
                 </div>
             </div>
@@ -187,8 +173,10 @@
                 <div class="card">
                     <div class="card-header">
                         <h3>💵 Gestión de Ingresos</h3>
+                        <button class="btn btn-primary btn-small" onclick="openModal('addIngresoModal')">+ Agregar</button>
                     </div>
-                    <div class="info-box">Sistema de ingresos disponible</div>
+                    <div class="info-box">Los ingresos fijos se mantienen cada mes</div>
+                    <div class="empty-state"><div class="empty-state-icon">💵</div><p>Sin ingresos</p></div>
                 </div>
             </div>
 
@@ -196,53 +184,208 @@
                 <div class="card">
                     <div class="card-header">
                         <h3>📌 Gastos Fijos</h3>
+                        <button class="btn btn-primary btn-small" onclick="openModal('addGastoFijoModal')">+ Agregar</button>
                     </div>
-                    <div class="info-box">Sistema de gastos fijos disponible</div>
+                    <div class="info-box">Gastos que se repiten cada mes</div>
+                    <div class="empty-state"><div class="empty-state-icon">📌</div><p>Sin gastos fijos</p></div>
+                </div>
+            </div>
+
+            <div id="gastos-variables" class="page">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>💸 Gastos Variables</h3>
+                        <button class="btn btn-primary btn-small" onclick="openModal('quickAddModal')">+ Agregar</button>
+                    </div>
+                    <div class="info-box">Registra gastos o presupuesta imprevistos</div>
+                    <div class="empty-state"><div class="empty-state-icon">💸</div><p>Sin gastos variables</p></div>
+                </div>
+            </div>
+
+            <div id="categorias" class="page">
+                <div class="grid">
+                    <div class="card">
+                        <h3>🏷️ Categorías Base</h3>
+                        <div class="info-box">Categorías predefinidas</div>
+                        <div style="margin-top:1rem">
+                            <span class="badge badge-primary">🏠 Vivienda</span>
+                            <span class="badge badge-primary">💡 Servicios</span>
+                            <span class="badge badge-primary">🚗 Transporte</span>
+                            <span class="badge badge-primary">🍔 Alimentación</span>
+                            <span class="badge badge-primary">🎬 Entretenimiento</span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>✨ Personalizadas</h3>
+                            <button class="btn btn-primary btn-small" onclick="openModal('addCategoriaModal')">+ Crear</button>
+                        </div>
+                        <div class="info-box">Hasta 10 categorías gratis</div>
+                    </div>
                 </div>
             </div>
         </main>
+
+        <button class="fab" onclick="openModal('quickAddModal')">+</button>
+
+        <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSettings()"></div>
+        <div class="sidebar" id="settingsSidebar">
+            <div class="sidebar-header">
+                <h2>⚙️ Configuración</h2>
+                <button style="background:none;border:none;color:white;font-size:1.5rem;cursor:pointer" onclick="closeSettings()">×</button>
+            </div>
+            <div class="sidebar-content">
+                <div class="sidebar-section">
+                    <div class="sidebar-section-header" onclick="toggleSection('apariencia')">
+                        <span>🎨 Apariencia</span><span id="apariencia-arrow">▼</span>
+                    </div>
+                    <div class="sidebar-section-content" id="apariencia-content">
+                        <div style="display:flex;justify-content:space-between;align-items:center">
+                            <div>
+                                <div style="font-weight:500">Modo Oscuro</div>
+                                <div style="font-size:0.85rem;color:var(--text-light)">Tema oscuro</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div style="padding:1rem">
+                    <button class="btn btn-primary" onclick="handleLogout()" style="width:100%">🚪 Cerrar Sesión</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="quickAddModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Agregar Gasto</h2>
+                    <button class="close-btn" onclick="closeModal('quickAddModal')">×</button>
+                </div>
+                <form onsubmit="addQuickExpense(event)">
+                    <div class="form-group">
+                        <label class="form-label">Categoría</label>
+                        <select class="form-select" required>
+                            <option>🏠 Vivienda</option>
+                            <option>🍔 Alimentación</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Descripción</label>
+                        <input type="text" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Monto</label>
+                        <input type="number" class="form-input" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width:100%">Agregar</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="modal" id="addIngresoModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Agregar Ingreso</h2>
+                    <button class="close-btn" onclick="closeModal('addIngresoModal')">×</button>
+                </div>
+                <form onsubmit="addIngreso(event)">
+                    <div class="form-group">
+                        <label class="form-label">Fuente</label>
+                        <input type="text" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tipo</label>
+                        <select class="form-select">
+                            <option>Laboral (8%)</option>
+                            <option>Servicios (28.5%)</option>
+                            <option>Bonos (0%)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Monto</label>
+                        <input type="number" class="form-input" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width:100%">Agregar</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="modal" id="addGastoFijoModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Agregar Gasto Fijo</h2>
+                    <button class="close-btn" onclick="closeModal('addGastoFijoModal')">×</button>
+                </div>
+                <form onsubmit="addGastoFijo(event)">
+                    <div class="form-group">
+                        <label class="form-label">Descripción</label>
+                        <input type="text" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Monto</label>
+                        <input type="number" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Día de Pago</label>
+                        <input type="number" class="form-input" min="1" max="31">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width:100%">Agregar</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="modal" id="addCategoriaModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Crear Categoría</h2>
+                    <button class="close-btn" onclick="closeModal('addCategoriaModal')">×</button>
+                </div>
+                <form onsubmit="addCategoria(event)">
+                    <div class="form-group">
+                        <label class="form-label">Emoji</label>
+                        <input type="text" class="form-input" maxlength="2" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Nombre</label>
+                        <input type="text" class="form-input" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width:100%">Crear</button>
+                </form>
+            </div>
+        </div>
     </div>
 
     <script>
         let currentUser = null;
 
-        // Check session on load
         window.addEventListener('load', async () => {
             const { data: { session } } = await supabaseClient.auth.getSession();
-            if (session) {
-                currentUser = session.user;
-                showMainApp();
+            if (session) { currentUser = session.user; showMainApp(); }
+            if(localStorage.getItem('theme') === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                document.getElementById('darkModeToggle').checked = true;
             }
         });
 
-        // Auth functions
         function showAuthTab(tab) {
             document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
             event.target.classList.add('active');
-            
-            if (tab === 'login') {
-                document.getElementById('loginForm').style.display = 'block';
-                document.getElementById('registerForm').style.display = 'none';
-            } else {
-                document.getElementById('loginForm').style.display = 'none';
-                document.getElementById('registerForm').style.display = 'block';
-            }
+            document.getElementById('loginForm').style.display = tab === 'login' ? 'block' : 'none';
+            document.getElementById('registerForm').style.display = tab === 'register' ? 'block' : 'none';
             document.getElementById('authMessage').textContent = '';
         }
 
         async function handleLogin(e) {
             e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-            
-            const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-            
-            if (error) {
-                document.getElementById('authMessage').textContent = 'Error: ' + error.message;
-            } else {
-                currentUser = data.user;
-                showMainApp();
-            }
+            const { data, error } = await supabaseClient.auth.signInWithPassword({
+                email: document.getElementById('loginEmail').value,
+                password: document.getElementById('loginPassword').value
+            });
+            if (error) document.getElementById('authMessage').textContent = 'Error: ' + error.message;
+            else { currentUser = data.user; showMainApp(); }
         }
 
         async function handleRegister(e) {
@@ -250,13 +393,9 @@
             const name = document.getElementById('registerName').value;
             const email = document.getElementById('registerEmail').value;
             const password = document.getElementById('registerPassword').value;
-            
             const { data, error } = await supabaseClient.auth.signUp({ email, password });
-            
-            if (error) {
-                document.getElementById('authMessage').textContent = 'Error: ' + error.message;
-            } else {
-                // Create user profile
+            if (error) document.getElementById('authMessage').textContent = 'Error: ' + error.message;
+            else {
                 await supabaseClient.from('users').insert([{ id: data.user.id, email, name }]);
                 currentUser = data.user;
                 showMainApp();
@@ -265,16 +404,14 @@
 
         async function handleLogout() {
             await supabaseClient.auth.signOut();
-            currentUser = null;
-            document.getElementById('authScreen').style.display = 'flex';
-            document.getElementById('mainApp').classList.remove('active');
+            location.reload();
         }
 
         function showMainApp() {
             document.getElementById('authScreen').style.display = 'none';
             document.getElementById('mainApp').classList.add('active');
             document.getElementById('userEmail').textContent = currentUser.email;
-            document.getElementById('userName').textContent = currentUser.user_metadata?.name || currentUser.email.split('@')[0];
+            document.getElementById('userName').textContent = currentUser.email.split('@')[0];
         }
 
         function showPage(id, el) {
@@ -283,6 +420,44 @@
             document.getElementById(id).classList.add('active');
             if(el) el.classList.add('active');
         }
+
+        function openSettings() {
+            document.getElementById('settingsSidebar').classList.add('active');
+            document.getElementById('sidebarOverlay').classList.add('active');
+        }
+
+        function closeSettings() {
+            document.getElementById('settingsSidebar').classList.remove('active');
+            document.getElementById('sidebarOverlay').classList.remove('active');
+        }
+
+        function toggleSection(id) {
+            document.getElementById(id + '-content').classList.toggle('open');
+            document.getElementById(id + '-arrow').textContent = 
+                document.getElementById(id + '-content').classList.contains('open') ? '▲' : '▼';
+        }
+
+        function openModal(id) { document.getElementById(id).classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+        function addQuickExpense(e) { e.preventDefault(); alert('✅ Gasto agregado'); closeModal('quickAddModal'); e.target.reset(); }
+        function addIngreso(e) { e.preventDefault(); alert('✅ Ingreso agregado'); closeModal('addIngresoModal'); e.target.reset(); }
+        function addGastoFijo(e) { e.preventDefault(); alert('✅ Gasto fijo agregado'); closeModal('addGastoFijoModal'); e.target.reset(); }
+        function addCategoria(e) { e.preventDefault(); alert('✅ Categoría creada'); closeModal('addCategoriaModal'); e.target.reset(); }
+
+        function toggleDarkMode() {
+            if(document.getElementById('darkModeToggle').checked) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        document.querySelectorAll('.modal').forEach(m => {
+            m.addEventListener('click', e => { if(e.target === m) m.classList.remove('active'); });
+        });
     </script>
 </body>
 </html>
