@@ -32,549 +32,257 @@
         }
         
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); transition: all 0.3s; }
+        
+        /* Auth Screen */
+        .auth-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+        .auth-card { background: var(--card); padding: 2rem; border-radius: 16px; max-width: 400px; width: 100%; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        .auth-logo { text-align: center; margin-bottom: 2rem; }
+        .auth-logo h1 { font-size: 2rem; color: var(--primary); }
+        .auth-tabs { display: flex; gap: 1rem; margin-bottom: 2rem; }
+        .auth-tab { flex: 1; padding: 0.75rem; border: none; background: var(--bg); border-radius: 8px; font-weight: 600; cursor: pointer; }
+        .auth-tab.active { background: var(--primary); color: white; }
+        
+        /* Main App */
+        .app { display: none; }
+        .app.active { display: block; }
         .header { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; padding: 1.5rem; position: sticky; top: 0; z-index: 100; }
         .header-content { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; }
         .logo { font-size: 1.5rem; font-weight: 700; }
         .user-menu { display: flex; gap: 1rem; align-items: center; }
-        .space-selector { background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 8px; border: none; color: white; cursor: pointer; }
-        .settings-btn { background: rgba(255,255,255,0.2); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; }
+        .user-info { font-size: 0.9rem; }
+        .logout-btn { background: rgba(255,255,255,0.2); border: none; color: white; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; }
+        
         .nav-menu { display: flex; gap: 1rem; padding: 1rem; background: var(--card); overflow-x: auto; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
         .nav-item { padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; white-space: nowrap; font-weight: 500; transition: all 0.2s; }
         .nav-item:hover { background: var(--bg); }
         .nav-item.active { background: var(--primary); color: white; }
+        
         .dashboard { padding: 2rem; max-width: 1400px; margin: 0 auto; }
         .page { display: none; }
         .page.active { display: block; }
+        
         .welcome h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
-        .welcome p { color: var(--text-light); }
-        .balance-card { background: linear-gradient(135deg, var(--secondary), #059669); color: white; padding: 2rem; border-radius: 16px; margin: 2rem 0; box-shadow: 0 4px 20px rgba(16, 185, 129, 0.2); }
-        .balance-label { font-size: 0.9rem; opacity: 0.9; margin-bottom: 0.5rem; }
+        .balance-card { background: linear-gradient(135deg, var(--secondary), #059669); color: white; padding: 2rem; border-radius: 16px; margin: 2rem 0; }
         .balance-amount { font-size: 2.5rem; font-weight: 700; }
-        .grid { display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); margin-bottom: 2rem; }
-        .card { background: var(--card); border-radius: 12px; padding: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        
+        .card { background: var(--card); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
         .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
-        .card-title { font-size: 1.1rem; font-weight: 600; }
+        
         .btn { padding: 0.75rem 1.5rem; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
         .btn-primary { background: var(--primary); color: white; }
         .btn-primary:hover { background: #4338CA; }
         .btn-small { padding: 0.5rem 1rem; font-size: 0.9rem; }
-        .info-box { background: rgba(79, 70, 229, 0.05); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.9rem; color: var(--text-light); }
-        .empty-state { text-align: center; padding: 3rem; color: var(--text-light); }
-        .empty-state-icon { font-size: 4rem; opacity: 0.5; margin-bottom: 1rem; }
-        .fab { position: fixed; bottom: 2rem; right: 2rem; width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; border: none; font-size: 2rem; cursor: pointer; box-shadow: 0 4px 20px rgba(79, 70, 229, 0.4); z-index: 50; display: flex; align-items: center; justify-content: center; }
-        .fab:hover { transform: scale(1.1); }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 1000; }
-        .modal.active { display: flex; }
-        .modal-content { background: var(--card); padding: 2rem; border-radius: 16px; max-width: 500px; width: 90%; max-height: 90vh; overflow-y: auto; }
-        .modal-header { display: flex; justify-content: space-between; margin-bottom: 1.5rem; }
-        .modal-title { font-size: 1.5rem; font-weight: 600; }
-        .close-btn { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-light); }
+        
         .form-group { margin-bottom: 1rem; }
         .form-label { display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.9rem; }
         .form-input, .form-select { width: 100%; padding: 0.75rem; border: 2px solid var(--border); border-radius: 8px; background: var(--card); color: var(--text); font-size: 1rem; }
         .form-input:focus, .form-select:focus { outline: none; border-color: var(--primary); }
-        .sidebar { position: fixed; right: -400px; top: 0; width: 400px; height: 100vh; background: var(--card); box-shadow: -4px 0 20px rgba(0,0,0,0.1); transition: right 0.3s; z-index: 200; overflow-y: auto; }
-        .sidebar.active { right: 0; }
-        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 150; }
-        .sidebar-overlay.active { display: block; }
-        .sidebar-header { padding: 1.5rem; background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; display: flex; justify-content: space-between; align-items: center; }
-        .sidebar-title { font-size: 1.3rem; font-weight: 600; }
-        .sidebar-content { padding: 1rem; }
-        .sidebar-section { margin-bottom: 0.5rem; border-radius: 8px; background: var(--bg); overflow: hidden; }
-        .sidebar-section-header { padding: 1rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none; }
-        .sidebar-section-header:hover { background: var(--border); }
-        .sidebar-section-title { font-size: 1rem; font-weight: 600; }
-        .sidebar-section-arrow { transition: transform 0.3s; }
-        .sidebar-section-arrow.open { transform: rotate(180deg); }
-        .sidebar-section-content { max-height: 0; overflow: hidden; transition: max-height 0.3s; padding: 0 1rem; }
-        .sidebar-section-content.open { max-height: 1000px; padding: 1rem; }
-        .toggle-switch { position: relative; display: inline-block; width: 50px; height: 26px; }
-        .toggle-switch input { opacity: 0; width: 0; height: 0; }
-        .toggle-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: var(--border); border-radius: 26px; transition: 0.4s; }
-        .toggle-slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px; background: white; border-radius: 50%; transition: 0.4s; }
-        input:checked + .toggle-slider { background: var(--primary); }
-        input:checked + .toggle-slider:before { transform: translateX(24px); }
-        .space-item { padding: 1rem; background: var(--card); border: 2px solid var(--border); border-radius: 8px; margin-bottom: 0.5rem; }
-        .badge { padding: 0.5rem 1rem; border-radius: 12px; font-size: 0.9rem; font-weight: 600; display: inline-block; margin: 0.25rem; }
-        .badge-primary { background: rgba(79, 70, 229, 0.1); color: var(--primary); }
-        .badge-success { background: rgba(16, 185, 129, 0.1); color: var(--secondary); }
+        
+        .info-box { background: rgba(79, 70, 229, 0.05); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.9rem; color: var(--text-light); }
+        .empty-state { text-align: center; padding: 3rem; color: var(--text-light); }
+        .empty-state-icon { font-size: 4rem; opacity: 0.5; margin-bottom: 1rem; }
+        
+        .loading { text-align: center; padding: 2rem; }
+        .spinner { border: 3px solid var(--border); border-top: 3px solid var(--primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
         @media (max-width: 768px) {
-            .sidebar { width: 100%; right: -100%; }
             .dashboard { padding: 1rem; }
             .balance-amount { font-size: 1.8rem; }
-            .grid { grid-template-columns: 1fr; }
-            .fab { bottom: 1rem; right: 1rem; width: 56px; height: 56px; }
         }
     </style>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-  // Configuración de Supabase
-  const SUPABASE_URL = 'https://ctppigfvvqyizvzqfvzz.supabase.co';
-  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN0cHBpZ2Z2dnF5aXp2enFmdnp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkzMDkzNDcsImV4cCI6MjA4NDg4NTM0N30.er70gArSteC92YMwk6GS7rD8EKlAKrrRn25vqtJRLas';
-  
-  // Inicializar cliente de Supabase
-  window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  
-  console.log('✅ Supabase conectado');
-</script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://ctppigfvvqyizvzqfvzz.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN0cHBpZ2Z2dnF5aXp2enFmdnp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkzMDkzNDcsImV4cCI6MjA4NDg4NTM0N30.er70gArSteC92YMwk6GS7rD8EKlAKrrRn25vqtJRLas';
+        window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        console.log('✅ Supabase conectado');
+    </script>
 </head>
 <body>
-    <header class="header">
-        <div class="header-content">
-            <div class="logo">💰 Presupuesta2</div>
-            <div class="user-menu">
-                <select class="space-selector">
-                    <option>👤 Personal</option>
-                    <option>💑 Con Nahomy</option>
-                </select>
-                <button class="settings-btn" onclick="openSettings()">⚙️</button>
+    <!-- AUTH SCREEN -->
+    <div id="authScreen" class="auth-container">
+        <div class="auth-card">
+            <div class="auth-logo">
+                <h1>💰 Presupuesta2</h1>
+                <p style="color: var(--text-light);">Finanzas en pareja, simplificadas</p>
             </div>
-        </div>
-    </header>
-
-    <nav class="nav-menu">
-        <div class="nav-item active" onclick="showPage('dashboard', this)">📊 Dashboard</div>
-        <div class="nav-item" onclick="showPage('ingresos', this)">💵 Ingresos</div>
-        <div class="nav-item" onclick="showPage('gastos-fijos', this)">📌 Gastos Fijos</div>
-        <div class="nav-item" onclick="showPage('gastos-variables', this)">💸 Gastos Variables</div>
-        <div class="nav-item" onclick="showPage('categorias', this)">🏷️ Categorías</div>
-    </nav>
-
-    <main class="dashboard">
-        <div id="dashboard" class="page active">
-            <div class="welcome">
-                <h1>Hola, Jonathan 👋</h1>
-                <p>Ciclo actual: 20 Dic 2025 - 19 Ene 2026</p>
+            
+            <div class="auth-tabs">
+                <button class="auth-tab active" onclick="showAuthTab('login')">Iniciar Sesión</button>
+                <button class="auth-tab" onclick="showAuthTab('register')">Registrarse</button>
             </div>
-            <div class="balance-card">
-                <div class="balance-label">Balance este mes</div>
-                <div class="balance-amount">$1.250.000</div>
-            </div>
-            <div class="grid">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">💰 Presupuestos</h3>
-                    </div>
-                    <div class="empty-state">
-                        <div class="empty-state-icon">📊</div>
-                        <p>Configura tus presupuestos</p>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">⚠️ Próximos Pagos</h3>
-                    </div>
-                    <div class="empty-state">
-                        <div class="empty-state-icon">📅</div>
-                        <p>No hay pagos pendientes</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="ingresos" class="page">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">💵 Gestión de Ingresos</h3>
-                    <button class="btn btn-primary btn-small" onclick="openModal('addIngresoModal')">+ Agregar Ingreso</button>
-                </div>
-                <div class="info-box">Los ingresos fijos se mantienen cada mes. Los variables se actualizan mensualmente.</div>
-                <div class="empty-state">
-                    <div class="empty-state-icon">💵</div>
-                    <p>No hay ingresos registrados</p>
-                </div>
-            </div>
-        </div>
-
-        <div id="gastos-fijos" class="page">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">📌 Gastos Fijos Mensuales</h3>
-                    <button class="btn btn-primary btn-small" onclick="openModal('addGastoFijoModal')">+ Agregar Gasto Fijo</button>
-                </div>
-                <div class="info-box">Los gastos fijos se repiten cada mes y pueden tener fechas de pago y recordatorios.</div>
-                <div class="empty-state">
-                    <div class="empty-state-icon">📌</div>
-                    <p>No hay gastos fijos registrados</p>
-                </div>
-            </div>
-        </div>
-
-        <div id="gastos-variables" class="page">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">💸 Gastos Variables del Mes</h3>
-                    <button class="btn btn-primary btn-small" onclick="openModal('quickAddModal')">+ Agregar Gasto</button>
-                </div>
-                <div class="info-box">Registra gastos durante el mes o presupuesta montos para imprevistos. Usa el botón + para agregar rápidamente.</div>
-                <div class="empty-state">
-                    <div class="empty-state-icon">💸</div>
-                    <p>No hay gastos variables este mes</p>
-                </div>
-            </div>
-        </div>
-
-        <div id="categorias" class="page">
-            <div class="grid">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">🏷️ Categorías Base</h3>
-                    </div>
-                    <div class="info-box">Categorías predefinidas que no pueden eliminarse</div>
-                    <div>
-                        <span class="badge badge-primary">🏠 Vivienda</span>
-                        <span class="badge badge-primary">💡 Servicios</span>
-                        <span class="badge badge-primary">🚗 Transporte</span>
-                        <span class="badge badge-primary">🍔 Alimentación</span>
-                        <span class="badge badge-primary">🎬 Entretenimiento</span>
-                        <span class="badge badge-primary">💳 Deudas</span>
-                        <span class="badge badge-primary">💰 Ahorro</span>
-                        <span class="badge badge-primary">📦 Otros</span>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">✨ Categorías Personalizadas</h3>
-                        <button class="btn btn-primary btn-small" onclick="openModal('addCategoriaModal')">+ Crear Categoría</button>
-                    </div>
-                    <div class="info-box">Crea hasta 10 categorías personalizadas (plan gratuito)</div>
-                    <div>
-                        <span class="badge badge-success">🐶 Mascotas ×</span>
-                        <span class="badge badge-success">🎓 Educación ×</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <button class="fab" onclick="openModal('quickAddModal')">+</button>
-
-    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSettings()"></div>
-    <div class="sidebar" id="settingsSidebar">
-        <div class="sidebar-header">
-            <h2 class="sidebar-title">⚙️ Configuración</h2>
-            <button class="close-btn" onclick="closeSettings()">×</button>
-        </div>
-        <div class="sidebar-content">
-            <div class="sidebar-section">
-                <div class="sidebar-section-header" onclick="toggleSection('cuenta')">
-                    <span class="sidebar-section-title">👤 Cuenta</span>
-                    <span class="sidebar-section-arrow" id="cuenta-arrow">▼</span>
-                </div>
-                <div class="sidebar-section-content" id="cuenta-content">
-                    <div class="form-group">
-                        <label class="form-label">Nombre</label>
-                        <input type="text" class="form-input" value="Jonathan">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Email</label>
-                        <input type="email" class="form-input" value="jonathan@email.com">
-                    </div>
-                    <button class="btn btn-primary" style="width:100%">Guardar</button>
-                </div>
-            </div>
-
-            <div class="sidebar-section">
-                <div class="sidebar-section-header" onclick="toggleSection('espacios')">
-                    <span class="sidebar-section-title">👥 Espacios</span>
-                    <span class="sidebar-section-arrow" id="espacios-arrow">▼</span>
-                </div>
-                <div class="sidebar-section-content" id="espacios-content">
-                    <div class="info-box">Invita personas para crear presupuestos compartidos</div>
-                    <button class="btn btn-primary" style="width:100%;margin-bottom:1rem" onclick="openModal('inviteModal')">➕ Invitar Persona</button>
-                    <div class="space-item">
-                        <div style="font-weight:600">👤 Personal</div>
-                        <div style="font-size:0.85rem;color:var(--text-light)">Solo tú</div>
-                    </div>
-                    <div class="space-item">
-                        <div style="font-weight:600">💑 Con Nahomy</div>
-                        <div style="font-size:0.85rem;color:var(--text-light)">2 miembros</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="sidebar-section">
-                <div class="sidebar-section-header" onclick="toggleSection('ciclo')">
-                    <span class="sidebar-section-title">📅 Ciclo de Presupuesto</span>
-                    <span class="sidebar-section-arrow" id="ciclo-arrow">▼</span>
-                </div>
-                <div class="sidebar-section-content" id="ciclo-content">
-                    <div class="info-box">Define el día en que inicia tu mes financiero</div>
-                    <div class="form-group">
-                        <label class="form-label">Día de inicio</label>
-                        <select class="form-select">
-                            <option value="1">Día 1</option>
-                            <option value="5">Día 5</option>
-                            <option value="10">Día 10</option>
-                            <option value="15">Día 15</option>
-                            <option value="20" selected>Día 20</option>
-                            <option value="25">Día 25</option>
-                            <option value="30">Día 30</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <div class="sidebar-section">
-                <div class="sidebar-section-header" onclick="toggleSection('apariencia')">
-                    <span class="sidebar-section-title">🎨 Apariencia</span>
-                    <span class="sidebar-section-arrow" id="apariencia-arrow">▼</span>
-                </div>
-                <div class="sidebar-section-content" id="apariencia-content">
-                    <div style="display:flex;justify-content:space-between;align-items:center">
-                        <div>
-                            <div style="font-weight:500">Modo Oscuro</div>
-                            <div style="font-size:0.85rem;color:var(--text-light)">Tema oscuro para tus ojos</div>
-                        </div>
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal" id="quickAddModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">Agregar Gasto Rápido</h2>
-                <button class="close-btn" onclick="closeModal('quickAddModal')">×</button>
-            </div>
-            <form onsubmit="addQuickExpense(event)">
+            
+            <!-- LOGIN -->
+            <form id="loginForm" onsubmit="handleLogin(event)">
                 <div class="form-group">
-                    <label class="form-label">Categoría</label>
-                    <select class="form-select" required>
-                        <option>🏠 Vivienda</option>
-                        <option>🍔 Alimentación</option>
-                        <option>🎬 Entretenimiento</option>
-                        <option>📦 Otros</option>
-                    </select>
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" id="loginEmail" required>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Descripción</label>
-                    <input type="text" class="form-input" placeholder="Ej: Cine, Gasolina" required>
+                    <label class="form-label">Contraseña</label>
+                    <input type="password" class="form-input" id="loginPassword" required>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Monto (COP)</label>
-                    <input type="number" class="form-input" placeholder="0" required>
-                </div>
-                <button type="submit" class="btn btn-primary" style="width:100%">Agregar Gasto</button>
+                <button type="submit" class="btn btn-primary" style="width:100%">Entrar</button>
             </form>
-        </div>
-    </div>
-
-    <div class="modal" id="inviteModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">Invitar Persona</h2>
-                <button class="close-btn" onclick="closeModal('inviteModal')">×</button>
-            </div>
-            <form onsubmit="sendInvite(event)">
-                <div class="info-box">Envía una invitación por email para compartir un presupuesto</div>
-                <div class="form-group">
-                    <label class="form-label">Email de la persona</label>
-                    <input type="email" class="form-input" placeholder="ejemplo@email.com" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Nombre del espacio compartido</label>
-                    <input type="text" class="form-input" placeholder="Ej: Con Nahomy, Casa" required>
-                </div>
-                <button type="submit" class="btn btn-primary" style="width:100%">Enviar Invitación</button>
-            </form>
-        </div>
-    </div>
-
-    <div class="modal" id="addIngresoModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">Agregar Ingreso</h2>
-                <button class="close-btn" onclick="closeModal('addIngresoModal')">×</button>
-            </div>
-            <form onsubmit="addIngreso(event)">
-                <div class="form-group">
-                    <label class="form-label">Fuente de Ingreso</label>
-                    <input type="text" class="form-input" placeholder="Ej: Salario, Freelance" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Frecuencia</label>
-                    <select class="form-select" required>
-                        <option value="fijo">Fijo (cada mes)</option>
-                        <option value="variable">Variable</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Tipo de Contrato</label>
-                    <select class="form-select" required>
-                        <option value="laboral">Laboral (8%)</option>
-                        <option value="servicios">Servicios (28.5%)</option>
-                        <option value="exento">Bonos/Otros (0%)</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Monto Bruto (COP)</label>
-                    <input type="number" class="form-input" placeholder="0" required>
-                </div>
-                <button type="submit" class="btn btn-primary" style="width:100%">Agregar Ingreso</button>
-            </form>
-        </div>
-    </div>
-
-    <div class="modal" id="addGastoFijoModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">Agregar Gasto Fijo</h2>
-                <button class="close-btn" onclick="closeModal('addGastoFijoModal')">×</button>
-            </div>
-            <form onsubmit="addGastoFijo(event)">
-                <div class="form-group">
-                    <label class="form-label">Categoría</label>
-                    <select class="form-select" required>
-                        <option>🏠 Vivienda</option>
-                        <option>💡 Servicios</option>
-                        <option>🚗 Transporte</option>
-                        <option>📦 Otros</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Descripción</label>
-                    <input type="text" class="form-input" placeholder="Ej: Arriendo, Netflix" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Monto (COP)</label>
-                    <input type="number" class="form-input" placeholder="0" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Día de Pago (1-31)</label>
-                    <input type="number" class="form-input" placeholder="Ej: 1, 15, 25" min="1" max="31">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Recordatorio</label>
-                    <select class="form-select">
-                        <option value="">Sin recordatorio</option>
-                        <option value="1">1 día antes</option>
-                        <option value="3">3 días antes</option>
-                        <option value="5">5 días antes</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-primary" style="width:100%">Agregar Gasto Fijo</button>
-            </form>
-        </div>
-    </div>
-
-    <div class="modal" id="addCategoriaModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">Crear Categoría Personalizada</h2>
-                <button class="close-btn" onclick="closeModal('addCategoriaModal')">×</button>
-            </div>
-            <form onsubmit="addCategoria(event)">
-                <div class="form-group">
-                    <label class="form-label">Emoji</label>
-                    <input type="text" class="form-input" placeholder="🎯" maxlength="2" required>
-                </div>
+            
+            <!-- REGISTER -->
+            <form id="registerForm" style="display:none" onsubmit="handleRegister(event)">
                 <div class="form-group">
                     <label class="form-label">Nombre</label>
-                    <input type="text" class="form-input" placeholder="Ej: Mascotas, Gym" required>
+                    <input type="text" class="form-input" id="registerName" required>
                 </div>
-                <button type="submit" class="btn btn-primary" style="width:100%">Crear Categoría</button>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" id="registerEmail" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Contraseña</label>
+                    <input type="password" class="form-input" id="registerPassword" required minlength="6">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%">Crear Cuenta</button>
             </form>
+            
+            <div id="authMessage" style="margin-top:1rem;text-align:center;color:var(--danger);font-size:0.9rem;"></div>
         </div>
+    </div>
+
+    <!-- MAIN APP -->
+    <div id="mainApp" class="app">
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">💰 Presupuesta2</div>
+                <div class="user-menu">
+                    <span class="user-info" id="userEmail"></span>
+                    <button class="logout-btn" onclick="handleLogout()">Salir</button>
+                </div>
+            </div>
+        </header>
+
+        <nav class="nav-menu">
+            <div class="nav-item active" onclick="showPage('dashboard', this)">📊 Dashboard</div>
+            <div class="nav-item" onclick="showPage('ingresos', this)">💵 Ingresos</div>
+            <div class="nav-item" onclick="showPage('gastos-fijos', this)">📌 Gastos Fijos</div>
+        </nav>
+
+        <main class="dashboard">
+            <div id="dashboard" class="page active">
+                <div class="welcome">
+                    <h1>Hola, <span id="userName"></span> 👋</h1>
+                    <p>Bienvenido a Presupuesta2</p>
+                </div>
+                <div class="balance-card">
+                    <div>Balance este mes</div>
+                    <div class="balance-amount">$0</div>
+                </div>
+                <div class="card">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📊</div>
+                        <p>Tu sistema de finanzas está listo</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="ingresos" class="page">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>💵 Gestión de Ingresos</h3>
+                    </div>
+                    <div class="info-box">Sistema de ingresos disponible</div>
+                </div>
+            </div>
+
+            <div id="gastos-fijos" class="page">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>📌 Gastos Fijos</h3>
+                    </div>
+                    <div class="info-box">Sistema de gastos fijos disponible</div>
+                </div>
+            </div>
+        </main>
     </div>
 
     <script>
+        let currentUser = null;
+
+        // Check session on load
+        window.addEventListener('load', async () => {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (session) {
+                currentUser = session.user;
+                showMainApp();
+            }
+        });
+
+        // Auth functions
+        function showAuthTab(tab) {
+            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            if (tab === 'login') {
+                document.getElementById('loginForm').style.display = 'block';
+                document.getElementById('registerForm').style.display = 'none';
+            } else {
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('registerForm').style.display = 'block';
+            }
+            document.getElementById('authMessage').textContent = '';
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+            
+            if (error) {
+                document.getElementById('authMessage').textContent = 'Error: ' + error.message;
+            } else {
+                currentUser = data.user;
+                showMainApp();
+            }
+        }
+
+        async function handleRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            
+            const { data, error } = await supabaseClient.auth.signUp({ email, password });
+            
+            if (error) {
+                document.getElementById('authMessage').textContent = 'Error: ' + error.message;
+            } else {
+                // Create user profile
+                await supabaseClient.from('users').insert([{ id: data.user.id, email, name }]);
+                currentUser = data.user;
+                showMainApp();
+            }
+        }
+
+        async function handleLogout() {
+            await supabaseClient.auth.signOut();
+            currentUser = null;
+            document.getElementById('authScreen').style.display = 'flex';
+            document.getElementById('mainApp').classList.remove('active');
+        }
+
+        function showMainApp() {
+            document.getElementById('authScreen').style.display = 'none';
+            document.getElementById('mainApp').classList.add('active');
+            document.getElementById('userEmail').textContent = currentUser.email;
+            document.getElementById('userName').textContent = currentUser.user_metadata?.name || currentUser.email.split('@')[0];
+        }
+
         function showPage(id, el) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             if(el) el.classList.add('active');
         }
-
-        function openSettings() {
-            document.getElementById('settingsSidebar').classList.add('active');
-            document.getElementById('sidebarOverlay').classList.add('active');
-        }
-
-        function closeSettings() {
-            document.getElementById('settingsSidebar').classList.remove('active');
-            document.getElementById('sidebarOverlay').classList.remove('active');
-        }
-
-        function toggleSection(id) {
-            const content = document.getElementById(id + '-content');
-            const arrow = document.getElementById(id + '-arrow');
-            content.classList.toggle('open');
-            arrow.classList.toggle('open');
-        }
-
-        function openModal(id) {
-            document.getElementById(id).classList.add('active');
-        }
-
-        function closeModal(id) {
-            document.getElementById(id).classList.remove('active');
-        }
-
-        function addQuickExpense(e) {
-            e.preventDefault();
-            alert('✅ Gasto agregado exitosamente');
-            closeModal('quickAddModal');
-            e.target.reset();
-        }
-
-        function sendInvite(e) {
-            e.preventDefault();
-            alert('✅ Invitación enviada exitosamente');
-            closeModal('inviteModal');
-            e.target.reset();
-        }
-
-        function addIngreso(e) {
-            e.preventDefault();
-            alert('✅ Ingreso agregado exitosamente');
-            closeModal('addIngresoModal');
-            e.target.reset();
-        }
-
-        function addGastoFijo(e) {
-            e.preventDefault();
-            alert('✅ Gasto fijo agregado exitosamente');
-            closeModal('addGastoFijoModal');
-            e.target.reset();
-        }
-
-        function addCategoria(e) {
-            e.preventDefault();
-            alert('✅ Categoría creada exitosamente');
-            closeModal('addCategoriaModal');
-            e.target.reset();
-        }
-
-        function toggleDarkMode() {
-            const dark = document.getElementById('darkModeToggle').checked;
-            if(dark) {
-                document.documentElement.setAttribute('data-theme', 'dark');
-                localStorage.setItem('theme', 'dark');
-            } else {
-                document.documentElement.removeAttribute('data-theme');
-                localStorage.setItem('theme', 'light');
-            }
-        }
-
-        // Load saved theme
-        if(localStorage.getItem('theme') === 'dark') {
-            document.documentElement.setAttribute('data-theme', 'dark');
-            document.getElementById('darkModeToggle').checked = true;
-        }
-
-        // Close modal on outside click
-        document.querySelectorAll('.modal').forEach(m => {
-            m.addEventListener('click', e => {
-                if(e.target === m) m.classList.remove('active');
-            });
-        });
     </script>
 </body>
 </html>
