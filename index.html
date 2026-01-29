@@ -998,30 +998,31 @@
                     <span class="sidebar-section-arrow" id="preferences-arrow">▼</span>
                 </div>
                 <div class="sidebar-section-content" id="preferences-content">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                        <span>🌙 Modo Oscuro</span>
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
-                    
-                    <div style="margin-bottom: 1rem;">
-                        <label class="form-label">💰 Moneda</label>
-                        <select class="form-select">
-                            <option>COP - Peso Colombiano</option>
-                            <option>USD - Dólar</option>
-                            <option>EUR - Euro</option>
-                        </select>
-                    </div>
-                    
-                    <div>
-                        <label class="form-label">📅 Día de Inicio del Ciclo</label>
-                        <input type="number" class="form-input" value="20" min="1" max="31">
-                        <p style="font-size: 0.85rem; color: var(--text-light); margin-top: 0.5rem;">El día del mes en que comienza tu ciclo de presupuesto</p>
-                    </div>
-                </div>
-            </div>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <span>🌙 Modo Oscuro</span>
+        <label class="toggle-switch">
+            <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
+            <span class="toggle-slider"></span>
+        </label>
+    </div>
+    
+    <div style="margin-bottom: 1rem;">
+        <label class="form-label">💰 Moneda</label>
+        <select class="form-select" id="monedaSelect">
+            <option value="COP">COP - Peso Colombiano</option>
+            <option value="USD">USD - Dólar</option>
+            <option value="EUR">EUR - Euro</option>
+        </select>
+    </div>
+    
+    <div style="margin-bottom: 1rem;">
+        <label class="form-label">📅 Día de Inicio del Ciclo</label>
+        <input type="number" class="form-input" id="cicloInput" value="20" min="1" max="31">
+        <p style="font-size: 0.85rem; color: var(--text-light); margin-top: 0.5rem;">El día del mes en que comienza tu ciclo de presupuesto</p>
+    </div>
+    
+    <button class="btn btn-primary" style="width: 100%;" onclick="savePreferences()">💾 Guardar Preferencias</button>
+</div>
 
             <!-- About -->
             <div class="sidebar-section">
@@ -1330,7 +1331,7 @@
             location.reload();
         }
 
-        function showMainApp() {
+       function showMainApp() {
     document.getElementById('authScreen').style.display = 'none';
     document.getElementById('mainApp').classList.add('active');
     
@@ -1339,10 +1340,18 @@
     document.getElementById('userName').textContent = userName;
     document.getElementById('userEmail').textContent = currentUser.email;
     document.getElementById('userNameInput').value = userName;
-    
+
+           // Cargar preferencias
+    loadPreferences();
+           
     // Cargar datos
-    loadIngresos(); // ← AGREGAR ESTA LÍNEA
+    loadIngresos();
+    loadGastosFijos();
+    loadGastosVariables();
+    loadCategorias();
+    updateDashboard();
 }
+        
         // ============================================
         // NAVIGATION FUNCTIONS
         // ============================================
@@ -1400,13 +1409,42 @@
         // FORM SUBMIT FUNCTIONS
         // ============================================
         
-        function addQuickExpense(e) {
-            e.preventDefault();
-            // TODO: Save to Supabase
-            alert('✅ Gasto agregado exitosamente');
-            closeModal('quickAddModal');
-            e.target.reset();
-        }
+        async function addQuickExpense(e) {
+    e.preventDefault();
+    
+    const form = e.target;
+    const monto = parseFloat(form.querySelectorAll('input')[0].value);
+    const categoria = form.querySelector('select').value;
+    const descripcion = form.querySelectorAll('input')[1].value;
+    
+    try {
+        // Guardar en Supabase
+        const { data, error } = await supabaseClient
+            .from('variable_expenses')
+            .insert([{
+                user_id: currentUser.id,
+                space_id: null,
+                category: categoria,
+                description: descripcion || 'Sin descripción',
+                amount: monto,
+                expense_date: new Date().toISOString().split('T')[0]
+            }]);
+        
+        if (error) throw error;
+        
+        alert('✅ Gasto agregado exitosamente');
+        closeModal('quickAddModal');
+        form.reset();
+        
+        // Recargar lista de gastos variables
+        loadGastosVariables();
+        updateDashboard();
+        
+    } catch (error) {
+        alert('❌ Error al guardar: ' + error.message);
+        console.error('Error:', error);
+    }
+}
 
         function sendInvite(e) {
             e.preventDefault();
@@ -1448,6 +1486,7 @@
         
         // Recargar lista de ingresos
         loadIngresos();
+        updateDashboard();
         
     } catch (error) {
         alert('❌ Error al guardar: ' + error.message);
@@ -1455,22 +1494,432 @@
     }
 }
 
-        function addGastoFijo(e) {
-            e.preventDefault();
-            // TODO: Save to Supabase
-            alert('✅ Gasto fijo agregado exitosamente');
-            closeModal('addGastoFijoModal');
-            e.target.reset();
-        }
+        async function addGastoFijo(e) {
+    e.preventDefault();
+    
+    const form = e.target;
+    const categoria = form.querySelectorAll('select')[0].value;
+    const descripcion = form.querySelectorAll('input')[0].value;
+    const monto = parseFloat(form.querySelectorAll('input')[1].value);
+    const diaPago = parseInt(form.querySelectorAll('input')[2].value);
+    const recordatorio = form.querySelectorAll('select')[1].value;
+    
+    try {
+        // Guardar en Supabase
+        const { data, error } = await supabaseClient
+            .from('fixed_expenses')
+            .insert([{
+                user_id: currentUser.id,
+                space_id: null,
+                category: categoria,
+                description: descripcion,
+                amount: monto,
+                payment_day: diaPago,
+                reminder_days: recordatorio ? parseInt(recordatorio) : null,
+                is_paid: false
+            }]);
+        
+        if (error) throw error;
+        
+        alert('✅ Gasto fijo agregado exitosamente');
+        closeModal('addGastoFijoModal');
+        form.reset();
+        
+        // Recargar lista de gastos fijos
+        loadGastosFijos();
+        updateDashboard();
+        
+    } catch (error) {
+        alert('❌ Error al guardar: ' + error.message);
+        console.error('Error:', error);
+    }
+}
 
-        function addCategoria(e) {
-            e.preventDefault();
-            // TODO: Save to Supabase
-            alert('✅ Categoría creada exitosamente');
-            closeModal('addCategoriaModal');
-            e.target.reset();
+        async function addCategoria(e) {
+    e.preventDefault();
+    
+    const form = e.target;
+    const emoji = form.querySelectorAll('input')[0].value;
+    const nombre = form.querySelectorAll('input')[1].value;
+    
+    try {
+        // Guardar en Supabase
+        const { data, error } = await supabaseClient
+            .from('custom_categories')
+            .insert([{
+                user_id: currentUser.id,
+                space_id: null,
+                emoji: emoji,
+                name: nombre
+            }]);
+        
+        if (error) throw error;
+        
+        alert('✅ Categoría creada exitosamente');
+        closeModal('addCategoriaModal');
+        form.reset();
+        
+        // Recargar lista de categorías
+        loadCategorias();
+        
+    } catch (error) {
+        alert('❌ Error al guardar: ' + error.message);
+        console.error('Error:', error);
+    }
+}
+
+        // ============================================
+// LOAD INGRESOS FUNCTION
+// ============================================
+
+async function loadIngresos() {
+    try {
+        const { data, error } = await supabaseClient
+            .from('incomes')
+            .select('*')
+            .eq('user_id', currentUser.id)
+            .order('created_at', { ascending: false });
+        
+        if (error) throw error;
+        
+        const ingresosPage = document.getElementById('ingresos');
+        const emptyState = ingresosPage.querySelector('.empty-state');
+        
+        if (data && data.length > 0) {
+            // Ocultar empty state
+            if (emptyState) emptyState.style.display = 'none';
+            
+            // Crear o actualizar tabla
+            let table = ingresosPage.querySelector('.ingresos-table');
+            if (!table) {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = '<table class="ingresos-table" style="width:100%; border-collapse: collapse;"></table>';
+                emptyState.parentNode.insertBefore(card, emptyState);
+                table = card.querySelector('table');
+            }
+            
+            // Construir tabla
+            let html = `
+                <thead>
+                    <tr style="border-bottom: 2px solid var(--border);">
+                        <th style="padding: 1rem; text-align: left;">Tipo</th>
+                        <th style="padding: 1rem; text-align: left;">Frecuencia</th>
+                        <th style="padding: 1rem; text-align: right;">Monto</th>
+                    </tr>
+                </thead>
+                <tbody>
+            `;
+            
+            let totalIngresos = 0;
+            
+            data.forEach(ingreso => {
+                totalIngresos += parseFloat(ingreso.gross_amount || 0);
+                html += `
+                    <tr style="border-bottom: 1px solid var(--border);">
+                        <td style="padding: 1rem;">${ingreso.source}</td>
+                        <td style="padding: 1rem;">${ingreso.frequency}</td>
+                        <td style="padding: 1rem; text-align: right; font-weight: 600;">
+                            $${parseFloat(ingreso.gross_amount).toLocaleString('es-CO')}
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            html += `
+                </tbody>
+                <tfoot>
+                    <tr style="border-top: 2px solid var(--border); font-weight: 700;">
+                        <td colspan="2" style="padding: 1rem;">TOTAL MENSUAL</td>
+                        <td style="padding: 1rem; text-align: right; color: var(--secondary);">
+                            $${totalIngresos.toLocaleString('es-CO')}
+                        </td>
+                    </tr>
+                </tfoot>
+            `;
+            
+            table.innerHTML = html;
+            
+        } else {
+            // Mostrar empty state
+            if (emptyState) emptyState.style.display = 'block';
+            const existingTable = ingresosPage.querySelector('.card table');
+            if (existingTable) existingTable.parentElement.remove();
         }
         
+    } catch (error) {
+        console.error('Error al cargar ingresos:', error);
+    }
+}
+
+// ============================================
+// LOAD GASTOS FIJOS FUNCTION
+// ============================================
+
+async function loadGastosFijos() {
+    try {
+        const { data, error } = await supabaseClient
+            .from('fixed_expenses')
+            .select('*')
+            .eq('user_id', currentUser.id)
+            .order('payment_day', { ascending: true });
+        
+        if (error) throw error;
+        
+        const gastosFijosPage = document.getElementById('gastos-fijos');
+        const emptyState = gastosFijosPage.querySelector('.empty-state');
+        
+        if (data && data.length > 0) {
+            // Ocultar empty state
+            if (emptyState) emptyState.style.display = 'none';
+            
+            // Crear o actualizar tabla
+            let table = gastosFijosPage.querySelector('.gastos-fijos-table');
+            if (!table) {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = '<table class="gastos-fijos-table" style="width:100%; border-collapse: collapse;"></table>';
+                emptyState.parentNode.insertBefore(card, emptyState);
+                table = card.querySelector('table');
+            }
+
+            // Construir tabla
+            let html = `
+                <thead>
+                    <tr style="border-bottom: 2px solid var(--border);">
+                        <th style="padding: 1rem; text-align: left;">Descripción</th>
+                        <th style="padding: 1rem; text-align: left;">Categoría</th>
+                        <th style="padding: 1rem; text-align: center;">Día de Pago</th>
+                        <th style="padding: 1rem; text-align: right;">Monto</th>
+                        <th style="padding: 1rem; text-align: center;">Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+            `;
+            
+            let totalGastosFijos = 0;
+            
+            data.forEach(gasto => {
+                totalGastosFijos += parseFloat(gasto.amount || 0);
+                const estado = gasto.is_paid ? 
+                    '<span class="badge badge-success">✓ Pagado</span>' : 
+                    '<span class="badge badge-primary">⏳ Pendiente</span>';
+                
+                html += `
+                    <tr style="border-bottom: 1px solid var(--border);">
+                        <td style="padding: 1rem; font-weight: 600;">${gasto.description}</td>
+                        <td style="padding: 1rem;">${gasto.category}</td>
+                        <td style="padding: 1rem; text-align: center;">Día ${gasto.payment_day}</td>
+                        <td style="padding: 1rem; text-align: right; font-weight: 600;">
+                            $${parseFloat(gasto.amount).toLocaleString('es-CO')}
+                        </td>
+                        <td style="padding: 1rem; text-align: center;">${estado}</td>
+                    </tr>
+                `;
+            });
+            
+            html += `
+                </tbody>
+                <tfoot>
+                    <tr style="border-top: 2px solid var(--border); font-weight: 700;">
+                        <td colspan="3" style="padding: 1rem;">TOTAL MENSUAL</td>
+                        <td style="padding: 1rem; text-align: right; color: var(--danger);">
+                            $${totalGastosFijos.toLocaleString('es-CO')}
+                        </td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            `;
+            
+            table.innerHTML = html;
+            
+        } else {
+            // Mostrar empty state
+            if (emptyState) emptyState.style.display = 'block';
+            const existingTable = gastosFijosPage.querySelector('.card table');
+            if (existingTable) existingTable.parentElement.remove();
+        }
+        
+    } catch (error) {
+        console.error('Error al cargar gastos fijos:', error);
+    }
+}
+        // ============================================
+// LOAD GASTOS VARIABLES FUNCTION
+// ============================================
+
+async function loadGastosVariables() {
+    try {
+        const { data, error } = await supabaseClient
+            .from('variable_expenses')
+            .select('*')
+            .eq('user_id', currentUser.id)
+            .order('expense_date', { ascending: false });
+        
+        if (error) throw error;
+        
+        const gastosVariablesPage = document.getElementById('gastos-variables');
+        const emptyState = gastosVariablesPage.querySelector('.empty-state');
+        
+        if (data && data.length > 0) {
+            // Ocultar empty state
+            if (emptyState) emptyState.style.display = 'none';
+            
+            // Crear o actualizar tabla
+            let table = gastosVariablesPage.querySelector('.gastos-variables-table');
+            if (!table) {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = '<table class="gastos-variables-table" style="width:100%; border-collapse: collapse;"></table>';
+                emptyState.parentNode.insertBefore(card, emptyState);
+                table = card.querySelector('table');
+            }
+            
+            // Construir tabla
+            let html = `
+                <thead>
+                    <tr style="border-bottom: 2px solid var(--border);">
+                        <th style="padding: 1rem; text-align: left;">Fecha</th>
+                        <th style="padding: 1rem; text-align: left;">Descripción</th>
+                        <th style="padding: 1rem; text-align: left;">Categoría</th>
+                        <th style="padding: 1rem; text-align: right;">Monto</th>
+                    </tr>
+                </thead>
+                <tbody>
+            `;
+            
+            let totalGastosVariables = 0;
+            
+            data.forEach(gasto => {
+                totalGastosVariables += parseFloat(gasto.amount || 0);
+                const fecha = new Date(gasto.expense_date).toLocaleDateString('es-CO');
+                
+                html += `
+                    <tr style="border-bottom: 1px solid var(--border);">
+                        <td style="padding: 1rem;">${fecha}</td>
+                        <td style="padding: 1rem; font-weight: 600;">${gasto.description}</td>
+                        <td style="padding: 1rem;">${gasto.category}</td>
+                        <td style="padding: 1rem; text-align: right; font-weight: 600;">
+                            $${parseFloat(gasto.amount).toLocaleString('es-CO')}
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            html += `
+                </tbody>
+                <tfoot>
+                    <tr style="border-top: 2px solid var(--border); font-weight: 700;">
+                        <td colspan="3" style="padding: 1rem;">TOTAL DEL MES</td>
+                        <td style="padding: 1rem; text-align: right; color: var(--danger);">
+                            $${totalGastosVariables.toLocaleString('es-CO')}
+                        </td>
+                    </tr>
+                </tfoot>
+            `;
+            
+            table.innerHTML = html;
+            
+        } else {
+            // Mostrar empty state
+            if (emptyState) emptyState.style.display = 'block';
+            const existingTable = gastosVariablesPage.querySelector('.card table');
+            if (existingTable) existingTable.parentElement.remove();
+        }
+        
+    } catch (error) {
+        console.error('Error al cargar gastos variables:', error);
+    }
+}
+        // ============================================
+// LOAD CATEGORIAS FUNCTION
+// ============================================
+
+async function loadCategorias() {
+    try {
+        const { data, error } = await supabaseClient
+            .from('custom_categories')
+            .select('*')
+            .eq('user_id', currentUser.id)
+            .order('created_at', { ascending: false });
+        
+        if (error) throw error;
+        
+        const categoriasPage = document.getElementById('categorias');
+        const cards = categoriasPage.querySelectorAll('.card');
+        const customCard = cards[1]; // Segunda card (categorías personalizadas)
+        
+        if (data && data.length > 0) {
+            // Crear contenedor de badges
+            let html = '<div style="margin-top: 1rem;">';
+            
+            data.forEach(categoria => {
+                html += `
+                    <span class="badge badge-success" style="position: relative; padding-right: 2.5rem;">
+                        ${categoria.emoji} ${categoria.name}
+                        <button 
+                            onclick="deleteCategoria('${categoria.id}')" 
+                            style="position: absolute; right: 0.5rem; background: none; border: none; color: var(--danger); cursor: pointer; font-weight: bold;"
+                        >×</button>
+                    </span>
+                `;
+            });
+            
+            html += '</div>';
+            
+            // Reemplazar empty state con las categorías
+            const emptyState = customCard.querySelector('.empty-state');
+            if (emptyState) {
+                emptyState.outerHTML = html;
+            } else {
+                // Si ya existe el contenedor, solo actualizarlo
+                const container = customCard.querySelector('div[style*="margin-top"]');
+                if (container) {
+                    container.outerHTML = html;
+                }
+            }
+            
+        } else {
+            // Mostrar empty state
+            const container = customCard.querySelector('div[style*="margin-top"]');
+            if (container) {
+                container.outerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">✨</div>
+                        <p style="font-size: 0.9rem;">Crea categorías personalizadas para tus necesidades</p>
+                    </div>
+                `;
+            }
+        }
+        
+    } catch (error) {
+        console.error('Error al cargar categorías:', error);
+    }
+}
+
+// ============================================
+// DELETE CATEGORIA FUNCTION
+// ============================================
+
+async function deleteCategoria(categoriaId) {
+    if (!confirm('¿Estás seguro de eliminar esta categoría?')) return;
+    
+    try {
+        const { error } = await supabaseClient
+            .from('custom_categories')
+            .delete()
+            .eq('id', categoriaId);
+        
+        if (error) throw error;
+        
+        alert('✅ Categoría eliminada');
+        loadCategorias();
+        
+    } catch (error) {
+        alert('❌ Error al eliminar: ' + error.message);
+        console.error('Error:', error);
+    }
+}
         async function addIngreso(e) {
     e.preventDefault();
     
@@ -1509,6 +1958,119 @@
         console.error('Error:', error);
     }
 }
+        // ============================================
+// UPDATE DASHBOARD FUNCTION
+// ============================================
+
+async function updateDashboard() {
+    try {
+        // Obtener todos los datos
+        const [ingresosData, gastosFijosData, gastosVariablesData] = await Promise.all([
+            supabaseClient.from('incomes').select('*').eq('user_id', currentUser.id),
+            supabaseClient.from('fixed_expenses').select('*').eq('user_id', currentUser.id),
+            supabaseClient.from('variable_expenses').select('*').eq('user_id', currentUser.id)
+        ]);
+        
+        // Calcular totales
+        const totalIngresos = (ingresosData.data || []).reduce((sum, item) => sum + parseFloat(item.gross_amount || 0), 0);
+        const totalGastosFijos = (gastosFijosData.data || []).reduce((sum, item) => sum + parseFloat(item.amount || 0), 0);
+        const totalGastosVariables = (gastosVariablesData.data || []).reduce((sum, item) => sum + parseFloat(item.amount || 0), 0);
+        const balance = totalIngresos - totalGastosFijos - totalGastosVariables;
+        
+        // Actualizar balance principal
+        const balanceAmount = document.querySelector('.balance-amount');
+        if (balanceAmount) {
+            balanceAmount.textContent = `$${balance.toLocaleString('es-CO')}`;
+            // Cambiar color según sea positivo o negativo
+            const balanceCard = document.querySelector('.balance-card');
+            if (balance < 0) {
+                balanceCard.style.background = 'linear-gradient(135deg, var(--danger), #DC2626)';
+            } else {
+                balanceCard.style.background = 'linear-gradient(135deg, var(--secondary), #059669)';
+            }
+        }
+        
+        // Actualizar resumen mensual
+        const statRows = document.querySelectorAll('.stat-row .stat-value');
+        if (statRows.length >= 4) {
+            statRows[0].textContent = `$${totalIngresos.toLocaleString('es-CO')}`;
+            statRows[0].style.color = 'var(--secondary)';
+            
+            statRows[1].textContent = `$${totalGastosFijos.toLocaleString('es-CO')}`;
+            statRows[1].style.color = totalGastosFijos > 0 ? 'var(--danger)' : 'var(--text)';
+            
+            statRows[2].textContent = `$${totalGastosVariables.toLocaleString('es-CO')}`;
+            statRows[2].style.color = totalGastosVariables > 0 ? 'var(--danger)' : 'var(--text)';
+            
+            statRows[3].textContent = `$${balance.toLocaleString('es-CO')}`;
+            statRows[3].style.color = balance >= 0 ? 'var(--secondary)' : 'var(--danger)';
+        }
+        
+        // Actualizar últimos gastos
+        updateUltimosGastos(gastosVariablesData.data || []);
+        
+    } catch (error) {
+        console.error('Error al actualizar dashboard:', error);
+    }
+}
+
+// ============================================
+// UPDATE ULTIMOS GASTOS FUNCTION
+// ============================================
+
+function updateUltimosGastos(gastos) {
+    const cards = document.querySelectorAll('.card');
+let ultimosGastosCard = null;
+cards.forEach(card => {
+    const title = card.querySelector('.card-title');
+    if (title && title.textContent.includes('Últimos Gastos')) {
+        ultimosGastosCard = card;
+    }
+});
+if (!ultimosGastosCard) return;
+    
+    const emptyState = ultimosGastosCard.querySelector('.empty-state');
+    
+    if (gastos && gastos.length > 0) {
+        // Ocultar empty state
+        if (emptyState) emptyState.style.display = 'none';
+        
+        // Tomar los últimos 5 gastos
+        const ultimosGastos = gastos.slice(0, 5);
+        
+        // Crear o actualizar lista
+        let lista = ultimosGastosCard.querySelector('.gastos-list');
+        if (!lista) {
+            lista = document.createElement('div');
+            lista.className = 'gastos-list';
+            emptyState.parentNode.insertBefore(lista, emptyState);
+        }
+        
+        let html = '';
+        ultimosGastos.forEach(gasto => {
+            const fecha = new Date(gasto.expense_date).toLocaleDateString('es-CO', { day: 'numeric', month: 'short' });
+            html += `
+                <div style="display: flex; justify-content: space-between; padding: 0.75rem; border-bottom: 1px solid var(--border);">
+                    <div>
+                        <div style="font-weight: 600;">${gasto.description}</div>
+                        <div style="font-size: 0.85rem; color: var(--text-light);">${gasto.category} • ${fecha}</div>
+                    </div>
+                    <div style="font-weight: 600; color: var(--danger);">
+                        $${parseFloat(gasto.amount).toLocaleString('es-CO')}
+                    </div>
+                </div>
+            `;
+        });
+        
+        lista.innerHTML = html;
+        
+    } else {
+        // Mostrar empty state
+        if (emptyState) emptyState.style.display = 'block';
+        const existingList = ultimosGastosCard.querySelector('.gastos-list');
+        if (existingList) existingList.remove();
+    }
+}
 
         // ============================================
         // THEME FUNCTIONS
@@ -1524,6 +2086,99 @@
                 localStorage.setItem('theme', 'light');
             }
         }
+        
+        // ============================================
+// SAVE PREFERENCES FUNCTION
+// ============================================
+
+async function savePreferences() {
+    const moneda = document.getElementById('monedaSelect').value;
+    const ciclo = parseInt(document.getElementById('cicloInput').value);
+    
+    if (ciclo < 1 || ciclo > 31) {
+        alert('❌ El día del ciclo debe estar entre 1 y 31');
+        return;
+    }
+    
+    try {
+        // Guardar en localStorage (para uso inmediato)
+        localStorage.setItem('moneda', moneda);
+        localStorage.setItem('ciclo_inicio', ciclo);
+        
+        // También guardar en Supabase para sincronizar entre dispositivos
+        const { error } = await supabaseClient
+            .from('users')
+            .update({
+                preferences: {
+                    moneda: moneda,
+                    ciclo_inicio: ciclo
+                }
+            })
+            .eq('id', currentUser.id);
+        
+        if (error) console.log('No se pudo guardar en DB:', error);
+        
+        alert('✅ Preferencias guardadas exitosamente');
+        
+        // Actualizar ciclo en el dashboard
+        updateCicloDisplay();
+        
+    } catch (error) {
+        console.error('Error al guardar preferencias:', error);
+        alert('⚠️ Preferencias guardadas localmente');
+    }
+}
+
+// ============================================
+// LOAD PREFERENCES FUNCTION
+// ============================================
+
+function loadPreferences() {
+    // Cargar moneda
+    const moneda = localStorage.getItem('moneda') || 'COP';
+    const monedaSelect = document.getElementById('monedaSelect');
+    if (monedaSelect) monedaSelect.value = moneda;
+    
+    // Cargar ciclo
+    const ciclo = localStorage.getItem('ciclo_inicio') || '20';
+    const cicloInput = document.getElementById('cicloInput');
+    if (cicloInput) cicloInput.value = ciclo;
+    
+    // Actualizar display del ciclo
+    updateCicloDisplay();
+}
+
+// ============================================
+// UPDATE CICLO DISPLAY FUNCTION
+// ============================================
+
+function updateCicloDisplay() {
+    const cicloInicio = parseInt(localStorage.getItem('ciclo_inicio') || '20');
+    const hoy = new Date();
+    const mesActual = hoy.getMonth();
+    const añoActual = hoy.getFullYear();
+    
+    let fechaInicio, fechaFin;
+    
+    if (hoy.getDate() >= cicloInicio) {
+        // Estamos en el ciclo actual
+        fechaInicio = new Date(añoActual, mesActual, cicloInicio);
+        fechaFin = new Date(añoActual, mesActual + 1, cicloInicio - 1);
+    } else {
+        // Estamos en el ciclo del mes anterior
+        fechaInicio = new Date(añoActual, mesActual - 1, cicloInicio);
+        fechaFin = new Date(añoActual, mesActual, cicloInicio - 1);
+    }
+    
+    const opciones = { day: 'numeric', month: 'short', year: 'numeric' };
+    const textoInicio = fechaInicio.toLocaleDateString('es-CO', opciones);
+    const textoFin = fechaFin.toLocaleDateString('es-CO', opciones);
+    
+    const cicloDisplay = document.querySelector('.welcome p');
+    if (cicloDisplay) {
+        cicloDisplay.textContent = `Ciclo actual: ${textoInicio} - ${textoFin}`;
+    }
+}
         // ============================================
 // UPDATE USER NAME FUNCTION
 // ============================================
