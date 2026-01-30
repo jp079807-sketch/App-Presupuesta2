@@ -703,9 +703,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-    <!-- ============================================ -->
     <!-- AUTH SCREEN -->
-    <!-- ============================================ -->
     <div id="authScreen" class="auth-container">
         <div class="auth-card">
             <div class="auth-logo">
@@ -750,9 +748,7 @@
         </div>
     </div>
 
-    <!-- ============================================ -->
     <!-- MAIN APP -->
-    <!-- ============================================ -->
     <div id="mainApp" class="app">
         <header class="header">
             <div class="header-content">
@@ -776,9 +772,7 @@
         </nav>
 
         <main class="dashboard">
-            <!-- ============================================ -->
             <!-- DASHBOARD PAGE -->
-            <!-- ============================================ -->
             <div id="dashboard" class="page active">
                 <div class="welcome">
                     <h1>Hola, <span id="userName">Usuario</span> 👋</h1>
@@ -787,7 +781,7 @@
                 
                 <div class="balance-card">
                     <div class="balance-label">Balance este mes</div>
-                    <div class="balance-amount">$1.250.000</div>
+                    <div class="balance-amount">$0</div>
                 </div>
                 
                 <div class="grid">
@@ -837,9 +831,7 @@
                 </div>
             </div>
 
-            <!-- ============================================ -->
             <!-- INGRESOS PAGE -->
-            <!-- ============================================ -->
             <div id="ingresos" class="page">
                 <div class="card-header" style="margin-bottom: 1.5rem;">
                     <h2 class="card-title" style="font-size: 1.5rem;">💵 Ingresos</h2>
@@ -847,7 +839,7 @@
                 </div>
                 
                 <div class="info-box">
-                    📌 Los ingresos pueden ser salarios, honorarios, rentas o cualquier entrada de dinero. Puedes configurar si son recurrentes o únicos.
+                    📌 Los ingresos pueden ser salarios, honorarios, rentas o cualquier entrada de dinero. El sistema calcula automáticamente los descuentos parafiscales según el tipo de contrato.
                 </div>
                 
                 <div class="empty-state">
@@ -857,9 +849,7 @@
                 </div>
             </div>
 
-            <!-- ============================================ -->
             <!-- GASTOS FIJOS PAGE -->
-            <!-- ============================================ -->
             <div id="gastos-fijos" class="page">
                 <div class="card-header" style="margin-bottom: 1.5rem;">
                     <h2 class="card-title" style="font-size: 1.5rem;">📌 Gastos Fijos</h2>
@@ -877,9 +867,7 @@
                 </div>
             </div>
 
-            <!-- ============================================ -->
             <!-- GASTOS VARIABLES PAGE -->
-            <!-- ============================================ -->
             <div id="gastos-variables" class="page">
                 <div class="card-header" style="margin-bottom: 1.5rem;">
                     <h2 class="card-title" style="font-size: 1.5rem;">💸 Gastos Variables</h2>
@@ -897,9 +885,7 @@
                 </div>
             </div>
 
-            <!-- ============================================ -->
             <!-- CATEGORÍAS PAGE -->
-            <!-- ============================================ -->
             <div id="categorias" class="page">
                 <div class="card-header" style="margin-bottom: 1.5rem;">
                     <h2 class="card-title" style="font-size: 1.5rem;">🏷️ Categorías</h2>
@@ -941,9 +927,7 @@
         <button class="fab" onclick="openModal('quickAddModal')">+</button>
     </div>
 
-    <!-- ============================================ -->
     <!-- SIDEBAR (SETTINGS) -->
-    <!-- ============================================ -->
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSettings()"></div>
     <div class="sidebar" id="settingsSidebar">
         <div class="sidebar-header">
@@ -958,14 +942,14 @@
                     <span class="sidebar-section-arrow" id="user-arrow">▼</span>
                 </div>
                 <div class="sidebar-section-content" id="user-content">
-    <p style="margin-bottom: 0.5rem;"><strong>Email:</strong> <span id="userEmail">-</span></p>
-    <div style="margin-bottom: 1rem;">
-        <label class="form-label">Nombre</label>
-        <input type="text" class="form-input" id="userNameInput" placeholder="Tu nombre">
-        <button class="btn btn-primary btn-small" style="margin-top: 0.5rem;" onclick="updateUserName()">💾 Guardar Nombre</button>
-    </div>
-    <button class="btn btn-primary" style="width: 100%;" onclick="handleLogout()">🚪 Cerrar Sesión</button>
-</div>
+                    <p style="margin-bottom: 0.5rem;"><strong>Email:</strong> <span id="userEmail">-</span></p>
+                    <div style="margin-bottom: 1rem;">
+                        <label class="form-label">Nombre</label>
+                        <input type="text" class="form-input" id="userNameInput" placeholder="Tu nombre">
+                        <button class="btn btn-primary btn-small" style="margin-top: 0.5rem;" onclick="updateUserName()">💾 Guardar Nombre</button>
+                    </div>
+                    <button class="btn btn-primary" style="width: 100%;" onclick="handleLogout()">🚪 Cerrar Sesión</button>
+                </div>
             </div>
 
             <!-- Spaces -->
@@ -998,31 +982,32 @@
                     <span class="sidebar-section-arrow" id="preferences-arrow">▼</span>
                 </div>
                 <div class="sidebar-section-content" id="preferences-content">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-        <span>🌙 Modo Oscuro</span>
-        <label class="toggle-switch">
-            <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
-            <span class="toggle-slider"></span>
-        </label>
-    </div>
-    
-    <div style="margin-bottom: 1rem;">
-        <label class="form-label">💰 Moneda</label>
-        <select class="form-select" id="monedaSelect">
-            <option value="COP">COP - Peso Colombiano</option>
-            <option value="USD">USD - Dólar</option>
-            <option value="EUR">EUR - Euro</option>
-        </select>
-    </div>
-    
-    <div style="margin-bottom: 1rem;">
-        <label class="form-label">📅 Día de Inicio del Ciclo</label>
-        <input type="number" class="form-input" id="cicloInput" value="20" min="1" max="31">
-        <p style="font-size: 0.85rem; color: var(--text-light); margin-top: 0.5rem;">El día del mes en que comienza tu ciclo de presupuesto</p>
-    </div>
-    
-    <button class="btn btn-primary" style="width: 100%;" onclick="savePreferences()">💾 Guardar Preferencias</button>
-</div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <span>🌙 Modo Oscuro</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div style="margin-bottom: 1rem;">
+                        <label class="form-label">💰 Moneda</label>
+                        <select class="form-select" id="monedaSelect">
+                            <option value="COP">COP - Peso Colombiano</option>
+                            <option value="USD">USD - Dólar</option>
+                            <option value="EUR">EUR - Euro</option>
+                        </select>
+                    </div>
+                    
+                    <div style="margin-bottom: 1rem;">
+                        <label class="form-label">📅 Día de Inicio del Ciclo</label>
+                        <input type="number" class="form-input" id="cicloInput" value="20" min="1" max="31">
+                        <p style="font-size: 0.85rem; color: var(--text-light); margin-top: 0.5rem;">El día del mes en que comienza tu ciclo de presupuesto</p>
+                    </div>
+                    
+                    <button class="btn btn-primary" style="width: 100%;" onclick="savePreferences()">💾 Guardar Preferencias</button>
+                </div>
+            </div>
 
             <!-- About -->
             <div class="sidebar-section">
@@ -1039,9 +1024,7 @@
         </div>
     </div>
 
-    <!-- ============================================ -->
     <!-- MODALS -->
-    <!-- ============================================ -->
     
     <!-- Quick Add Expense Modal -->
     <div class="modal" id="quickAddModal">
@@ -1079,85 +1062,57 @@
     </div>
 
     <!-- Add Income Modal -->
-    <form onsubmit="addIngreso(event)">
-    <div class="form-group">
-        <label class="form-label">Fuente de Ingreso</label>
-        <input type="text" class="form-input" id="ingresoFuente" placeholder="Ej: Salario Google, Freelance diseño" required>
-    </div>
-    
-    <div class="form-group">
-        <label class="form-label">Tipo de Contrato</label>
-        <select class="form-select" id="ingresoTipo" onchange="updateIngresoCalculation()" required>
-            <option value="laboral">💼 Contrato Laboral (Descuento 8%)</option>
-            <option value="servicios">💰 Prestación de Servicios (Descuento 28.5%)</option>
-            <option value="exento">🎁 Bonos/Otros (Sin descuento)</option>
-        </select>
-    </div>
-    
-    <div class="form-group">
-        <label class="form-label">Monto Bruto (COP)</label>
-        <input type="number" class="form-input" id="ingresoBruto" placeholder="0" onchange="updateIngresoCalculation()" required>
-    </div>
-    
-    <div class="form-group">
-        <label class="form-label">Frecuencia</label>
-        <select class="form-select" id="ingresoFrecuencia" required>
-            <option value="unico">Único</option>
-            <option value="mensual" selected>Mensual</option>
-            <option value="quincenal">Quincenal</option>
-            <option value="semanal">Semanal</option>
-        </select>
-    </div>
-    
-    <div class="info-box" id="ingresoCalculo" style="display: none;">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-            <span>Monto Bruto:</span>
-            <span id="displayBruto">$0</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-            <span>Descuento Parafiscal:</span>
-            <span id="displayDescuento" style="color: var(--danger);">-$0</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; font-weight: 700; padding-top: 0.5rem; border-top: 1px solid var(--border);">
-            <span>Ingreso Neto:</span>
-            <span id="displayNeto" style="color: var(--secondary);">$0</span>
-        </div>
-    </div>
-    
-    <button type="submit" class="btn btn-primary" style="width:100%">Agregar Ingreso</button>
-</form>
+    <div class="modal" id="addIngresoModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">💵 Agregar Ingreso</h2>
+                <button class="close-btn" onclick="closeModal('addIngresoModal')">×</button>
+            </div>
+            <form onsubmit="addIngreso(event)">
                 <div class="form-group">
-                    <label class="form-label">Tipo de Ingreso</label>
-                    <select class="form-select" required>
-                        <option>💼 Salario</option>
-                        <option>💰 Honorarios</option>
-                        <option>🏠 Renta</option>
-                        <option>📈 Inversiones</option>
-                        <option>🎁 Bono</option>
-                        <option>📦 Otro</option>
+                    <label class="form-label">Fuente de Ingreso</label>
+                    <input type="text" class="form-input" id="ingresoFuente" placeholder="Ej: Salario Google, Freelance diseño" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Tipo de Contrato</label>
+                    <select class="form-select" id="ingresoTipo" onchange="updateIngresoCalculation()" required>
+                        <option value="laboral">💼 Contrato Laboral (Descuento 8%)</option>
+                        <option value="servicios">💰 Prestación de Servicios (Descuento 28.5%)</option>
+                        <option value="exento">🎁 Bonos/Otros (Sin descuento)</option>
                     </select>
                 </div>
+                
                 <div class="form-group">
-                    <label class="form-label">Descripción</label>
-                    <input type="text" class="form-input" placeholder="Ej: Salario mensual, Proyecto freelance" required>
+                    <label class="form-label">Monto Bruto (COP)</label>
+                    <input type="number" class="form-input" id="ingresoBruto" placeholder="0" oninput="updateIngresoCalculation()" required>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Monto (COP)</label>
-                    <input type="number" class="form-input" placeholder="0" required>
-                </div>
+                
                 <div class="form-group">
                     <label class="form-label">Frecuencia</label>
-                    <select class="form-select" required>
-                        <option>Único</option>
-                        <option selected>Mensual</option>
-                        <option>Quincenal</option>
-                        <option>Semanal</option>
+                    <select class="form-select" id="ingresoFrecuencia" required>
+                        <option value="unico">Único</option>
+                        <option value="mensual" selected>Mensual</option>
+                        <option value="quincenal">Quincenal</option>
+                        <option value="semanal">Semanal</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Fecha de Pago</label>
-                    <input type="date" class="form-input" required>
+                
+                <div class="info-box" id="ingresoCalculo" style="display: none;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <span>Monto Bruto:</span>
+                        <span id="displayBruto">$0</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <span>Descuento Parafiscal:</span>
+                        <span id="displayDescuento" style="color: var(--danger);">-$0</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-weight: 700; padding-top: 0.5rem; border-top: 1px solid var(--border);">
+                        <span>Ingreso Neto:</span>
+                        <span id="displayNeto" style="color: var(--secondary);">$0</span>
+                    </div>
                 </div>
+                
                 <button type="submit" class="btn btn-primary" style="width:100%">Agregar Ingreso</button>
             </form>
         </div>
@@ -1251,9 +1206,7 @@
         </div>
     </div>
 
-    <!-- ============================================ -->
     <!-- JAVASCRIPT -->
-    <!-- ============================================ -->
     <script>
         // Initialize Supabase
         const SUPABASE_URL = 'https://ctppigfvvqyizvzqfvzz.supabase.co';
@@ -1262,19 +1215,14 @@
 
         let currentUser = null;
 
-        // ============================================
         // AUTH FUNCTIONS
-        // ============================================
-        
         window.addEventListener('load', async () => {
-            // Check if user is already logged in
             const { data: { session } } = await supabaseClient.auth.getSession();
             if (session) {
                 currentUser = session.user;
                 showMainApp();
             }
             
-            // Load saved theme
             if(localStorage.getItem('theme') === 'dark') {
                 document.documentElement.setAttribute('data-theme', 'dark');
                 const toggle = document.getElementById('darkModeToggle');
@@ -1339,7 +1287,6 @@
                 
                 if (error) throw error;
                 
-                // Try to insert user data into users table
                 try {
                     await supabaseClient.from('users').insert([{ 
                         id: data.user.id, 
@@ -1353,9 +1300,8 @@
                 currentUser = data.user;
                 
                 authMsg.className = 'auth-message success';
-                authMsg.textContent = '✅ Cuenta creada exitosamente. Revisa tu email para confirmar.';
+                authMsg.textContent = '✅ Cuenta creada exitosamente.';
                 
-                // Show main app after 2 seconds
                 setTimeout(() => {
                     showMainApp();
                 }, 2000);
@@ -1371,31 +1317,24 @@
             location.reload();
         }
 
-       function showMainApp() {
-    document.getElementById('authScreen').style.display = 'none';
-    document.getElementById('mainApp').classList.add('active');
-    
-    // Update user info
-    const userName = currentUser.user_metadata?.name || currentUser.email.split('@')[0];
-    document.getElementById('userName').textContent = userName;
-    document.getElementById('userEmail').textContent = currentUser.email;
-    document.getElementById('userNameInput').value = userName;
+        function showMainApp() {
+            document.getElementById('authScreen').style.display = 'none';
+            document.getElementById('mainApp').classList.add('active');
+            
+            const userName = currentUser.user_metadata?.name || currentUser.email.split('@')[0];
+            document.getElementById('userName').textContent = userName;
+            document.getElementById('userEmail').textContent = currentUser.email;
+            document.getElementById('userNameInput').value = userName;
+            
+            loadPreferences();
+            loadIngresos();
+            loadGastosFijos();
+            loadGastosVariables();
+            loadCategorias();
+            updateDashboard();
+        }
 
-           // Cargar preferencias
-    loadPreferences();
-           
-    // Cargar datos
-    loadIngresos();
-    loadGastosFijos();
-    loadGastosVariables();
-    loadCategorias();
-    updateDashboard();
-}
-        
-        // ============================================
         // NAVIGATION FUNCTIONS
-        // ============================================
-        
         function showPage(id, el) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -1403,10 +1342,7 @@
             if(el) el.classList.add('active');
         }
 
-        // ============================================
         // SETTINGS SIDEBAR FUNCTIONS
-        // ============================================
-        
         function openSettings() {
             document.getElementById('settingsSidebar').classList.add('active');
             document.getElementById('sidebarOverlay').classList.add('active');
@@ -1424,10 +1360,7 @@
             arrow.classList.toggle('open');
         }
 
-        // ============================================
         // MODAL FUNCTIONS
-        // ============================================
-        
         function openModal(id) {
             document.getElementById(id).classList.add('active');
         }
@@ -1436,7 +1369,6 @@
             document.getElementById(id).classList.remove('active');
         }
 
-        // Close modal on outside click
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.modal').forEach(m => {
                 m.addEventListener('click', e => {
@@ -1445,719 +1377,619 @@
             });
         });
 
-        // ============================================
         // FORM SUBMIT FUNCTIONS
-        // ============================================
-        
         async function addQuickExpense(e) {
-    e.preventDefault();
-    
-    const form = e.target;
-    const monto = parseFloat(form.querySelectorAll('input')[0].value);
-    const categoria = form.querySelector('select').value;
-    const descripcion = form.querySelectorAll('input')[1].value;
-    
-    try {
-        // Guardar en Supabase
-        const { data, error } = await supabaseClient
-            .from('variable_expenses')
-            .insert([{
-                user_id: currentUser.id,
-                space_id: null,
-                category: categoria,
-                description: descripcion || 'Sin descripción',
-                amount: monto,
-                expense_date: new Date().toISOString().split('T')[0]
-            }]);
-        
-        if (error) throw error;
-        
-        alert('✅ Gasto agregado exitosamente');
-        closeModal('quickAddModal');
-        form.reset();
-        
-        // Recargar lista de gastos variables
-        loadGastosVariables();
-        updateDashboard();
-        
-    } catch (error) {
-        alert('❌ Error al guardar: ' + error.message);
-        console.error('Error:', error);
-    }
-}
+            e.preventDefault();
+            
+            const form = e.target;
+            const monto = parseFloat(form.querySelectorAll('input')[0].value);
+            const categoria = form.querySelector('select').value;
+            const descripcion = form.querySelectorAll('input')[1].value;
+            
+            try {
+                const { data, error } = await supabaseClient
+                    .from('variable_expenses')
+                    .insert([{
+                        user_id: currentUser.id,
+                        space_id: null,
+                        category: categoria,
+                        description: descripcion || 'Sin descripción',
+                        amount: monto,
+                        expense_date: new Date().toISOString().split('T')[0]
+                    }]);
+                
+                if (error) throw error;
+                
+                alert('✅ Gasto agregado exitosamente');
+                closeModal('quickAddModal');
+                form.reset();
+                
+                loadGastosVariables();
+                updateDashboard();
+                
+            } catch (error) {
+                alert('❌ Error al guardar: ' + error.message);
+                console.error('Error:', error);
+            }
+        }
 
         function sendInvite(e) {
             e.preventDefault();
-            // TODO: Create shared space and send invite
-            alert('✅ Invitación enviada exitosamente');
+            alert('✅ Invitación enviada exitosamente (Próximamente)');
             closeModal('inviteModal');
             e.target.reset();
         }
-        
+
         async function addIngreso(e) {
-    e.preventDefault();
-    
-    const form = e.target;
-    const tipoIngreso = form.querySelector('select').value;
-    const descripcion = form.querySelectorAll('input')[0].value;
-    const monto = parseFloat(form.querySelectorAll('input')[1].value);
-    const frecuencia = form.querySelectorAll('select')[1].value;
-    const fechaPago = form.querySelectorAll('input')[2].value;
-    
-    try {
-        // Guardar en Supabase
-        const { data, error } = await supabaseClient
-            .from('incomes')
-            .insert([{
-                user_id: currentUser.id,
-                space_id: null, // Por ahora null, después implementaremos espacios
-                source: tipoIngreso,
-                type: 'exento', // Por ahora, después añadiremos parafiscales
-                frequency: frecuencia.toLowerCase(),
-                gross_amount: monto,
-                net_amount: monto, // Por ahora igual, después calculamos parafiscales
-            }]);
-        
-        if (error) throw error;
-        
-        alert('✅ Ingreso agregado exitosamente');
-        closeModal('addIngresoModal');
-        form.reset();
-        
-        // Recargar lista de ingresos
-        loadIngresos();
-        updateDashboard();
-        
-    } catch (error) {
-        alert('❌ Error al guardar: ' + error.message);
-        console.error('Error:', error);
-    }
-}
+            e.preventDefault();
+            
+            const fuente = document.getElementById('ingresoFuente').value;
+            const tipo = document.getElementById('ingresoTipo').value;
+            const montoBruto = parseFloat(document.getElementById('ingresoBruto').value);
+            const frecuencia = document.getElementById('ingresoFrecuencia').value;
+            
+            let porcentajeDescuento = 0;
+            if (tipo === 'laboral') porcentajeDescuento = 0.08;
+            else if (tipo === 'servicios') porcentajeDescuento = 0.285;
+            else porcentajeDescuento = 0;
+            
+            const descuento = montoBruto * porcentajeDescuento;
+            const montoNeto = montoBruto - descuento;
+            
+            try {
+                const { data, error } = await supabaseClient
+                    .from('incomes')
+                    .insert([{
+                        user_id: currentUser.id,
+                        space_id: null,
+                        source: fuente,
+                        type: tipo,
+                        frequency: frecuencia,
+                        gross_amount: montoBruto,
+                        net_amount: montoNeto,
+                    }]);
+                
+                if (error) throw error;
+                
+                alert('✅ Ingreso agregado exitosamente');
+                closeModal('addIngresoModal');
+                e.target.reset();
+                document.getElementById('ingresoCalculo').style.display = 'none';
+                
+                loadIngresos();
+                updateDashboard();
+                
+            } catch (error) {
+                alert('❌ Error al guardar: ' + error.message);
+                console.error('Error:', error);
+            }
+        }
+
+        function updateIngresoCalculation() {
+            const tipo = document.getElementById('ingresoTipo')?.value;
+            const montoBruto = parseFloat(document.getElementById('ingresoBruto')?.value) || 0;
+            
+            if (montoBruto === 0) {
+                const calculoBox = document.getElementById('ingresoCalculo');
+                if (calculoBox) calculoBox.style.display = 'none';
+                return;
+            }
+            
+            let porcentajeDescuento = 0;
+            if (tipo === 'laboral') porcentajeDescuento = 0.08;
+            else if (tipo === 'servicios') porcentajeDescuento = 0.285;
+            
+            const descuento = montoBruto * porcentajeDescuento;
+            const montoNeto = montoBruto - descuento;
+            
+            const calculoBox = document.getElementById('ingresoCalculo');
+            const displayBruto = document.getElementById('displayBruto');
+            const displayDescuento = document.getElementById('displayDescuento');
+            const displayNeto = document.getElementById('displayNeto');
+            
+            if (calculoBox) calculoBox.style.display = 'block';
+            if (displayBruto) displayBruto.textContent = `$${montoBruto.toLocaleString('es-CO')}`;
+            if (displayDescuento) displayDescuento.textContent = `-$${descuento.toLocaleString('es-CO')} (${(porcentajeDescuento * 100)}%)`;
+            if (displayNeto) displayNeto.textContent = `$${montoNeto.toLocaleString('es-CO')}`;
+        }
 
         async function addGastoFijo(e) {
-    e.preventDefault();
-    
-    const form = e.target;
-    const categoria = form.querySelectorAll('select')[0].value;
-    const descripcion = form.querySelectorAll('input')[0].value;
-    const monto = parseFloat(form.querySelectorAll('input')[1].value);
-    const diaPago = parseInt(form.querySelectorAll('input')[2].value);
-    const recordatorio = form.querySelectorAll('select')[1].value;
-    
-    try {
-        // Guardar en Supabase
-        const { data, error } = await supabaseClient
-            .from('fixed_expenses')
-            .insert([{
-                user_id: currentUser.id,
-                space_id: null,
-                category: categoria,
-                description: descripcion,
-                amount: monto,
-                payment_day: diaPago,
-                reminder_days: recordatorio ? parseInt(recordatorio) : null,
-                is_paid: false
-            }]);
-        
-        if (error) throw error;
-        
-        alert('✅ Gasto fijo agregado exitosamente');
-        closeModal('addGastoFijoModal');
-        form.reset();
-        
-        // Recargar lista de gastos fijos
-        loadGastosFijos();
-        updateDashboard();
-        
-    } catch (error) {
-        alert('❌ Error al guardar: ' + error.message);
-        console.error('Error:', error);
-    }
-}
+            e.preventDefault();
+            
+            const form = e.target;
+            const categoria = form.querySelectorAll('select')[0].value;
+            const descripcion = form.querySelectorAll('input')[0].value;
+            const monto = parseFloat(form.querySelectorAll('input')[1].value);
+            const diaPago = parseInt(form.querySelectorAll('input')[2].value);
+            const recordatorio = form.querySelectorAll('select')[1].value;
+            
+            try {
+                const { data, error } = await supabaseClient
+                    .from('fixed_expenses')
+                    .insert([{
+                        user_id: currentUser.id,
+                        space_id: null,
+                        category: categoria,
+                        description: descripcion,
+                        amount: monto,
+                        payment_day: diaPago,
+                        reminder_days: recordatorio ? parseInt(recordatorio) : null,
+                        is_paid: false
+                    }]);
+                
+                if (error) throw error;
+                
+                alert('✅ Gasto fijo agregado exitosamente');
+                closeModal('addGastoFijoModal');
+                form.reset();
+                
+                loadGastosFijos();
+                updateDashboard();
+                
+            } catch (error) {
+                alert('❌ Error al guardar: ' + error.message);
+                console.error('Error:', error);
+            }
+        }
 
         async function addCategoria(e) {
-    e.preventDefault();
-    
-    const form = e.target;
-    const emoji = form.querySelectorAll('input')[0].value;
-    const nombre = form.querySelectorAll('input')[1].value;
-    
-    try {
-        // Guardar en Supabase
-        const { data, error } = await supabaseClient
-            .from('custom_categories')
-            .insert([{
-                user_id: currentUser.id,
-                space_id: null,
-                emoji: emoji,
-                name: nombre
-            }]);
-        
-        if (error) throw error;
-        
-        alert('✅ Categoría creada exitosamente');
-        closeModal('addCategoriaModal');
-        form.reset();
-        
-        // Recargar lista de categorías
-        loadCategorias();
-        
-    } catch (error) {
-        alert('❌ Error al guardar: ' + error.message);
-        console.error('Error:', error);
-    }
-}
-
-        // ============================================
-// LOAD INGRESOS FUNCTION
-// ============================================
-
-async function loadIngresos() {
-    try {
-        const { data, error } = await supabaseClient
-            .from('incomes')
-            .select('*')
-            .eq('user_id', currentUser.id)
-            .order('created_at', { ascending: false });
-        
-        if (error) throw error;
-        
-        const ingresosPage = document.getElementById('ingresos');
-        const emptyState = ingresosPage.querySelector('.empty-state');
-        
-        if (data && data.length > 0) {
-            // Ocultar empty state
-            if (emptyState) emptyState.style.display = 'none';
+            e.preventDefault();
             
-            // Crear o actualizar tabla
-            let table = ingresosPage.querySelector('.ingresos-table');
-            if (!table) {
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.innerHTML = '<table class="ingresos-table" style="width:100%; border-collapse: collapse;"></table>';
-                emptyState.parentNode.insertBefore(card, emptyState);
-                table = card.querySelector('table');
-            }
+            const form = e.target;
+            const emoji = form.querySelectorAll('input')[0].value;
+            const nombre = form.querySelectorAll('input')[1].value;
             
-            // Construir tabla
-            let html = `
-                <thead>
-                    <tr style="border-bottom: 2px solid var(--border);">
-                        <th style="padding: 1rem; text-align: left;">Tipo</th>
-                        <th style="padding: 1rem; text-align: left;">Frecuencia</th>
-                        <th style="padding: 1rem; text-align: right;">Monto</th>
-                    </tr>
-                </thead>
-                <tbody>
-            `;
-            
-            let totalIngresos = 0;
-            
-            data.forEach(ingreso => {
-                totalIngresos += parseFloat(ingreso.gross_amount || 0);
-                const bruto = parseFloat(ingreso.gross_amount || 0);
-const neto = parseFloat(ingreso.net_amount || 0);
-const tipoLabel = ingreso.type === 'laboral' ? '💼' : ingreso.type === 'servicios' ? '💰' : '🎁';
-
-html += `
-    <tr style="border-bottom: 1px solid var(--border);">
-        <td style="padding: 1rem;">
-            <div style="font-weight: 600;">${ingreso.source}</div>
-            <div style="font-size: 0.85rem; color: var(--text-light);">${tipoLabel} ${ingreso.type}</div>
-        </td>
-        <td style="padding: 1rem;">${ingreso.frequency}</td>
-        <td style="padding: 1rem; text-align: right;">
-            <div style="font-weight: 600; color: var(--secondary);">$${neto.toLocaleString('es-CO')}</div>
-            <div style="font-size: 0.85rem; color: var(--text-light);">Bruto: $${bruto.toLocaleString('es-CO')}</div>
-        </td>
-    </tr>
-`;
-            });
-            
-            html += `
-                </tbody>
-                <tfoot>
-                    <tr style="border-top: 2px solid var(--border); font-weight: 700;">
-                        <td colspan="2" style="padding: 1rem;">TOTAL MENSUAL</td>
-                        <td style="padding: 1rem; text-align: right; color: var(--secondary);">
-                            $${totalIngresos.toLocaleString('es-CO')}
-                        </td>
-                    </tr>
-                </tfoot>
-            `;
-            
-            table.innerHTML = html;
-            
-        } else {
-            // Mostrar empty state
-            if (emptyState) emptyState.style.display = 'block';
-            const existingTable = ingresosPage.querySelector('.card table');
-            if (existingTable) existingTable.parentElement.remove();
-        }
-        
-    } catch (error) {
-        console.error('Error al cargar ingresos:', error);
-    }
-}
-
-// ============================================
-// LOAD GASTOS FIJOS FUNCTION
-// ============================================
-
-async function loadGastosFijos() {
-    try {
-        const { data, error } = await supabaseClient
-            .from('fixed_expenses')
-            .select('*')
-            .eq('user_id', currentUser.id)
-            .order('payment_day', { ascending: true });
-        
-        if (error) throw error;
-        
-        const gastosFijosPage = document.getElementById('gastos-fijos');
-        const emptyState = gastosFijosPage.querySelector('.empty-state');
-        
-        if (data && data.length > 0) {
-            // Ocultar empty state
-            if (emptyState) emptyState.style.display = 'none';
-            
-            // Crear o actualizar tabla
-            let table = gastosFijosPage.querySelector('.gastos-fijos-table');
-            if (!table) {
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.innerHTML = '<table class="gastos-fijos-table" style="width:100%; border-collapse: collapse;"></table>';
-                emptyState.parentNode.insertBefore(card, emptyState);
-                table = card.querySelector('table');
-            }
-
-            // Construir tabla
-            let html = `
-                <thead>
-                    <tr style="border-bottom: 2px solid var(--border);">
-                        <th style="padding: 1rem; text-align: left;">Descripción</th>
-                        <th style="padding: 1rem; text-align: left;">Categoría</th>
-                        <th style="padding: 1rem; text-align: center;">Día de Pago</th>
-                        <th style="padding: 1rem; text-align: right;">Monto</th>
-                        <th style="padding: 1rem; text-align: center;">Estado</th>
-                    </tr>
-                </thead>
-                <tbody>
-            `;
-            
-            let totalGastosFijos = 0;
-            
-            data.forEach(gasto => {
-                totalGastosFijos += parseFloat(gasto.amount || 0);
-                const estado = gasto.is_paid ? 
-                    '<span class="badge badge-success">✓ Pagado</span>' : 
-                    '<span class="badge badge-primary">⏳ Pendiente</span>';
+            try {
+                const { data, error } = await supabaseClient
+                    .from('custom_categories')
+                    .insert([{
+                        user_id: currentUser.id,
+                        space_id: null,
+                        emoji: emoji,
+                        name: nombre
+                    }]);
                 
-                html += `
-                    <tr style="border-bottom: 1px solid var(--border);">
-                        <td style="padding: 1rem; font-weight: 600;">${gasto.description}</td>
-                        <td style="padding: 1rem;">${gasto.category}</td>
-                        <td style="padding: 1rem; text-align: center;">Día ${gasto.payment_day}</td>
-                        <td style="padding: 1rem; text-align: right; font-weight: 600;">
-                            $${parseFloat(gasto.amount).toLocaleString('es-CO')}
-                        </td>
-                        <td style="padding: 1rem; text-align: center;">${estado}</td>
-                    </tr>
-                `;
-            });
-            
-            html += `
-                </tbody>
-                <tfoot>
-                    <tr style="border-top: 2px solid var(--border); font-weight: 700;">
-                        <td colspan="3" style="padding: 1rem;">TOTAL MENSUAL</td>
-                        <td style="padding: 1rem; text-align: right; color: var(--danger);">
-                            $${totalGastosFijos.toLocaleString('es-CO')}
-                        </td>
-                        <td></td>
-                    </tr>
-                </tfoot>
-            `;
-            
-            table.innerHTML = html;
-            
-        } else {
-            // Mostrar empty state
-            if (emptyState) emptyState.style.display = 'block';
-            const existingTable = gastosFijosPage.querySelector('.card table');
-            if (existingTable) existingTable.parentElement.remove();
-        }
-        
-    } catch (error) {
-        console.error('Error al cargar gastos fijos:', error);
-    }
-}
-        // ============================================
-// LOAD GASTOS VARIABLES FUNCTION
-// ============================================
-
-async function loadGastosVariables() {
-    try {
-        const { data, error } = await supabaseClient
-            .from('variable_expenses')
-            .select('*')
-            .eq('user_id', currentUser.id)
-            .order('expense_date', { ascending: false });
-        
-        if (error) throw error;
-        
-        const gastosVariablesPage = document.getElementById('gastos-variables');
-        const emptyState = gastosVariablesPage.querySelector('.empty-state');
-        
-        if (data && data.length > 0) {
-            // Ocultar empty state
-            if (emptyState) emptyState.style.display = 'none';
-            
-            // Crear o actualizar tabla
-            let table = gastosVariablesPage.querySelector('.gastos-variables-table');
-            if (!table) {
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.innerHTML = '<table class="gastos-variables-table" style="width:100%; border-collapse: collapse;"></table>';
-                emptyState.parentNode.insertBefore(card, emptyState);
-                table = card.querySelector('table');
-            }
-            
-            // Construir tabla
-            let html = `
-                <thead>
-                    <tr style="border-bottom: 2px solid var(--border);">
-                        <th style="padding: 1rem; text-align: left;">Fecha</th>
-                        <th style="padding: 1rem; text-align: left;">Descripción</th>
-                        <th style="padding: 1rem; text-align: left;">Categoría</th>
-                        <th style="padding: 1rem; text-align: right;">Monto</th>
-                    </tr>
-                </thead>
-                <tbody>
-            `;
-            
-            let totalGastosVariables = 0;
-            
-            data.forEach(gasto => {
-                totalGastosVariables += parseFloat(gasto.amount || 0);
-                const fecha = new Date(gasto.expense_date).toLocaleDateString('es-CO');
+                if (error) throw error;
                 
-                html += `
-                    <tr style="border-bottom: 1px solid var(--border);">
-                        <td style="padding: 1rem;">${fecha}</td>
-                        <td style="padding: 1rem; font-weight: 600;">${gasto.description}</td>
-                        <td style="padding: 1rem;">${gasto.category}</td>
-                        <td style="padding: 1rem; text-align: right; font-weight: 600;">
-                            $${parseFloat(gasto.amount).toLocaleString('es-CO')}
-                        </td>
-                    </tr>
-                `;
-            });
-            
-            html += `
-                </tbody>
-                <tfoot>
-                    <tr style="border-top: 2px solid var(--border); font-weight: 700;">
-                        <td colspan="3" style="padding: 1rem;">TOTAL DEL MES</td>
-                        <td style="padding: 1rem; text-align: right; color: var(--danger);">
-                            $${totalGastosVariables.toLocaleString('es-CO')}
-                        </td>
-                    </tr>
-                </tfoot>
-            `;
-            
-            table.innerHTML = html;
-            
-        } else {
-            // Mostrar empty state
-            if (emptyState) emptyState.style.display = 'block';
-            const existingTable = gastosVariablesPage.querySelector('.card table');
-            if (existingTable) existingTable.parentElement.remove();
+                alert('✅ Categoría creada exitosamente');
+                closeModal('addCategoriaModal');
+                form.reset();
+                
+                loadCategorias();
+                
+            } catch (error) {
+                alert('❌ Error al guardar: ' + error.message);
+                console.error('Error:', error);
+            }
         }
-        
-    } catch (error) {
-        console.error('Error al cargar gastos variables:', error);
-    }
-}
-        // ============================================
-// LOAD CATEGORIAS FUNCTION
-// ============================================
 
-async function loadCategorias() {
-    try {
-        const { data, error } = await supabaseClient
-            .from('custom_categories')
-            .select('*')
-            .eq('user_id', currentUser.id)
-            .order('created_at', { ascending: false });
-        
-        if (error) throw error;
-        
-        const categoriasPage = document.getElementById('categorias');
-        const cards = categoriasPage.querySelectorAll('.card');
-        const customCard = cards[1]; // Segunda card (categorías personalizadas)
-        
-        if (data && data.length > 0) {
-            // Crear contenedor de badges
-            let html = '<div style="margin-top: 1rem;">';
-            
-            data.forEach(categoria => {
-                html += `
-                    <span class="badge badge-success" style="position: relative; padding-right: 2.5rem;">
-                        ${categoria.emoji} ${categoria.name}
-                        <button 
-                            onclick="deleteCategoria('${categoria.id}')" 
-                            style="position: absolute; right: 0.5rem; background: none; border: none; color: var(--danger); cursor: pointer; font-weight: bold;"
-                        >×</button>
-                    </span>
-                `;
-            });
-            
-            html += '</div>';
-            
-            // Reemplazar empty state con las categorías
-            const emptyState = customCard.querySelector('.empty-state');
-            if (emptyState) {
-                emptyState.outerHTML = html;
-            } else {
-                // Si ya existe el contenedor, solo actualizarlo
-                const container = customCard.querySelector('div[style*="margin-top"]');
-                if (container) {
-                    container.outerHTML = html;
+        // LOAD DATA FUNCTIONS
+        async function loadIngresos() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('incomes')
+                    .select('*')
+                    .eq('user_id', currentUser.id)
+                    .order('created_at', { ascending: false });
+                
+                if (error) throw error;
+                
+                const ingresosPage = document.getElementById('ingresos');
+                const emptyState = ingresosPage.querySelector('.empty-state');
+                
+                if (data && data.length > 0) {
+                    if (emptyState) emptyState.style.display = 'none';
+                    
+                    let table = ingresosPage.querySelector('.ingresos-table');
+                    if (!table) {
+                        const card = document.createElement('div');
+                        card.className = 'card';
+                        card.innerHTML = '<table class="ingresos-table" style="width:100%; border-collapse: collapse;"></table>';
+                        emptyState.parentNode.insertBefore(card, emptyState);
+                        table = card.querySelector('table');
+                    }
+                    
+                    let html = `
+                        <thead>
+                            <tr style="border-bottom: 2px solid var(--border);">
+                                <th style="padding: 1rem; text-align: left;">Fuente</th>
+                                <th style="padding: 1rem; text-align: left;">Frecuencia</th>
+                                <th style="padding: 1rem; text-align: right;">Monto</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                    `;
+                    
+                    let totalIngresos = 0;
+                    
+                    data.forEach(ingreso => {
+                        totalIngresos += parseFloat(ingreso.net_amount || 0);
+                        
+                        const bruto = parseFloat(ingreso.gross_amount || 0);
+                        const neto = parseFloat(ingreso.net_amount || 0);
+                        const tipoLabel = ingreso.type === 'laboral' ? '💼' : ingreso.type === 'servicios' ? '💰' : '🎁';
+                        
+                        html += `
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 1rem;">
+                                    <div style="font-weight: 600;">${ingreso.source}</div>
+                                    <div style="font-size: 0.85rem; color: var(--text-light);">${tipoLabel} ${ingreso.type}</div>
+                                </td>
+                                <td style="padding: 1rem;">${ingreso.frequency}</td>
+                                <td style="padding: 1rem; text-align: right;">
+                                    <div style="font-weight: 600; color: var(--secondary);">$${neto.toLocaleString('es-CO')}</div>
+                                    <div style="font-size: 0.85rem; color: var(--text-light);">Bruto: $${bruto.toLocaleString('es-CO')}</div>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                    
+                    html += `
+                        </tbody>
+                        <tfoot>
+                            <tr style="border-top: 2px solid var(--border); font-weight: 700;">
+                                <td colspan="2" style="padding: 1rem;">TOTAL MENSUAL NETO</td>
+                                <td style="padding: 1rem; text-align: right; color: var(--secondary);">
+                                    $${totalIngresos.toLocaleString('es-CO')}
+                                </td>
+                            </tr>
+                        </tfoot>
+                    `;
+                    
+                    table.innerHTML = html;
+                    
+                } else {
+                    if (emptyState) emptyState.style.display = 'block';
+                    const existingTable = ingresosPage.querySelector('.card table');
+                    if (existingTable) existingTable.parentElement.remove();
                 }
-            }
-            
-        } else {
-            // Mostrar empty state
-            const container = customCard.querySelector('div[style*="margin-top"]');
-            if (container) {
-                container.outerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">✨</div>
-                        <p style="font-size: 0.9rem;">Crea categorías personalizadas para tus necesidades</p>
-                    </div>
-                `;
+                
+            } catch (error) {
+                console.error('Error al cargar ingresos:', error);
             }
         }
-        
-    } catch (error) {
-        console.error('Error al cargar categorías:', error);
-    }
-}
 
-// ============================================
-// DELETE CATEGORIA FUNCTION
-// ============================================
+        async function loadGastosFijos() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('fixed_expenses')
+                    .select('*')
+                    .eq('user_id', currentUser.id)
+                    .order('payment_day', { ascending: true });
+                
+                if (error) throw error;
+                
+                const gastosFijosPage = document.getElementById('gastos-fijos');
+                const emptyState = gastosFijosPage.querySelector('.empty-state');
+                
+                if (data && data.length > 0) {
+                    if (emptyState) emptyState.style.display = 'none';
+                    
+                    let table = gastosFijosPage.querySelector('.gastos-fijos-table');
+                    if (!table) {
+                        const card = document.createElement('div');
+                        card.className = 'card';
+                        card.innerHTML = '<table class="gastos-fijos-table" style="width:100%; border-collapse: collapse;"></table>';
+                        emptyState.parentNode.insertBefore(card, emptyState);
+                        table = card.querySelector('table');
+                    }
+                    
+                    let html = `
+                        <thead>
+                            <tr style="border-bottom: 2px solid var(--border);">
+                                <th style="padding: 1rem; text-align: left;">Descripción</th>
+                                <th style="padding: 1rem; text-align: left;">Categoría</th>
+                                <th style="padding: 1rem; text-align: center;">Día de Pago</th>
+                                <th style="padding: 1rem; text-align: right;">Monto</th>
+                                <th style="padding: 1rem; text-align: center;">Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                    `;
+                    
+                    let totalGastosFijos = 0;
+                    
+                    data.forEach(gasto => {
+                        totalGastosFijos += parseFloat(gasto.amount || 0);
+                        const estado = gasto.is_paid ? 
+                            '<span class="badge badge-success">✓ Pagado</span>' : 
+                            '<span class="badge badge-primary">⏳ Pendiente</span>';
+                        
+                        html += `
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 1rem; font-weight: 600;">${gasto.description}</td>
+                                <td style="padding: 1rem;">${gasto.category}</td>
+                                <td style="padding: 1rem; text-align: center;">Día ${gasto.payment_day}</td>
+                                <td style="padding: 1rem; text-align: right; font-weight: 600;">
+                                    $${parseFloat(gasto.amount).toLocaleString('es-CO')}
+                                </td>
+                                <td style="padding: 1rem; text-align: center;">${estado}</td>
+                            </tr>
+                        `;
+                    });
+                    
+                    html += `
+                        </tbody>
+                        <tfoot>
+                            <tr style="border-top: 2px solid var(--border); font-weight: 700;">
+                                <td colspan="3" style="padding: 1rem;">TOTAL MENSUAL</td>
+                                <td style="padding: 1rem; text-align: right; color: var(--danger);">
+                                    $${totalGastosFijos.toLocaleString('es-CO')}
+                                </td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    `;
+                    
+                    table.innerHTML = html;
+                    
+                } else {
+                    if (emptyState) emptyState.style.display = 'block';
+                    const existingTable = gastosFijosPage.querySelector('.card table');
+                    if (existingTable) existingTable.parentElement.remove();
+                }
+                
+            } catch (error) {
+                console.error('Error al cargar gastos fijos:', error);
+            }
+        }
 
-async function deleteCategoria(categoriaId) {
-    if (!confirm('¿Estás seguro de eliminar esta categoría?')) return;
-    
-    try {
-        const { error } = await supabaseClient
-            .from('custom_categories')
-            .delete()
-            .eq('id', categoriaId);
-        
-        if (error) throw error;
-        
-        alert('✅ Categoría eliminada');
-        loadCategorias();
-        
-    } catch (error) {
-        alert('❌ Error al eliminar: ' + error.message);
-        console.error('Error:', error);
-    }
-}
-        async function addIngreso(e) {
-    e.preventDefault();
-    
-    const fuente = document.getElementById('ingresoFuente').value;
-    const tipo = document.getElementById('ingresoTipo').value;
-    const montoBruto = parseFloat(document.getElementById('ingresoBruto').value);
-    const frecuencia = document.getElementById('ingresoFrecuencia').value;
-    
-    // Calcular descuento según tipo
-    let porcentajeDescuento = 0;
-    if (tipo === 'laboral') porcentajeDescuento = 0.08; // 8%
-    else if (tipo === 'servicios') porcentajeDescuento = 0.285; // 28.5%
-    else porcentajeDescuento = 0; // Sin descuento
-    
-    const descuento = montoBruto * porcentajeDescuento;
-    const montoNeto = montoBruto - descuento;
-    
-    try {
-        const { data, error } = await supabaseClient
-            .from('incomes')
-            .insert([{
-                user_id: currentUser.id,
-                space_id: null,
-                source: fuente,
-                type: tipo,
-                frequency: frecuencia,
-                gross_amount: montoBruto,
-                net_amount: montoNeto,
-            }]);
-        
-        if (error) throw error;
-        
-        alert('✅ Ingreso agregado exitosamente');
-        closeModal('addIngresoModal');
-        e.target.reset();
-        document.getElementById('ingresoCalculo').style.display = 'none';
-        
-        loadIngresos();
-        updateDashboard();
-        
-    } catch (error) {
-        alert('❌ Error al guardar: ' + error.message);
-        console.error('Error:', error);
-    }
-}
-        // ============================================
-// UPDATE INGRESO CALCULATION
-// ============================================
+        async function loadGastosVariables() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('variable_expenses')
+                    .select('*')
+                    .eq('user_id', currentUser.id)
+                    .order('expense_date', { ascending: false });
+                
+                if (error) throw error;
+                
+                const gastosVariablesPage = document.getElementById('gastos-variables');
+                const emptyState = gastosVariablesPage.querySelector('.empty-state');
+                
+                if (data && data.length > 0) {
+                    if (emptyState) emptyState.style.display = 'none';
+                    
+                    let table = gastosVariablesPage.querySelector('.gastos-variables-table');
+                    if (!table) {
+                        const card = document.createElement('div');
+                        card.className = 'card';
+                        card.innerHTML = '<table class="gastos-variables-table" style="width:100%; border-collapse: collapse;"></table>';
+                        emptyState.parentNode.insertBefore(card, emptyState);
+                        table = card.querySelector('table');
+                    }
+                    
+                    let html = `
+                        <thead>
+                            <tr style="border-bottom: 2px solid var(--border);">
+                                <th style="padding: 1rem; text-align: left;">Fecha</th>
+                                <th style="padding: 1rem; text-align: left;">Descripción</th>
+                                <th style="padding: 1rem; text-align: left;">Categoría</th>
+                                <th style="padding: 1rem; text-align: right;">Monto</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                    `;
+                    
+                    let totalGastosVariables = 0;
+                    
+                    data.forEach(gasto => {
+                        totalGastosVariables += parseFloat(gasto.amount || 0);
+                        const fecha = new Date(gasto.expense_date).toLocaleDateString('es-CO');
+                        
+                        html += `
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 1rem;">${fecha}</td>
+                                <td style="padding: 1rem; font-weight: 600;">${gasto.description}</td>
+                                <td style="padding: 1rem;">${gasto.category}</td>
+                                <td style="padding: 1rem; text-align: right; font-weight: 600;">
+                                    $${parseFloat(gasto.amount).toLocaleString('es-CO')}
+                                </td>
+                            </tr>
+                        `;
+                    });
+                    
+                    html += `
+                        </tbody>
+                        <tfoot>
+                            <tr style="border-top: 2px solid var(--border); font-weight: 700;">
+                                <td colspan="3" style="padding: 1rem;">TOTAL DEL MES</td>
+                                <td style="padding: 1rem; text-align: right; color: var(--danger);">
+                                    $${totalGastosVariables.toLocaleString('es-CO')}
+                                </td>
+                            </tr>
+                        </tfoot>
+                    `;
+                    
+                    table.innerHTML = html;
+                    
+                } else {
+                    if (emptyState) emptyState.style.display = 'block';
+                    const existingTable = gastosVariablesPage.querySelector('.card table');
+                    if (existingTable) existingTable.parentElement.remove();
+                }
+                
+            } catch (error) {
+                console.error('Error al cargar gastos variables:', error);
+            }
+        }
 
-function updateIngresoCalculation() {
-    const tipo = document.getElementById('ingresoTipo').value;
-    const montoBruto = parseFloat(document.getElementById('ingresoBruto').value) || 0;
-    
-    if (montoBruto === 0) {
-        document.getElementById('ingresoCalculo').style.display = 'none';
-        return;
-    }
-    
-    // Calcular descuento
-    let porcentajeDescuento = 0;
-    if (tipo === 'laboral') porcentajeDescuento = 0.08;
-    else if (tipo === 'servicios') porcentajeDescuento = 0.285;
-    
-    const descuento = montoBruto * porcentajeDescuento;
-    const montoNeto = montoBruto - descuento;
-    
-    // Mostrar cálculo
-    document.getElementById('ingresoCalculo').style.display = 'block';
-    document.getElementById('displayBruto').textContent = `$${montoBruto.toLocaleString('es-CO')}`;
-    document.getElementById('displayDescuento').textContent = `-$${descuento.toLocaleString('es-CO')} (${(porcentajeDescuento * 100)}%)`;
-    document.getElementById('displayNeto').textContent = `$${montoNeto.toLocaleString('es-CO')}`;
-}
-        // ============================================
-// UPDATE DASHBOARD FUNCTION
-// ============================================
+        async function loadCategorias() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('custom_categories')
+                    .select('*')
+                    .eq('user_id', currentUser.id)
+                    .order('created_at', { ascending: false });
+                
+                if (error) throw error;
+                
+                const categoriasPage = document.getElementById('categorias');
+                const cards = categoriasPage.querySelectorAll('.card');
+                const customCard = cards[1];
+                
+                if (data && data.length > 0) {
+                    let html = '<div style="margin-top: 1rem;">';
+                    
+                    data.forEach(categoria => {
+                        html += `
+                            <span class="badge badge-success" style="position: relative; padding-right: 2.5rem;">
+                                ${categoria.emoji} ${categoria.name}
+                                <button 
+                                    onclick="deleteCategoria('${categoria.id}')" 
+                                    style="position: absolute; right: 0.5rem; background: none; border: none; color: var(--danger); cursor: pointer; font-weight: bold;"
+                                >×</button>
+                            </span>
+                        `;
+                    });
+                    
+                    html += '</div>';
+                    
+                    const emptyState = customCard.querySelector('.empty-state');
+                    if (emptyState) {
+                        emptyState.outerHTML = html;
+                    } else {
+                        const container = customCard.querySelector('div[style*="margin-top"]');
+                        if (container) {
+                            container.outerHTML = html;
+                        }
+                    }
+                    
+                } else {
+                    const container = customCard.querySelector('div[style*="margin-top"]');
+                    if (container) {
+                        container.outerHTML = `
+                            <div class="empty-state">
+                                <div class="empty-state-icon">✨</div>
+                                <p style="font-size: 0.9rem;">Crea categorías personalizadas para tus necesidades</p>
+                            </div>
+                        `;
+                    }
+                }
+                
+            } catch (error) {
+                console.error('Error al cargar categorías:', error);
+            }
+        }
 
-async function updateDashboard() {
-    try {
-        // Obtener todos los datos
-        const [ingresosData, gastosFijosData, gastosVariablesData] = await Promise.all([
-            supabaseClient.from('incomes').select('*').eq('user_id', currentUser.id),
-            supabaseClient.from('fixed_expenses').select('*').eq('user_id', currentUser.id),
-            supabaseClient.from('variable_expenses').select('*').eq('user_id', currentUser.id)
-        ]);
-        
-        // Calcular totales
-        const totalIngresos = (ingresosData.data || []).reduce((sum, item) => sum + parseFloat(item.gross_amount || 0), 0);
-        const totalGastosFijos = (gastosFijosData.data || []).reduce((sum, item) => sum + parseFloat(item.amount || 0), 0);
-        const totalGastosVariables = (gastosVariablesData.data || []).reduce((sum, item) => sum + parseFloat(item.amount || 0), 0);
-        const balance = totalIngresos - totalGastosFijos - totalGastosVariables;
-        
-        // Actualizar balance principal
-        const balanceAmount = document.querySelector('.balance-amount');
-        if (balanceAmount) {
-            balanceAmount.textContent = `$${balance.toLocaleString('es-CO')}`;
-            // Cambiar color según sea positivo o negativo
-            const balanceCard = document.querySelector('.balance-card');
-            if (balance < 0) {
-                balanceCard.style.background = 'linear-gradient(135deg, var(--danger), #DC2626)';
+        async function deleteCategoria(categoriaId) {
+            if (!confirm('¿Estás seguro de eliminar esta categoría?')) return;
+            
+            try {
+                const { error } = await supabaseClient
+                    .from('custom_categories')
+                    .delete()
+                    .eq('id', categoriaId);
+                
+                if (error) throw error;
+                
+                alert('✅ Categoría eliminada');
+                loadCategorias();
+                
+            } catch (error) {
+                alert('❌ Error al eliminar: ' + error.message);
+                console.error('Error:', error);
+            }
+        }
+
+        // UPDATE DASHBOARD
+        async function updateDashboard() {
+            try {
+                const [ingresosData, gastosFijosData, gastosVariablesData] = await Promise.all([
+                    supabaseClient.from('incomes').select('*').eq('user_id', currentUser.id),
+                    supabaseClient.from('fixed_expenses').select('*').eq('user_id', currentUser.id),
+                    supabaseClient.from('variable_expenses').select('*').eq('user_id', currentUser.id)
+                ]);
+                
+                const totalIngresos = (ingresosData.data || []).reduce((sum, item) => sum + parseFloat(item.net_amount || 0), 0);
+                const totalGastosFijos = (gastosFijosData.data || []).reduce((sum, item) => sum + parseFloat(item.amount || 0), 0);
+                const totalGastosVariables = (gastosVariablesData.data || []).reduce((sum, item) => sum + parseFloat(item.amount || 0), 0);
+                const balance = totalIngresos - totalGastosFijos - totalGastosVariables;
+                
+                const balanceAmount = document.querySelector('.balance-amount');
+                if (balanceAmount) {
+                    balanceAmount.textContent = `$${balance.toLocaleString('es-CO')}`;
+                    const balanceCard = document.querySelector('.balance-card');
+                    if (balance < 0) {
+                        balanceCard.style.background = 'linear-gradient(135deg, var(--danger), #DC2626)';
+                    } else {
+                        balanceCard.style.background = 'linear-gradient(135deg, var(--secondary), #059669)';
+                    }
+                }
+                
+                const statRows = document.querySelectorAll('.stat-row .stat-value');
+                if (statRows.length >= 4) {
+                    statRows[0].textContent = `$${totalIngresos.toLocaleString('es-CO')}`;
+                    statRows[0].style.color = 'var(--secondary)';
+                    
+                    statRows[1].textContent = `$${totalGastosFijos.toLocaleString('es-CO')}`;
+                    statRows[1].style.color = totalGastosFijos > 0 ? 'var(--danger)' : 'var(--text)';
+                    
+                    statRows[2].textContent = `$${totalGastosVariables.toLocaleString('es-CO')}`;
+                    statRows[2].style.color = totalGastosVariables > 0 ? 'var(--danger)' : 'var(--text)';
+                    
+                    statRows[3].textContent = `$${balance.toLocaleString('es-CO')}`;
+                    statRows[3].style.color = balance >= 0 ? 'var(--secondary)' : 'var(--danger)';
+                }
+                
+                updateUltimosGastos(gastosVariablesData.data || []);
+                
+            } catch (error) {
+                console.error('Error al actualizar dashboard:', error);
+            }
+        }
+
+        function updateUltimosGastos(gastos) {
+            const cards = document.querySelectorAll('.card');
+            let ultimosGastosCard = null;
+            cards.forEach(card => {
+                const title = card.querySelector('.card-title');
+                if (title && title.textContent.includes('Últimos Gastos')) {
+                    ultimosGastosCard = card;
+                }
+            });
+            if (!ultimosGastosCard) return;
+            
+            const emptyState = ultimosGastosCard.querySelector('.empty-state');
+            
+            if (gastos && gastos.length > 0) {
+                if (emptyState) emptyState.style.display = 'none';
+                
+                const ultimosGastos = gastos.slice(0, 5);
+                
+                let lista = ultimosGastosCard.querySelector('.gastos-list');
+                if (!lista) {
+                    lista = document.createElement('div');
+                    lista.className = 'gastos-list';
+                    emptyState.parentNode.insertBefore(lista, emptyState);
+                }
+                
+                let html = '';
+                ultimosGastos.forEach(gasto => {
+                    const fecha = new Date(gasto.expense_date).toLocaleDateString('es-CO', { day: 'numeric', month: 'short' });
+                    html += `
+                        <div style="display: flex; justify-content: space-between; padding: 0.75rem; border-bottom: 1px solid var(--border);">
+                            <div>
+                                <div style="font-weight: 600;">${gasto.description}</div>
+                                <div style="font-size: 0.85rem; color: var(--text-light);">${gasto.category} • ${fecha}</div>
+                            </div>
+                            <div style="font-weight: 600; color: var(--danger);">
+                                $${parseFloat(gasto.amount).toLocaleString('es-CO')}
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                lista.innerHTML = html;
+                
             } else {
-                balanceCard.style.background = 'linear-gradient(135deg, var(--secondary), #059669)';
+                if (emptyState) emptyState.style.display = 'block';
+                const existingList = ultimosGastosCard.querySelector('.gastos-list');
+                if (existingList) existingList.remove();
             }
         }
-        
-        // Actualizar resumen mensual
-        const statRows = document.querySelectorAll('.stat-row .stat-value');
-        if (statRows.length >= 4) {
-            statRows[0].textContent = `$${totalIngresos.toLocaleString('es-CO')}`;
-            statRows[0].style.color = 'var(--secondary)';
-            
-            statRows[1].textContent = `$${totalGastosFijos.toLocaleString('es-CO')}`;
-            statRows[1].style.color = totalGastosFijos > 0 ? 'var(--danger)' : 'var(--text)';
-            
-            statRows[2].textContent = `$${totalGastosVariables.toLocaleString('es-CO')}`;
-            statRows[2].style.color = totalGastosVariables > 0 ? 'var(--danger)' : 'var(--text)';
-            
-            statRows[3].textContent = `$${balance.toLocaleString('es-CO')}`;
-            statRows[3].style.color = balance >= 0 ? 'var(--secondary)' : 'var(--danger)';
-        }
-        
-        // Actualizar últimos gastos
-        updateUltimosGastos(gastosVariablesData.data || []);
-        
-    } catch (error) {
-        console.error('Error al actualizar dashboard:', error);
-    }
-}
 
-// ============================================
-// UPDATE ULTIMOS GASTOS FUNCTION
-// ============================================
-
-function updateUltimosGastos(gastos) {
-    const cards = document.querySelectorAll('.card');
-let ultimosGastosCard = null;
-cards.forEach(card => {
-    const title = card.querySelector('.card-title');
-    if (title && title.textContent.includes('Últimos Gastos')) {
-        ultimosGastosCard = card;
-    }
-});
-if (!ultimosGastosCard) return;
-    
-    const emptyState = ultimosGastosCard.querySelector('.empty-state');
-    
-    if (gastos && gastos.length > 0) {
-        // Ocultar empty state
-        if (emptyState) emptyState.style.display = 'none';
-        
-        // Tomar los últimos 5 gastos
-        const ultimosGastos = gastos.slice(0, 5);
-        
-        // Crear o actualizar lista
-        let lista = ultimosGastosCard.querySelector('.gastos-list');
-        if (!lista) {
-            lista = document.createElement('div');
-            lista.className = 'gastos-list';
-            emptyState.parentNode.insertBefore(lista, emptyState);
-        }
-        
-        let html = '';
-        ultimosGastos.forEach(gasto => {
-            const fecha = new Date(gasto.expense_date).toLocaleDateString('es-CO', { day: 'numeric', month: 'short' });
-            html += `
-                <div style="display: flex; justify-content: space-between; padding: 0.75rem; border-bottom: 1px solid var(--border);">
-                    <div>
-                        <div style="font-weight: 600;">${gasto.description}</div>
-                        <div style="font-size: 0.85rem; color: var(--text-light);">${gasto.category} • ${fecha}</div>
-                    </div>
-                    <div style="font-weight: 600; color: var(--danger);">
-                        $${parseFloat(gasto.amount).toLocaleString('es-CO')}
-                    </div>
-                </div>
-            `;
-        });
-        
-        lista.innerHTML = html;
-        
-    } else {
-        // Mostrar empty state
-        if (emptyState) emptyState.style.display = 'block';
-        const existingList = ultimosGastosCard.querySelector('.gastos-list');
-        if (existingList) existingList.remove();
-    }
-}
-
-        // ============================================
         // THEME FUNCTIONS
-        // ============================================
-        
         function toggleDarkMode() {
             const dark = document.getElementById('darkModeToggle').checked;
             if(dark) {
@@ -2168,141 +2000,114 @@ if (!ultimosGastosCard) return;
                 localStorage.setItem('theme', 'light');
             }
         }
-        
-        // ============================================
-// SAVE PREFERENCES FUNCTION
-// ============================================
 
-async function savePreferences() {
-    const moneda = document.getElementById('monedaSelect').value;
-    const ciclo = parseInt(document.getElementById('cicloInput').value);
-    
-    if (ciclo < 1 || ciclo > 31) {
-        alert('❌ El día del ciclo debe estar entre 1 y 31');
-        return;
-    }
-    
-    try {
-        // Guardar en localStorage (para uso inmediato)
-        localStorage.setItem('moneda', moneda);
-        localStorage.setItem('ciclo_inicio', ciclo);
-        
-        // También guardar en Supabase para sincronizar entre dispositivos
-        const { error } = await supabaseClient
-            .from('users')
-            .update({
-                preferences: {
-                    moneda: moneda,
-                    ciclo_inicio: ciclo
-                }
-            })
-            .eq('id', currentUser.id);
-        
-        if (error) console.log('No se pudo guardar en DB:', error);
-        
-        alert('✅ Preferencias guardadas exitosamente');
-        
-        // Actualizar ciclo en el dashboard
-        updateCicloDisplay();
-        
-    } catch (error) {
-        console.error('Error al guardar preferencias:', error);
-        alert('⚠️ Preferencias guardadas localmente');
-    }
-}
-
-// ============================================
-// LOAD PREFERENCES FUNCTION
-// ============================================
-
-function loadPreferences() {
-    // Cargar moneda
-    const moneda = localStorage.getItem('moneda') || 'COP';
-    const monedaSelect = document.getElementById('monedaSelect');
-    if (monedaSelect) monedaSelect.value = moneda;
-    
-    // Cargar ciclo
-    const ciclo = localStorage.getItem('ciclo_inicio') || '20';
-    const cicloInput = document.getElementById('cicloInput');
-    if (cicloInput) cicloInput.value = ciclo;
-    
-    // Actualizar display del ciclo
-    updateCicloDisplay();
-}
-
-// ============================================
-// UPDATE CICLO DISPLAY FUNCTION
-// ============================================
-
-function updateCicloDisplay() {
-    const cicloInicio = parseInt(localStorage.getItem('ciclo_inicio') || '20');
-    const hoy = new Date();
-    const mesActual = hoy.getMonth();
-    const añoActual = hoy.getFullYear();
-    
-    let fechaInicio, fechaFin;
-    
-    if (hoy.getDate() >= cicloInicio) {
-        // Estamos en el ciclo actual
-        fechaInicio = new Date(añoActual, mesActual, cicloInicio);
-        fechaFin = new Date(añoActual, mesActual + 1, cicloInicio - 1);
-    } else {
-        // Estamos en el ciclo del mes anterior
-        fechaInicio = new Date(añoActual, mesActual - 1, cicloInicio);
-        fechaFin = new Date(añoActual, mesActual, cicloInicio - 1);
-    }
-    
-    const opciones = { day: 'numeric', month: 'short', year: 'numeric' };
-    const textoInicio = fechaInicio.toLocaleDateString('es-CO', opciones);
-    const textoFin = fechaFin.toLocaleDateString('es-CO', opciones);
-    
-    const cicloDisplay = document.querySelector('.welcome p');
-    if (cicloDisplay) {
-        cicloDisplay.textContent = `Ciclo actual: ${textoInicio} - ${textoFin}`;
-    }
-}
-        // ============================================
-// UPDATE USER NAME FUNCTION
-// ============================================
-
-async function updateUserName() {
-    const newName = document.getElementById('userNameInput').value.trim();
-    
-    if (!newName) {
-        alert('❌ Por favor ingresa un nombre');
-        return;
-    }
-    
-    try {
-        // Update user metadata in Supabase Auth
-        const { data, error } = await supabaseClient.auth.updateUser({
-            data: { name: newName }
-        });
-        
-        if (error) throw error;
-        
-        // Update local user object
-        currentUser = data.user;
-        
-        // Update UI
-        document.getElementById('userName').textContent = newName;
-        
-        // Also try to update users table if it exists
-        try {
-            await supabaseClient
-                .from('users')
-                .update({ name: newName })
-                .eq('id', currentUser.id);
-        } catch (dbError) {
-            console.log('Users table update skipped');
+        // PREFERENCES FUNCTIONS
+        async function savePreferences() {
+            const moneda = document.getElementById('monedaSelect').value;
+            const ciclo = parseInt(document.getElementById('cicloInput').value);
+            
+            if (ciclo < 1 || ciclo > 31) {
+                alert('❌ El día del ciclo debe estar entre 1 y 31');
+                return;
+            }
+            
+            try {
+                localStorage.setItem('moneda', moneda);
+                localStorage.setItem('ciclo_inicio', ciclo);
+                
+                const { error } = await supabaseClient
+                    .from('users')
+                    .update({
+                        preferences: {
+                            moneda: moneda,
+                            ciclo_inicio: ciclo
+                        }
+                    })
+                    .eq('id', currentUser.id);
+                
+                if (error) console.log('No se pudo guardar en DB:', error);
+                
+                alert('✅ Preferencias guardadas exitosamente');
+                updateCicloDisplay();
+                
+            } catch (error) {
+                console.error('Error al guardar preferencias:', error);
+                alert('⚠️ Preferencias guardadas localmente');
+            }
         }
-        
-        alert('✅ Nombre actualizado exitosamente');
-        
-    } catch (error) {
-        alert('❌ Error al actualizar: ' + error.message);
-    }
-}
+
+        function loadPreferences() {
+            const moneda = localStorage.getItem('moneda') || 'COP';
+            const monedaSelect = document.getElementById('monedaSelect');
+            if (monedaSelect) monedaSelect.value = moneda;
+            
+            const ciclo = localStorage.getItem('ciclo_inicio') || '20';
+            const cicloInput = document.getElementById('cicloInput');
+            if (cicloInput) cicloInput.value = ciclo;
+            
+            updateCicloDisplay();
+        }
+
+        function updateCicloDisplay() {
+            const cicloInicio = parseInt(localStorage.getItem('ciclo_inicio') || '20');
+            const hoy = new Date();
+            const mesActual = hoy.getMonth();
+            const añoActual = hoy.getFullYear();
+            
+            let fechaInicio, fechaFin;
+            
+            if (hoy.getDate() >= cicloInicio) {
+                fechaInicio = new Date(añoActual, mesActual, cicloInicio);
+                fechaFin = new Date(añoActual, mesActual + 1, cicloInicio - 1);
+            } else {
+                fechaInicio = new Date(añoActual, mesActual - 1, cicloInicio);
+                fechaFin = new Date(añoActual, mesActual, cicloInicio - 1);
+            }
+            
+            const opciones = { day: 'numeric', month: 'short', year: 'numeric' };
+            const textoInicio = fechaInicio.toLocaleDateString('es-CO', opciones);
+            const textoFin = fechaFin.toLocaleDateString('es-CO', opciones);
+            
+            const cicloDisplay = document.querySelector('.welcome p');
+            if (cicloDisplay) {
+                cicloDisplay.textContent = `Ciclo actual: ${textoInicio} - ${textoFin}`;
+            }
+        }
+
+        // UPDATE USER NAME
+        async function updateUserName() {
+            const newName = document.getElementById('userNameInput').value.trim();
+            
+            if (!newName) {
+                alert('❌ Por favor ingresa un nombre');
+                return;
+            }
+            
+            try {
+                const { data, error } = await supabaseClient.auth.updateUser({
+                    data: { name: newName }
+                });
+                
+                if (error) throw error;
+                
+                currentUser = data.user;
+                document.getElementById('userName').textContent = newName;
+                
+                try {
+                    await supabaseClient
+                        .from('users')
+                        .update({ name: newName })
+                        .eq('id', currentUser.id);
+                } catch (dbError) {
+                    console.log('Users table update skipped');
+                }
+                
+                alert('✅ Nombre actualizado exitosamente');
+                
+            } catch (error) {
+                alert('❌ Error al actualizar: ' + error.message);
+            }
+        }
     </script>
 </body>
 </html>
