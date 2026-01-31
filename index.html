@@ -2683,10 +2683,7 @@
         }
 
         // FUNCIONES PLACEHOLDER PARA NUEVOS MÓDULOS
-        async function loadPagos() {
-            console.log('loadPagos - en desarrollo');
-        }
-
+    
         async function loadDeudas() {
             console.log('loadDeudas - en desarrollo');
         }
@@ -2712,6 +2709,93 @@
         function addCompra(e) {
             e.preventDefault();
             alert('Funcionalidad de mercado en desarrollo');
+        }
+        // LOAD PAGOS (CONSOLIDADO)
+        async function loadPagos() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('fixed_expenses')
+                    .select('*')
+                    .eq('user_id', currentUser.id)
+                    .order('payment_day', { ascending: true });
+                
+                if (error) throw error;
+                
+                const container = document.getElementById('pagosContainer');
+                
+                if (!data || data.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📅</div>
+                            <p>No hay pagos registrados para este mes</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Calcular totales
+                const totalPagos = data.reduce((sum, item) => sum + parseFloat(item.amount || 0), 0);
+                const totalPagado = data.filter(g => g.is_paid).reduce((sum, item) => sum + parseFloat(item.amount || 0), 0);
+                const totalPendiente = totalPagos - totalPagado;
+                
+                const today = new Date().getDate();
+                const totalVencido = data.filter(g => !g.is_paid && g.payment_day < today).reduce((sum, item) => sum + parseFloat(item.amount || 0), 0);
+                
+                document.getElementById('pagosTot').textContent = formatCurrency(totalPagos);
+                document.getElementById('pagosPagado').textContent = formatCurrency(totalPagado);
+                document.getElementById('pagosPendiente').textContent = formatCurrency(totalPendiente);
+                document.getElementById('pagosVencido').textContent = formatCurrency(totalVencido);
+                
+                // Renderizar lista
+                let html = '';
+                data.forEach(pago => {
+                    const isPaid = pago.is_paid;
+                    const isOverdue = !isPaid && pago.payment_day < today;
+                    const status = isPaid ? 
+                        '<span class="badge badge-success">✓ Pagado</span>' :
+                        isOverdue ?
+                            '<span class="badge badge-danger">⚠️ Vencido</span>' :
+                            '<span class="badge badge-warning">⏳ Pendiente</span>';
+                    
+                    html += `
+                        <div class="payment-item">
+                            <div class="payment-info">
+                                <div class="payment-name">${pago.description}</div>
+                                <div class="payment-date">${pago.category} • Día ${pago.payment_day}</div>
+                            </div>
+                            <div class="payment-amount" style="color: var(--danger);">
+                                ${formatCurrency(pago.amount)}
+                            </div>
+                            <div class="payment-actions">
+                                ${status}
+                                ${!isPaid ? `<button class="btn btn-small btn-secondary" onclick="markAsPaid('${pago.id}')">✓ Pagar</button>` : ''}
+                                <button class="btn btn-danger btn-icon" onclick="confirmDelete('expense', '${pago.id}', '${pago.description}')">🗑️</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                container.innerHTML = html;
+                
+            } catch (error) {
+                console.error('Error al cargar pagos:', error);
+            }
+        }
+
+        // MARK AS PAID
+        async function markAsPaid(expenseId) {
+            try {
+                const { error } = await supabaseClient
+                    .from('fixed_expenses')
+                    .update({ is_paid: true })
+                    .eq('id', expenseId);
+                
+                if (error) throw error;
+                
+                loadAllData();
+            } catch (error) {
+                alert('❌ Error al marcar como pagado: ' + error.message);
+            }
         }
 
         // Initialize app
