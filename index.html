@@ -2423,9 +2423,11 @@
                     supabaseClient.from('variable_expenses').select('*').eq('user_id', currentUser.id)
                 ]);
                 
+                const totalIngresos = (ingresosData.data || []).reduce((sum, item) => sum + parseFloat(item.net_amount || 0), 0);
+                const totalGastosFijos = (gastosFijosData.data || []).reduce((sum, item) => sum + parseFloat(item.amount || 0), 0);
+                const totalGastosVariables = (gastosVariablesData.data || []).reduce((sum, item) => sum + parseFloat(item.amount || 0), 0);
                 const totalGastos = totalGastosFijos + totalGastosVariables;
-                const totalPagado = (gastosFijosData.data || []).filter(g => g.is_paid).reduce((sum, item) => sum + parseFloat(item.amount || 0), 0);
-                const totalPendiente = totalGastosFijos - totalPagado;
+                const balance = totalIngresos - totalGastos;
                 
                 // Calcular pagados y pendientes
                 const totalPagado = (gastosFijosData.data || [])
@@ -2458,50 +2460,6 @@
             } catch (error) {
                 console.error('Error al actualizar dashboard:', error);
             }
-        }
-
-        function updateUpcomingPayments(gastosFijos) {
-            const container = document.getElementById('upcomingPayments');
-            const today = new Date().getDate();
-            
-            // Filtrar próximos 5 días
-            const upcoming = gastosFijos
-                .filter(g => !g.is_paid && g.payment_day >= today && g.payment_day <= today + 5)
-                .sort((a, b) => a.payment_day - b.payment_day)
-                .slice(0, 5);
-            
-            if (upcoming.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">✅</div>
-                        <p>No hay pagos próximos en los próximos 5 días</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            let html = '';
-            upcoming.forEach(gasto => {
-                const daysLeft = gasto.payment_day - today;
-                const daysText = daysLeft === 0 ? 'Hoy' : `En ${daysLeft} día${daysLeft > 1 ? 's' : ''}`;
-                
-                html += `
-                    <div class="payment-item">
-                        <div class="payment-info">
-                            <div class="payment-name">${gasto.description}</div>
-                            <div class="payment-date">${gasto.category} • ${daysText}</div>
-                        </div>
-                        <div class="payment-amount" style="color: var(--danger);">
-                            $${parseFloat(gasto.amount).toLocaleString('es-CO')}
-                        </div>
-                        <div class="payment-status">
-                            <span class="badge badge-warning">⏳ Pendiente</span>
-                        </div>
-                    </div>
-                `;
-            });
-            
-            container.innerHTML = html;
         }
 
         // THEME FUNCTIONS
@@ -2638,6 +2596,122 @@
                 month: month + 1,
                 key: `${year}-${String(month + 1).padStart(2, '0')}`
             };
+        }
+        // MONTH SELECTOR
+        function populateMonthSelector() {
+            const selector = document.getElementById('monthSelector');
+            const now = new Date();
+            
+            selector.innerHTML = '';
+            
+            // Generate last 12 months
+            for (let i = 0; i < 12; i++) {
+                const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                const option = document.createElement('option');
+                option.value = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+                option.textContent = date.toLocaleDateString('es-CO', { month: 'long', year: 'numeric' });
+                if (i === 0) option.selected = true;
+                selector.appendChild(option);
+            }
+        }
+
+        function changeMonth() {
+            const selector = document.getElementById('monthSelector');
+            const [year, month] = selector.value.split('-');
+            currentMonth = new Date(parseInt(year), parseInt(month) - 1, 1);
+            loadAllData();
+        }
+
+        // LOAD ALL DATA
+        async function loadAllData() {
+            console.log('Cargando datos para:', getCurrentPeriod().key);
+            await Promise.all([
+                updateDashboard(),
+                loadIngresos(),
+                loadGastosFijos(),
+                loadGastosVariables()
+            ]);
+        }
+
+        // CONFIRM DELETE
+        async function confirmDelete(type, id, name) {
+            const modal = document.getElementById('confirmDeleteModal');
+            const message = document.getElementById('deleteMessage');
+            const warning = document.getElementById('deleteWarning');
+            const confirmBtn = document.getElementById('confirmDeleteBtn');
+            
+            const messages = {
+                income: {
+                    title: `¿Eliminar el ingreso "${name}"?`,
+                    warning: 'Solo se eliminará del mes actual. El histórico no se verá afectado.'
+                },
+                expense: {
+                    title: `¿Eliminar el gasto "${name}"?`,
+                    warning: 'Solo se eliminará del mes actual. El histórico no se verá afectado.'
+                }
+            };
+            
+            message.textContent = messages[type]?.title || `¿Eliminar "${name}"?`;
+            warning.textContent = messages[type]?.warning || 'Esta acción no se puede deshacer.';
+            
+            const tables = {
+                income: 'incomes',
+                expense: 'fixed_expenses'
+            };
+            
+            confirmBtn.onclick = async () => {
+                try {
+                    const { error } = await supabaseClient
+                        .from(tables[type])
+                        .delete()
+                        .eq('id', id);
+                    
+                    if (error) throw error;
+                    
+                    alert('✅ Eliminado exitosamente');
+                    closeModal('confirmDeleteModal');
+                    
+                    // Recargar datos
+                    loadAllData();
+                    
+                } catch (error) {
+                    alert('❌ Error al eliminar: ' + error.message);
+                }
+            };
+            
+            openModal('confirmDeleteModal');
+        }
+
+        // FUNCIONES PLACEHOLDER PARA NUEVOS MÓDULOS
+        async function loadPagos() {
+            console.log('loadPagos - en desarrollo');
+        }
+
+        async function loadDeudas() {
+            console.log('loadDeudas - en desarrollo');
+        }
+
+        async function loadMercado() {
+            console.log('loadMercado - en desarrollo');
+        }
+
+        function loadHistorico() {
+            alert('Funcionalidad de histórico en desarrollo');
+        }
+
+        function addDeuda(e) {
+            e.preventDefault();
+            alert('Funcionalidad de deudas en desarrollo');
+        }
+
+        function setMarketBudget(e) {
+            e.preventDefault();
+            alert('Funcionalidad de mercado en desarrollo');
+        }
+
+        function addCompra(e) {
+            e.preventDefault();
+            alert('Funcionalidad de mercado en desarrollo');
         }
 
         // Initialize app
