@@ -893,8 +893,106 @@
                 padding: 2rem;
             }
         }
+        /* === MONTH SELECTOR === */
+        .month-selector {
+            background: rgba(255,255,255,0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-weight: 500;
+            min-width: 200px;
+        }
+        
+        .month-selector option {
+            color: var(--text);
+        }
+        
+        /* === DATA TABLE === */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        
+        .data-table thead {
+            background: var(--bg);
+        }
+        
+        .data-table th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid var(--border);
+        }
+        
+        .data-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .data-table tbody tr:hover {
+            background: var(--bg);
+        }
+        
+        .data-table tfoot {
+            background: var(--bg);
+            font-weight: 700;
+        }
+        
+        .data-table tfoot td {
+            padding: 1rem;
+            border-top: 2px solid var(--border);
+        }
+        
+        /* === BUTTONS === */
+        .btn-icon {
+            padding: 0.5rem;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* === CHART CONTAINER === */
+        .chart-container {
+            background: var(--card);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 1.5rem;
+            min-height: 300px;
+        }
+        
+        /* === CONFIRM DIALOG === */
+        .confirm-dialog {
+            background: var(--card);
+            padding: 2rem;
+            border-radius: 16px;
+            max-width: 400px;
+            text-align: center;
+        }
+        
+        .confirm-dialog h3 {
+            margin-bottom: 1rem;
+            color: var(--danger);
+        }
+        
+        .confirm-dialog p {
+            margin-bottom: 1.5rem;
+            color: var(--text-light);
+        }
+        
+        .confirm-dialog-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 <body>
     <!-- AUTH SCREEN -->
@@ -964,29 +1062,29 @@
             <div class="header-content">
                 <div class="logo">💰 Presupuesta2</div>
                 <div class="user-menu">
-                    <select class="space-selector" id="spaceSelector">
-                        <option value="personal">👤 Personal</option>
-                        <option value="pareja">💑 Con Pareja</option>
+                    <select class="month-selector" id="monthSelector" onchange="changeMonth()">
+                        <!-- Se llena automáticamente con JavaScript -->
                     </select>
                     <button class="settings-btn" onclick="openSettings()">⚙️</button>
                 </div>
             </div>
         </header>
 
-        <nav class="nav-menu">
+          <nav class="nav-menu">
             <div class="nav-item active" onclick="showPage('dashboard', this)">📊 Dashboard</div>
             <div class="nav-item" onclick="showPage('ingresos', this)">💵 Ingresos</div>
-            <div class="nav-item" onclick="showPage('gastos-fijos', this)">📌 Gastos Fijos</div>
-            <div class="nav-item" onclick="showPage('gastos-variables', this)">💸 Gastos Variables</div>
-            <div class="nav-item" onclick="showPage('categorias', this)">🏷️ Categorías</div>
+            <div class="nav-item" onclick="showPage('pagos', this)">📅 Pagos del Mes</div>
+            <div class="nav-item" onclick="showPage('deudas', this)">💳 Deudas</div>
+            <div class="nav-item" onclick="showPage('mercado', this)">🛒 Mercado</div>
+            <div class="nav-item" onclick="showPage('historico', this)">📈 Histórico</div>
         </nav>
 
         <main class="dashboard">
-            <!-- =============== DASHBOARD PAGE (REDISEÑADO) =============== -->
+           <!-- ========== DASHBOARD PAGE ========== -->
             <div id="dashboard" class="page active">
                 <div class="welcome">
                     <h1>Hola, <span id="userName">Usuario</span> 👋</h1>
-                    <p id="cycleDisplay">Ciclo actual: Cargando...</p>
+                    <p id="cycleDisplay">Cargando período...</p>
                 </div>
                 
                 <!-- Balance Principal -->
@@ -997,6 +1095,11 @@
                 
                 <!-- Resumen Principal -->
                 <div class="stat-cards">
+                    <div class="stat-card">
+                        <div class="stat-label">Presupuesto Mensual</div>
+                        <div class="stat-value" id="dashBudget">$0</div>
+                    </div>
+                    
                     <div class="stat-card income">
                         <div class="stat-label">Ingresos del Mes</div>
                         <div class="stat-value" id="dashIncomes">$0</div>
@@ -1020,9 +1123,15 @@
                 
                 <!-- Grid de 2 columnas -->
                 <div class="grid-2">
-                    <!-- Comparación Mensual -->
+                    <!-- Gráfica de Tendencia -->
+                    <div class="chart-container">
+                        <h3 class="card-title" style="margin-bottom: 1rem;">📈 Tendencia (Últimos 6 meses)</h3>
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                    
+                    <!-- Comparación vs Mes Anterior -->
                     <div class="comparison-card">
-                        <h3 class="card-title" style="margin-bottom: 1rem;">📈 Comparación vs Mes Anterior</h3>
+                        <h3 class="card-title" style="margin-bottom: 1rem;">📊 Comparación vs Mes Anterior</h3>
                         <div class="comparison-item">
                             <span class="comparison-label">Ingresos</span>
                             <span class="comparison-value" id="compIncomes">$0 <span class="trend-indicator">-</span></span>
@@ -1036,7 +1145,10 @@
                             <span class="comparison-value" id="compBalance">$0 <span class="trend-indicator">-</span></span>
                         </div>
                     </div>
-                    
+                </div>
+                
+                <!-- Grid de 2 columnas -->
+                <div class="grid-2">
                     <!-- Presupuesto de Mercado -->
                     <div class="comparison-card">
                         <h3 class="card-title" style="margin-bottom: 1rem;">🛒 Presupuesto de Mercado</h3>
@@ -1059,18 +1171,18 @@
                             <span id="marketPercent">0%</span> consumido
                         </p>
                     </div>
-                </div>
-                
-                <!-- Próximos Pagos -->
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">📅 Próximos Pagos (5 días)</h3>
-                        <button class="btn btn-small btn-primary" onclick="showPage('gastos-fijos', document.querySelectorAll('.nav-item')[2])">Ver Todos</button>
-                    </div>
-                    <div id="upcomingPayments">
-                        <div class="empty-state">
-                            <div class="empty-state-icon">✅</div>
-                            <p>No hay pagos próximos</p>
+                    
+                    <!-- Próximos Pagos -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">📅 Próximos Pagos (5 días)</h3>
+                            <button class="btn btn-small btn-primary" onclick="showPage('pagos', document.querySelectorAll('.nav-item')[2])">Ver Todos</button>
+                        </div>
+                        <div id="upcomingPayments">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">✅</div>
+                                <p>No hay pagos próximos</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1163,6 +1275,143 @@
                             <div class="empty-state-icon">✨</div>
                             <p style="font-size: 0.9rem;">Crea categorías personalizadas para tus necesidades</p>
                         </div>
+                    </div>
+                </div>
+            </div>
+        <!-- ========== PAGOS DEL MES PAGE ========== -->
+            <div id="pagos" class="page">
+                <div class="welcome">
+                    <h1>📅 Pagos del Mes</h1>
+                    <p>Control operativo de todos tus pagos</p>
+                </div>
+                
+                <!-- Resumen de Pagos -->
+                <div class="stat-cards" style="margin-bottom: 1.5rem;">
+                    <div class="stat-card expense">
+                        <div class="stat-label">Total del Mes</div>
+                        <div class="stat-value" id="pagosTot">$0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Pagado</div>
+                        <div class="stat-value" style="color: var(--secondary);" id="pagosPagado">$0</div>
+                    </div>
+                    <div class="stat-card pending">
+                        <div class="stat-label">Pendiente</div>
+                        <div class="stat-value" id="pagosPendiente">$0</div>
+                    </div>
+                    <div class="stat-card danger">
+                        <div class="stat-label">Vencido</div>
+                        <div class="stat-value" id="pagosVencido">$0</div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3 class="card-title">Todos los Pagos</h3>
+                    <div id="pagosContainer">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📅</div>
+                            <p>No hay pagos registrados para este mes</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== DEUDAS PAGE ========== -->
+            <div id="deudas" class="page">
+                <div class="welcome">
+                    <h1>💳 Deudas</h1>
+                    <p>Seguimiento de deudas a largo plazo</p>
+                </div>
+                
+                <button class="btn btn-primary" onclick="openModal('addDeudaModal')" style="margin-bottom: 1.5rem;">
+                    ➕ Registrar Deuda
+                </button>
+                
+                <div id="deudasContainer">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">💳</div>
+                        <p>No tienes deudas registradas</p>
+                        <button class="btn btn-primary btn-small" style="margin-top:1rem" onclick="openModal('addDeudaModal')">Registrar Primera Deuda</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== MERCADO PAGE ========== -->
+            <div id="mercado" class="page">
+                <div class="welcome">
+                    <h1>🛒 Mercado</h1>
+                    <p>Control de presupuesto de mercado</p>
+                </div>
+                
+                <div class="grid-2" style="margin-bottom: 1.5rem;">
+                    <button class="btn btn-primary" onclick="openModal('setBudgetModal')">
+                        💰 Establecer Presupuesto
+                    </button>
+                    <button class="btn btn-secondary" onclick="openModal('addCompraModal')">
+                        ➕ Registrar Compra
+                    </button>
+                </div>
+                
+                <!-- Resumen de Mercado -->
+                <div class="comparison-card" style="margin-bottom: 1.5rem;">
+                    <h3 class="card-title" style="margin-bottom: 1rem;">📊 Resumen del Mes</h3>
+                    <div class="comparison-item">
+                        <span class="comparison-label">Presupuesto</span>
+                        <span class="comparison-value" id="mercadoPresupuesto">$0</span>
+                    </div>
+                    <div class="comparison-item">
+                        <span class="comparison-label">Gastado</span>
+                        <span class="comparison-value" style="color: var(--danger);" id="mercadoGastado">$0</span>
+                    </div>
+                    <div class="comparison-item">
+                        <span class="comparison-label">Disponible</span>
+                        <span class="comparison-value" style="color: var(--secondary);" id="mercadoDisponible">$0</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="mercadoProgress" style="width: 0%"></div>
+                    </div>
+                    <p style="text-align: center; margin-top: 0.5rem; font-size: 0.9rem; color: var(--text-light);">
+                        <span id="mercadoPercent">0%</span> consumido
+                    </p>
+                </div>
+                
+                <div class="card">
+                    <h3 class="card-title">Compras del Mes</h3>
+                    <div id="comprasContainer">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">🛒</div>
+                            <p>No has registrado compras este mes</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== HISTÓRICO PAGE ========== -->
+            <div id="historico" class="page">
+                <div class="welcome">
+                    <h1>📈 Histórico</h1>
+                    <p>Análisis y reportes mensuales</p>
+                </div>
+                
+                <!-- Filtros -->
+                <div class="card" style="margin-bottom: 1.5rem;">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Desde</label>
+                            <input type="month" class="form-input" id="historicoDesde">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Hasta</label>
+                            <input type="month" class="form-input" id="historicoHasta">
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="loadHistorico()">🔍 Generar Reporte</button>
+                </div>
+                
+                <div id="historicoContainer">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📊</div>
+                        <p>Selecciona un rango de fechas para ver el histórico</p>
                     </div>
                 </div>
             </div>
@@ -1410,6 +1659,116 @@
             </form>
         </div>
     </div>
+    <!-- Add Deuda Modal -->
+    <div class="modal" id="addDeudaModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">💳 Registrar Deuda</h2>
+                <button class="close-btn" onclick="closeModal('addDeudaModal')">×</button>
+            </div>
+            <form onsubmit="addDeuda(event)">
+                <div class="form-group">
+                    <label class="form-label">Tipo de Deuda</label>
+                    <select class="form-select" id="deudaTipo" required>
+                        <option value="Tarjeta de Crédito">💳 Tarjeta de Crédito</option>
+                        <option value="Préstamo Bancario">🏦 Préstamo Bancario</option>
+                        <option value="Préstamo Personal">👤 Préstamo Personal</option>
+                        <option value="Crédito de Libranza">📄 Crédito de Libranza</option>
+                        <option value="Otro">📦 Otro</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Nombre/Descripción</label>
+                    <input type="text" class="form-input" id="deudaNombre" placeholder="Ej: Visa, Préstamo Carro" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Monto Total</label>
+                        <input type="number" class="form-input" id="deudaMonto" placeholder="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tasa (%)</label>
+                        <input type="number" class="form-input" id="deudaTasa" placeholder="0" step="0.01">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Número de Cuotas</label>
+                        <input type="number" class="form-input" id="deudaCuotas" placeholder="12" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Día de Pago</label>
+                        <input type="number" class="form-input" id="deudaDiaPago" placeholder="5" min="1" max="31" required>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width:100%">Registrar Deuda</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Set Budget Modal -->
+    <div class="modal" id="setBudgetModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">💰 Establecer Presupuesto de Mercado</h2>
+                <button class="close-btn" onclick="closeModal('setBudgetModal')">×</button>
+            </div>
+            <form onsubmit="setMarketBudget(event)">
+                <div class="form-group">
+                    <label class="form-label">Presupuesto Mensual</label>
+                    <input type="number" class="form-input" id="marketBudgetInput" placeholder="500000" required>
+                    <p style="font-size: 0.85rem; color: var(--text-light); margin-top: 0.5rem;">
+                        Este será tu presupuesto de mercado para el mes actual
+                    </p>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%">Establecer Presupuesto</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Compra Modal -->
+    <div class="modal" id="addCompraModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">🛒 Registrar Compra</h2>
+                <button class="close-btn" onclick="closeModal('addCompraModal')">×</button>
+            </div>
+            <form onsubmit="addCompra(event)">
+                <div class="form-group">
+                    <label class="form-label">Descripción</label>
+                    <input type="text" class="form-input" id="compraDesc" placeholder="Ej: Compra del viernes" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Monto</label>
+                    <input type="number" class="form-input" id="compraAmount" placeholder="150000" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Fecha</label>
+                    <input type="date" class="form-input" id="compraDate" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%">Registrar Compra</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Confirm Delete Modal -->
+    <div class="modal" id="confirmDeleteModal">
+        <div class="confirm-dialog">
+            <h3>⚠️ Confirmar Eliminación</h3>
+            <p id="deleteMessage">¿Estás seguro de eliminar este registro?</p>
+            <p style="font-size: 0.85rem; color: var(--text-light);" id="deleteWarning">
+                Esta acción no se puede deshacer.
+            </p>
+            <div class="confirm-dialog-actions">
+                <button class="btn btn-secondary" onclick="closeModal('confirmDeleteModal')">Cancelar</button>
+                <button class="btn btn-danger" id="confirmDeleteBtn">Eliminar</button>
+            </div>
+        </div>
+    </div>
 
     <!-- =============== JAVASCRIPT =============== -->
     <script>
@@ -1419,13 +1778,30 @@
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         
         let currentUser = null;
+        let currentMonth = new Date();
+        let trendChart = null
 
         // INIT
-        async function init() {
-            const { data: { session } } = await supabaseClient.auth.getSession();
-            if (session) {
-                currentUser = session.user;
-                showApp();
+       async function init() {
+            console.log('=== Iniciando Presupuesta2 v3 ===');
+            
+            try {
+                const { data, error } = await supabaseClient.auth.getSession();
+                
+                if (error) {
+                    console.error('Error al verificar sesión:', error);
+                    return;
+                }
+                
+                if (data?.session) {
+                    currentUser = data.session.user;
+                    console.log('Usuario autenticado:', currentUser.email);
+                    showApp();
+                } else {
+                    console.log('No hay sesión activa');
+                }
+            } catch (error) {
+                console.error('Error en init:', error);
             }
             
             // Load theme
@@ -1435,6 +1811,13 @@
                 const toggle = document.getElementById('darkModeToggle');
                 if (toggle) toggle.checked = true;
             }
+            
+            // Set today's date in forms
+            const today = new Date().toISOString().split('T')[0];
+            const dateInputs = document.querySelectorAll('input[type="date"]');
+            dateInputs.forEach(input => {
+                if (!input.value) input.value = today;
+            });
         }
 
         // AUTH FUNCTIONS
@@ -2237,6 +2620,22 @@
             } catch (error) {
                 alert('❌ Error al actualizar: ' + error.message);
             }
+        }
+        // FORMAT CURRENCY
+        function formatCurrency(amount) {
+            return `$${parseFloat(amount || 0).toLocaleString('es-CO')}`;
+        }
+
+        // GET CURRENT PERIOD
+        function getCurrentPeriod() {
+            const year = currentMonth.getFullYear();
+            const month = currentMonth.getMonth();
+            
+            return {
+                year,
+                month: month + 1,
+                key: `${year}-${String(month + 1).padStart(2, '0')}`
+            };
         }
 
         // Initialize app
