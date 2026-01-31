@@ -5,11 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Presupuesta2 - Finanzas Inteligentes</title>
     <style>
+        /* ========================================
+           VARIABLES Y RESET
+           ======================================== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         :root {
             --primary: #4F46E5;
-            --primary-light: #6366F1;
+            --primary-dark: #4338CA;
             --secondary: #10B981;
             --danger: #EF4444;
             --warning: #F59E0B;
@@ -18,11 +21,13 @@
             --text: #1F2937;
             --text-light: #6B7280;
             --border: #E5E7EB;
+            --shadow: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 40px rgba(0,0,0,0.15);
         }
         
         [data-theme="dark"] {
             --primary: #6366F1;
-            --primary-light: #818CF8;
+            --primary-dark: #4F46E5;
             --secondary: #10B981;
             --danger: #EF4444;
             --warning: #F59E0B;
@@ -31,92 +36,76 @@
             --text: #F9FAFB;
             --text-light: #9CA3AF;
             --border: #374151;
+            --shadow: 0 1px 3px rgba(0,0,0,0.3);
+            --shadow-lg: 0 10px 40px rgba(0,0,0,0.5);
         }
         
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
-            background: var(--bg); 
-            color: var(--text); 
-            transition: all 0.3s; 
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            transition: background 0.3s, color 0.3s;
+            line-height: 1.6;
         }
-        
-        /* === AUTH STYLES === */
-        .auth-container { 
-            min-height: 100vh; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
+
+        /* ========================================
+           AUTH SCREEN
+           ======================================== */
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             padding: 1rem;
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            background: linear-gradient(135deg, var(--primary), #818CF8);
         }
-        
-        .auth-card { 
-            background: var(--card); 
-            padding: 2.5rem; 
-            border-radius: 20px; 
-            max-width: 420px; 
-            width: 100%; 
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3); 
+
+        .auth-card {
+            background: var(--card);
+            padding: 2.5rem;
+            border-radius: 20px;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: var(--shadow-lg);
         }
-        
-        .auth-logo { 
-            text-align: center; 
-            margin-bottom: 2rem; 
+
+        .auth-logo {
+            text-align: center;
+            margin-bottom: 2rem;
         }
-        
-        .auth-logo h1 { 
-            font-size: 2.5rem; 
+
+        .auth-logo h1 {
+            font-size: 2.5rem;
             margin-bottom: 0.5rem;
         }
-        
-        .auth-logo p { 
-            color: var(--text-light); 
-            font-size: 0.95rem;
-        }
-        
-        .auth-tabs { 
-            display: flex; 
-            gap: 0.5rem; 
+
+        .auth-tabs {
+            display: flex;
+            gap: 0.5rem;
             margin-bottom: 2rem;
             background: var(--bg);
             padding: 0.25rem;
             border-radius: 12px;
         }
-        
-        .auth-tab { 
-            flex: 1; 
-            padding: 0.75rem; 
-            border: none; 
+
+        .auth-tab {
+            flex: 1;
+            padding: 0.75rem;
+            border: none;
             background: transparent;
-            border-radius: 10px; 
-            font-weight: 600; 
+            border-radius: 10px;
+            font-weight: 600;
             cursor: pointer;
             color: var(--text);
             transition: all 0.2s;
         }
-        
-        .auth-tab.active { 
-            background: var(--card); 
+
+        .auth-tab.active {
+            background: var(--card);
             color: var(--primary);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: var(--shadow);
         }
-        
-        .forgot-password {
-            text-align: center;
-            margin-top: 1rem;
-        }
-        
-        .forgot-password a {
-            color: var(--primary);
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: all 0.2s;
-        }
-        
-        .forgot-password a:hover {
-            text-decoration: underline;
-        }
-        
+
         .auth-message {
             margin-top: 1rem;
             padding: 0.75rem;
@@ -125,456 +114,290 @@
             text-align: center;
             display: none;
         }
-        
+
         .auth-message.error {
             background: rgba(239, 68, 68, 0.1);
             color: var(--danger);
             display: block;
         }
-        
+
         .auth-message.success {
             background: rgba(16, 185, 129, 0.1);
             color: var(--secondary);
             display: block;
         }
-        
-        /* === MAIN APP STYLES === */
-        .app { 
-            display: none; 
+
+        /* ========================================
+           MAIN APP LAYOUT
+           ======================================== */
+        .app {
+            display: none;
         }
-        
-        .app.active { 
-            display: block; 
+
+        .app.active {
+            display: block;
         }
-        
-        .header { 
-            background: linear-gradient(135deg, var(--primary), var(--primary-light)); 
-            color: white; 
-            padding: 1.5rem; 
-            position: sticky; 
-            top: 0; 
+
+        .header {
+            background: linear-gradient(135deg, var(--primary), #818CF8);
+            color: white;
+            padding: 1rem 1.5rem;
+            position: sticky;
+            top: 0;
             z-index: 100;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: var(--shadow);
         }
-        
-        .header-content { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            max-width: 1400px; 
-            margin: 0 auto; 
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
         }
-        
-        .logo { 
-            font-size: 1.5rem; 
-            font-weight: 700; 
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
         }
-        
-        .user-menu { 
-            display: flex; 
-            gap: 1rem; 
-            align-items: center; 
+
+        .user-menu {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
         }
-        
-        .space-selector { 
-            background: rgba(255,255,255,0.2); 
-            padding: 0.5rem 1rem; 
-            border-radius: 8px; 
-            border: none; 
-            color: white; 
+
+        .settings-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
             cursor: pointer;
-            font-weight: 500;
-        }
-        
-        .space-selector option {
-            color: var(--text);
-        }
-        
-        .settings-btn { 
-            background: rgba(255,255,255,0.2); 
-            border: none; 
-            color: white; 
-            width: 40px; 
-            height: 40px; 
-            border-radius: 50%; 
-            cursor: pointer; 
             font-size: 1.2rem;
             transition: all 0.2s;
         }
-        
+
         .settings-btn:hover {
             background: rgba(255,255,255,0.3);
             transform: rotate(90deg);
         }
-        
-        .nav-menu { 
-            display: flex; 
-            gap: 1rem; 
-            padding: 1rem; 
-            background: var(--card); 
-            overflow-x: auto; 
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+
+        .nav-menu {
+            display: flex;
+            gap: 0.5rem;
+            padding: 1rem;
+            background: var(--card);
+            overflow-x: auto;
+            box-shadow: var(--shadow);
             border-bottom: 1px solid var(--border);
         }
-        
+
         .nav-menu::-webkit-scrollbar {
             height: 6px;
         }
-        
+
         .nav-menu::-webkit-scrollbar-thumb {
             background: var(--border);
             border-radius: 3px;
         }
-        
-        .nav-item { 
-            padding: 0.5rem 1rem; 
-            border-radius: 8px; 
-            cursor: pointer; 
-            white-space: nowrap; 
-            font-weight: 500; 
+
+        .nav-item {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            white-space: nowrap;
+            font-weight: 500;
             transition: all 0.2s;
-            border: 2px solid transparent;
+            font-size: 0.95rem;
         }
-        
-        .nav-item:hover { 
+
+        .nav-item:hover {
             background: var(--bg);
-            border-color: var(--border);
         }
-        
-        .nav-item.active { 
-            background: var(--primary); 
+
+        .nav-item.active {
+            background: var(--primary);
             color: white;
-            border-color: var(--primary);
         }
-        
-        .dashboard { 
-            max-width: 1400px; 
-            margin: 0 auto; 
-            padding: 2rem; 
+
+        .dashboard {
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
         }
-        
-        .welcome { 
-            margin-bottom: 2rem; 
+
+        .page {
+            display: none;
         }
-        
-        .welcome h1 { 
-            font-size: 2rem; 
-            margin-bottom: 0.5rem; 
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.3s;
         }
-        
-        .welcome p { 
-            color: var(--text-light); 
-            font-size: 1rem; 
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        
-        .grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
-            gap: 1.5rem; 
-            margin-top: 1.5rem; 
-        }
-        
-        .grid-2 {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1.5rem;
-        }
-        
-        .grid-4 {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1.5rem;
-        }
-        
-        .card { 
-            background: var(--card); 
-            border-radius: 16px; 
-            padding: 1.5rem; 
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+
+        /* ========================================
+           CARDS & COMPONENTS
+           ======================================== */
+        .card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
             border: 1px solid var(--border);
-            transition: all 0.2s;
-        }
-        
-        .card:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-        
-        .card-header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-bottom: 1rem; 
-        }
-        
-        .card-title { 
-            font-size: 1.1rem; 
-            font-weight: 600; 
-        }
-        
-        /* === DASHBOARD ESPECÍFICO === */
-        .stat-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-        
-        .stat-card {
-            background: var(--card);
-            padding: 1.5rem;
-            border-radius: 12px;
-            border-left: 4px solid var(--primary);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-        
-        .stat-card.income {
-            border-left-color: var(--secondary);
-        }
-        
-        .stat-card.expense {
-            border-left-color: var(--danger);
-        }
-        
-        .stat-card.pending {
-            border-left-color: var(--warning);
-        }
-        
-        .stat-label {
-            font-size: 0.85rem;
-            color: var(--text-light);
-            margin-bottom: 0.5rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .stat-value {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--text);
-        }
-        
-        .stat-card.income .stat-value {
-            color: var(--secondary);
-        }
-        
-        .stat-card.expense .stat-value {
-            color: var(--danger);
-        }
-        
-        .stat-card.pending .stat-value {
-            color: var(--warning);
-        }
-        
-        .comparison-card {
-            background: var(--card);
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             margin-bottom: 1.5rem;
         }
-        
-        .comparison-item {
+
+        .card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1rem;
-            border-bottom: 1px solid var(--border);
+            margin-bottom: 1rem;
         }
-        
-        .comparison-item:last-child {
-            border-bottom: none;
-        }
-        
-        .comparison-label {
-            font-weight: 500;
-        }
-        
-        .comparison-value {
+
+        .card-title {
+            font-size: 1.2rem;
             font-weight: 600;
-            font-size: 1.1rem;
         }
-        
-        .trend-indicator {
-            display: inline-block;
-            margin-left: 0.5rem;
-            font-size: 0.9rem;
-        }
-        
-        .trend-up {
-            color: var(--danger);
-        }
-        
-        .trend-down {
-            color: var(--secondary);
-        }
-        
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: var(--bg);
-            border-radius: 4px;
-            overflow: hidden;
-            margin-top: 0.5rem;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: var(--secondary);
-            border-radius: 4px;
-            transition: width 0.3s ease;
-        }
-        
-        .progress-fill.danger {
-            background: var(--danger);
-        }
-        
-        .payment-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem;
-            border-bottom: 1px solid var(--border);
-            transition: background 0.2s;
-        }
-        
-        .payment-item:hover {
-            background: var(--bg);
-        }
-        
-        .payment-info {
-            flex: 1;
-        }
-        
-        .payment-name {
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-        }
-        
-        .payment-date {
-            font-size: 0.85rem;
-            color: var(--text-light);
-        }
-        
-        .payment-amount {
-            font-weight: 600;
-            font-size: 1.1rem;
-        }
-        
-        .payment-status {
-            margin-left: 1rem;
-        }
-        
-        .balance-card { 
+
+        .balance-card {
             background: linear-gradient(135deg, var(--secondary), #059669);
             color: white;
             padding: 2rem;
             border-radius: 16px;
+            margin: 2rem 0;
+            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.2);
+        }
+
+        .balance-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+        }
+
+        .balance-amount {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        .grid {
+            display: grid;
+            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .stat-row:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            color: var(--text-light);
+        }
+
+        .stat-value {
+            font-weight: 600;
+        }
+
+        .info-box {
+            background: rgba(79, 70, 229, 0.05);
+            border-left: 4px solid var(--primary);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .empty-state {
             text-align: center;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 3rem 1rem;
+            color: var(--text-light);
         }
-        
-        .balance-label { 
-            font-size: 0.95rem; 
-            opacity: 0.9; 
-            margin-bottom: 0.5rem; 
+
+        .empty-state-icon {
+            font-size: 4rem;
+            opacity: 0.5;
+            margin-bottom: 1rem;
         }
-        
-        .balance-amount { 
-            font-size: 3rem; 
-            font-weight: 700; 
-        }
-        
-        .btn { 
-            padding: 0.75rem 1.5rem; 
-            border: none; 
-            border-radius: 8px; 
-            font-weight: 600; 
-            cursor: pointer; 
+
+        /* ========================================
+           BUTTONS
+           ======================================== */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
             transition: all 0.2s;
-            font-size: 1rem;
+            font-size: 0.95rem;
         }
-        
-        .btn-primary { 
-            background: var(--primary); 
-            color: white; 
-        }
-        
-        .btn-primary:hover { 
-            background: var(--primary-light);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
-        }
-        
-        .btn-secondary {
-            background: var(--secondary);
+
+        .btn-primary {
+            background: var(--primary);
             color: white;
         }
-        
-        .btn-secondary:hover {
-            opacity: 0.9;
-            transform: translateY(-2px);
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
         }
-        
+
         .btn-danger {
             background: var(--danger);
             color: white;
         }
-        
-        .btn-small { 
-            padding: 0.5rem 1rem; 
-            font-size: 0.9rem; 
+
+        .btn-danger:hover {
+            background: #DC2626;
         }
-        
-        .empty-state { 
-            text-align: center; 
-            padding: 3rem 1rem; 
-            color: var(--text-light); 
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
         }
-        
-        .empty-state-icon { 
-            font-size: 3rem; 
-            margin-bottom: 1rem; 
+
+        .fab {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), #818CF8);
+            color: white;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(79, 70, 229, 0.4);
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
         }
-        
-        .form-group { 
-            margin-bottom: 1.25rem; 
+
+        .fab:hover {
+            transform: scale(1.1) rotate(90deg);
         }
-        
-        .form-label { 
-            display: block; 
-            margin-bottom: 0.5rem; 
-            font-weight: 600; 
-            color: var(--text);
-        }
-        
-        .form-input, .form-select { 
-            width: 100%; 
-            padding: 0.75rem; 
-            border: 2px solid var(--border); 
-            border-radius: 8px; 
-            font-size: 1rem;
-            background: var(--bg);
-            color: var(--text);
-            transition: all 0.2s;
-        }
-        
-        .form-input:focus, .form-select:focus { 
-            outline: none; 
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-        }
-        
-        .page { 
-            display: none; 
-        }
-        
-        .page.active { 
-            display: block; 
-        }
-        
-        /* === MODAL STYLES === */
-        .modal { 
+
+        /* ========================================
+           MODALS
+           ======================================== */
+        .modal {
             display: none;
             position: fixed;
             top: 0;
@@ -582,87 +405,120 @@
             width: 100%;
             height: 100%;
             background: rgba(0,0,0,0.5);
-            z-index: 1000;
             align-items: center;
             justify-content: center;
+            z-index: 1000;
             backdrop-filter: blur(4px);
         }
-        
-        .modal.active { 
-            display: flex; 
+
+        .modal.active {
+            display: flex;
         }
-        
-        .modal-content { 
+
+        .modal-content {
             background: var(--card);
+            padding: 2rem;
             border-radius: 16px;
-            width: 90%;
             max-width: 500px;
+            width: 90%;
             max-height: 90vh;
             overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            box-shadow: var(--shadow-lg);
         }
-        
-        .modal-header { 
+
+        .modal-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            padding: 1.5rem;
-            border-bottom: 1px solid var(--border);
+            margin-bottom: 1.5rem;
         }
-        
-        .modal-title { 
+
+        .modal-title {
             font-size: 1.5rem;
-            font-weight: 700;
+            font-weight: 600;
         }
-        
-        .modal-content form { 
-            padding: 1.5rem; 
-        }
-        
-        .close-btn { 
+
+        .close-btn {
             background: none;
             border: none;
-            font-size: 2rem;
+            font-size: 1.5rem;
             cursor: pointer;
             color: var(--text-light);
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             transition: all 0.2s;
         }
-        
-        .close-btn:hover { 
+
+        .close-btn:hover {
             background: var(--bg);
+        }
+
+        /* ========================================
+           FORMS
+           ======================================== */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            background: var(--card);
             color: var(--text);
+            font-size: 1rem;
+            transition: all 0.2s;
         }
-        
-        /* === FAB === */
-        .fab { 
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .calculation-box {
+            background: rgba(16, 185, 129, 0.05);
+            border: 2px solid var(--secondary);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .calculation-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+        }
+
+        /* ========================================
+           SIDEBAR
+           ======================================== */
+        .sidebar {
             position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            background: var(--primary);
-            color: white;
-            border: none;
-            font-size: 2rem;
-            cursor: pointer;
-            box-shadow: 0 4px 16px rgba(79, 70, 229, 0.4);
-            transition: all 0.3s;
-            z-index: 90;
+            right: -400px;
+            top: 0;
+            width: 400px;
+            height: 100vh;
+            background: var(--card);
+            box-shadow: -4px 0 20px rgba(0,0,0,0.1);
+            transition: right 0.3s;
+            z-index: 200;
+            overflow-y: auto;
         }
-        
-        .fab:hover { 
-            transform: scale(1.1) rotate(90deg);
-            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.5);
+
+        .sidebar.active {
+            right: 0;
         }
-        
-        /* === SIDEBAR === */
+
         .sidebar-overlay {
             position: fixed;
             top: 0;
@@ -670,111 +526,90 @@
             width: 100%;
             height: 100%;
             background: rgba(0,0,0,0.5);
-            z-index: 998;
             display: none;
-            backdrop-filter: blur(2px);
+            z-index: 150;
         }
-        
+
         .sidebar-overlay.active {
             display: block;
         }
-        
-        .sidebar { 
-            position: fixed;
-            top: 0;
-            right: -400px;
-            width: 400px;
-            height: 100%;
-            background: var(--card);
-            box-shadow: -4px 0 20px rgba(0,0,0,0.2);
-            z-index: 999;
-            transition: right 0.3s ease;
-            overflow-y: auto;
-        }
-        
-        .sidebar.active { 
-            right: 0; 
-        }
-        
-        .sidebar-header { 
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            color: white;
+
+        .sidebar-header {
             padding: 1.5rem;
+            background: linear-gradient(135deg, var(--primary), #818CF8);
+            color: white;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        
-        .sidebar-title { 
-            font-size: 1.5rem;
-            font-weight: 700;
+
+        .sidebar-title {
+            font-size: 1.3rem;
+            font-weight: 600;
         }
-        
-        .sidebar-content { 
-            padding: 1.5rem; 
+
+        .sidebar-content {
+            padding: 1rem;
         }
-        
-        .sidebar-section { 
-            margin-bottom: 1.5rem;
-            border: 1px solid var(--border);
-            border-radius: 12px;
+
+        .sidebar-section {
+            margin-bottom: 0.5rem;
+            border-radius: 8px;
+            background: var(--bg);
             overflow: hidden;
         }
-        
-        .sidebar-section-header { 
-            padding: 1rem 1.5rem;
-            background: var(--bg);
+
+        .sidebar-section-header {
+            padding: 1rem;
             cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: background 0.2s;
+            transition: all 0.2s;
         }
-        
+
         .sidebar-section-header:hover {
             background: var(--border);
         }
-        
-        .sidebar-section-title { 
+
+        .sidebar-section-title {
             font-weight: 600;
-            font-size: 1rem;
         }
-        
-        .sidebar-section-arrow { 
+
+        .sidebar-section-arrow {
             transition: transform 0.3s;
-            font-size: 0.8rem;
         }
-        
+
         .sidebar-section-arrow.open {
             transform: rotate(180deg);
         }
-        
-        .sidebar-section-content { 
+
+        .sidebar-section-content {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.3s ease;
-            padding: 0 1.5rem;
+            transition: max-height 0.3s;
+            padding: 0 1rem;
         }
-        
-        .sidebar-section-content.open { 
+
+        .sidebar-section-content.open {
             max-height: 1000px;
-            padding: 1.5rem;
+            padding: 1rem;
         }
-        
-        .toggle-switch { 
+
+        .toggle-switch {
             position: relative;
             display: inline-block;
-            width: 52px;
-            height: 28px;
+            width: 50px;
+            height: 26px;
         }
-        
-        .toggle-switch input { 
+
+        .toggle-switch input {
             opacity: 0;
             width: 0;
             height: 0;
         }
-        
-        .toggle-slider { 
+
+        .toggle-slider {
             position: absolute;
             cursor: pointer;
             top: 0;
@@ -782,677 +617,352 @@
             right: 0;
             bottom: 0;
             background: var(--border);
+            border-radius: 26px;
             transition: 0.4s;
-            border-radius: 28px;
         }
-        
-        .toggle-slider:before { 
+
+        .toggle-slider:before {
             position: absolute;
             content: "";
-            height: 20px;
-            width: 20px;
+            height: 18px;
+            width: 18px;
             left: 4px;
             bottom: 4px;
             background: white;
-            transition: 0.4s;
             border-radius: 50%;
+            transition: 0.4s;
         }
-        
-        input:checked + .toggle-slider { 
-            background: var(--primary); 
+
+        input:checked + .toggle-slider {
+            background: var(--primary);
         }
-        
-        input:checked + .toggle-slider:before { 
-            transform: translateX(24px); 
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(24px);
         }
-        
-        .badge { 
-            padding: 0.5rem 1rem; 
-            border-radius: 12px; 
-            font-size: 0.9rem; 
-            font-weight: 600; 
-            display: inline-block; 
-            margin: 0.25rem; 
+
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
         }
-        
-        .badge-primary { 
-            background: rgba(79, 70, 229, 0.1); 
-            color: var(--primary); 
+
+        .badge-primary {
+            background: rgba(79, 70, 229, 0.1);
+            color: var(--primary);
         }
-        
-        .badge-success { 
-            background: rgba(16, 185, 129, 0.1); 
-            color: var(--secondary); 
+
+        .badge-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--secondary);
         }
-        
+
         .badge-danger {
             background: rgba(239, 68, 68, 0.1);
             color: var(--danger);
         }
-        
-        .badge-warning {
-            background: rgba(245, 158, 11, 0.1);
-            color: var(--warning);
-        }
-        
-        /* Calculation Box */
-        .calculation-box {
-            background: var(--bg);
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            padding: 1rem;
-            margin-top: 1rem;
-            display: none;
-        }
-        
-        .calculation-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.5rem 0;
-            font-size: 0.95rem;
-        }
-        
-        .calculation-row.total {
-            border-top: 2px solid var(--border);
-            margin-top: 0.5rem;
-            padding-top: 0.75rem;
-            font-weight: 700;
-            font-size: 1.1rem;
-        }
-        
+
+        /* ========================================
+           RESPONSIVE
+           ======================================== */
         @media (max-width: 768px) {
-            .sidebar { 
-                width: 100%; 
-                right: -100%; 
+            .sidebar {
+                width: 100%;
+                right: -100%;
             }
-            
-            .dashboard { 
-                padding: 1rem; 
+
+            .dashboard {
+                padding: 1rem;
             }
-            
-            .balance-amount { 
-                font-size: 2rem; 
+
+            .balance-amount {
+                font-size: 2rem;
             }
-            
-            .grid, .grid-2, .grid-4 { 
-                grid-template-columns: 1fr; 
+
+            .fab {
+                bottom: 1rem;
+                right: 1rem;
+                width: 56px;
+                height: 56px;
             }
-            
-            .stat-cards {
+
+            .grid {
                 grid-template-columns: 1fr;
             }
-            
-            .fab { 
-                bottom: 1rem; 
-                right: 1rem; 
-                width: 56px; 
-                height: 56px; 
-            }
-            
-            .auth-card {
-                padding: 2rem;
-            }
-        }
-        /* === MONTH SELECTOR === */
-        .month-selector {
-            background: rgba(255,255,255,0.2);
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            border: none;
-            color: white;
-            cursor: pointer;
-            font-weight: 500;
-            min-width: 200px;
-        }
-        
-        .month-selector option {
-            color: var(--text);
-        }
-        
-        /* === DATA TABLE === */
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-        }
-        
-        .data-table thead {
-            background: var(--bg);
-        }
-        
-        .data-table th {
-            padding: 1rem;
-            text-align: left;
-            font-weight: 600;
-            border-bottom: 2px solid var(--border);
-        }
-        
-        .data-table td {
-            padding: 1rem;
-            border-bottom: 1px solid var(--border);
-        }
-        
-        .data-table tbody tr:hover {
-            background: var(--bg);
-        }
-        
-        .data-table tfoot {
-            background: var(--bg);
-            font-weight: 700;
-        }
-        
-        .data-table tfoot td {
-            padding: 1rem;
-            border-top: 2px solid var(--border);
-        }
-        
-        /* === BUTTONS === */
-        .btn-icon {
-            padding: 0.5rem;
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        /* === CHART CONTAINER === */
-        .chart-container {
-            background: var(--card);
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            margin-bottom: 1.5rem;
-            min-height: 300px;
-        }
-        
-        /* === CONFIRM DIALOG === */
-        .confirm-dialog {
-            background: var(--card);
-            padding: 2rem;
-            border-radius: 16px;
-            max-width: 400px;
-            text-align: center;
-        }
-        
-        .confirm-dialog h3 {
-            margin-bottom: 1rem;
-            color: var(--danger);
-        }
-        
-        .confirm-dialog p {
-            margin-bottom: 1.5rem;
-            color: var(--text-light);
-        }
-        
-        .confirm-dialog-actions {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 <body>
-    <!-- AUTH SCREEN -->
+    <!-- ========================================
+         AUTH SCREEN
+         ======================================== -->
     <div id="authScreen" class="auth-container">
         <div class="auth-card">
             <div class="auth-logo">
                 <h1>💰 Presupuesta2</h1>
-                <p>Control financiero inteligente</p>
+                <p>Tu aliado financiero</p>
             </div>
-            
+
             <div class="auth-tabs">
                 <button class="auth-tab active" onclick="showAuthTab('login')">Iniciar Sesión</button>
                 <button class="auth-tab" onclick="showAuthTab('register')">Registrarse</button>
             </div>
-            
-            <!-- Login Form -->
+
             <form id="loginForm" onsubmit="handleLogin(event)">
                 <div class="form-group">
                     <label class="form-label">Email</label>
-                    <input type="email" class="form-input" id="loginEmail" placeholder="tu@email.com" required>
+                    <input type="email" class="form-input" id="loginEmail" required>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Contraseña</label>
-                    <input type="password" class="form-input" id="loginPassword" placeholder="••••••••" required>
+                    <input type="password" class="form-input" id="loginPassword" required>
                 </div>
                 <button type="submit" class="btn btn-primary" style="width:100%">Iniciar Sesión</button>
-                
-                <div class="forgot-password">
-                    <a href="#" onclick="showPasswordRecovery(); return false;">¿Olvidaste tu contraseña?</a>
-                </div>
             </form>
-            
-            <!-- Register Form -->
+
             <form id="registerForm" style="display:none" onsubmit="handleRegister(event)">
                 <div class="form-group">
                     <label class="form-label">Nombre</label>
-                    <input type="text" class="form-input" id="registerName" placeholder="Tu nombre" required>
+                    <input type="text" class="form-input" id="registerName" required>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Email</label>
-                    <input type="email" class="form-input" id="registerEmail" placeholder="tu@email.com" required>
+                    <input type="email" class="form-input" id="registerEmail" required>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Contraseña</label>
-                    <input type="password" class="form-input" id="registerPassword" placeholder="Mínimo 6 caracteres" required minlength="6">
+                    <input type="password" class="form-input" id="registerPassword" required minlength="6">
                 </div>
                 <button type="submit" class="btn btn-primary" style="width:100%">Crear Cuenta</button>
             </form>
-            
-            <!-- Password Recovery Form -->
-            <form id="recoveryForm" style="display:none" onsubmit="handlePasswordRecovery(event)">
-                <div class="form-group">
-                    <label class="form-label">Email</label>
-                    <input type="email" class="form-input" id="recoveryEmail" placeholder="tu@email.com" required>
-                </div>
-                <button type="submit" class="btn btn-primary" style="width:100%">Enviar Enlace de Recuperación</button>
-                <button type="button" class="btn btn-secondary" style="width:100%; margin-top: 0.5rem;" onclick="showAuthTab('login')">Volver</button>
-            </form>
-            
+
             <div id="authMessage" class="auth-message"></div>
         </div>
     </div>
 
-    <!-- MAIN APP -->
+    <!-- ========================================
+         MAIN APP
+         ======================================== -->
     <div id="mainApp" class="app">
         <header class="header">
             <div class="header-content">
                 <div class="logo">💰 Presupuesta2</div>
                 <div class="user-menu">
-                    <select class="month-selector" id="monthSelector" onchange="changeMonth()">
-                        <!-- Se llena automáticamente con JavaScript -->
-                    </select>
                     <button class="settings-btn" onclick="openSettings()">⚙️</button>
                 </div>
             </div>
         </header>
 
-          <nav class="nav-menu">
+        <nav class="nav-menu">
             <div class="nav-item active" onclick="showPage('dashboard', this)">📊 Dashboard</div>
             <div class="nav-item" onclick="showPage('ingresos', this)">💵 Ingresos</div>
-            <div class="nav-item" onclick="showPage('pagos', this)">📅 Pagos del Mes</div>
+            <div class="nav-item" onclick="showPage('gastos-fijos', this)">📌 Gastos Fijos</div>
+            <div class="nav-item" onclick="showPage('gastos-variables', this)">💸 Gastos Variables</div>
             <div class="nav-item" onclick="showPage('deudas', this)">💳 Deudas</div>
             <div class="nav-item" onclick="showPage('mercado', this)">🛒 Mercado</div>
-            <div class="nav-item" onclick="showPage('historico', this)">📈 Histórico</div>
+            <div class="nav-item" onclick="showPage('categorias', this)">🏷️ Categorías</div>
         </nav>
 
         <main class="dashboard">
-           <!-- ========== DASHBOARD PAGE ========== -->
+            <!-- DASHBOARD -->
             <div id="dashboard" class="page active">
-                <div class="welcome">
-                    <h1>Hola, <span id="userName">Usuario</span> 👋</h1>
-                    <p id="cycleDisplay">Cargando período...</p>
-                </div>
-                
-                <!-- Balance Principal -->
+                <h1 style="margin-bottom: 0.5rem;">Hola, <span id="userName">Usuario</span> 👋</h1>
+                <p style="color: var(--text-light); margin-bottom: 2rem;" id="cycleText">Ciclo actual: Cargando...</p>
+
                 <div class="balance-card">
-                    <div class="balance-label">Balance Disponible</div>
+                    <div class="balance-label">Balance del mes</div>
                     <div class="balance-amount" id="balanceAmount">$0</div>
                 </div>
-                
-                <!-- Resumen Principal -->
-                <div class="stat-cards">
-                    <div class="stat-card">
-                        <div class="stat-label">Presupuesto Mensual</div>
-                        <div class="stat-value" id="dashBudget">$0</div>
-                    </div>
-                    
-                    <div class="stat-card income">
-                        <div class="stat-label">Ingresos del Mes</div>
-                        <div class="stat-value" id="dashIncomes">$0</div>
-                    </div>
-                    
-                    <div class="stat-card expense">
-                        <div class="stat-label">Gastos Totales</div>
-                        <div class="stat-value" id="dashExpenses">$0</div>
-                    </div>
-                    
-                    <div class="stat-card">
-                        <div class="stat-label">Gastos Pagados</div>
-                        <div class="stat-value" id="dashPaid">$0</div>
-                    </div>
-                    
-                    <div class="stat-card pending">
-                        <div class="stat-label">Gastos Pendientes</div>
-                        <div class="stat-value" id="dashPending">$0</div>
-                    </div>
-                </div>
-                
-                <!-- Grid de 2 columnas -->
-                <div class="grid-2">
-                    <!-- Gráfica de Tendencia -->
-                    <div class="chart-container">
-                        <h3 class="card-title" style="margin-bottom: 1rem;">📈 Tendencia (Últimos 6 meses)</h3>
-                        <canvas id="trendChart"></canvas>
-                    </div>
-                    
-                    <!-- Comparación vs Mes Anterior -->
-                    <div class="comparison-card">
-                        <h3 class="card-title" style="margin-bottom: 1rem;">📊 Comparación vs Mes Anterior</h3>
-                        <div class="comparison-item">
-                            <span class="comparison-label">Ingresos</span>
-                            <span class="comparison-value" id="compIncomes">$0 <span class="trend-indicator">-</span></span>
-                        </div>
-                        <div class="comparison-item">
-                            <span class="comparison-label">Gastos</span>
-                            <span class="comparison-value" id="compExpenses">$0 <span class="trend-indicator">-</span></span>
-                        </div>
-                        <div class="comparison-item">
-                            <span class="comparison-label">Balance</span>
-                            <span class="comparison-value" id="compBalance">$0 <span class="trend-indicator">-</span></span>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Grid de 2 columnas -->
-                <div class="grid-2">
-                    <!-- Presupuesto de Mercado -->
-                    <div class="comparison-card">
-                        <h3 class="card-title" style="margin-bottom: 1rem;">🛒 Presupuesto de Mercado</h3>
-                        <div class="comparison-item">
-                            <span class="comparison-label">Presupuesto Total</span>
-                            <span class="comparison-value" id="marketBudget">$0</span>
-                        </div>
-                        <div class="comparison-item">
-                            <span class="comparison-label">Gastado</span>
-                            <span class="comparison-value" style="color: var(--danger);" id="marketSpent">$0</span>
-                        </div>
-                        <div class="comparison-item">
-                            <span class="comparison-label">Disponible</span>
-                            <span class="comparison-value" style="color: var(--secondary);" id="marketAvailable">$0</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="marketProgress" style="width: 0%"></div>
-                        </div>
-                        <p style="text-align: center; margin-top: 0.5rem; font-size: 0.9rem; color: var(--text-light);">
-                            <span id="marketPercent">0%</span> consumido
-                        </p>
-                    </div>
-                    
-                    <!-- Próximos Pagos -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">📅 Próximos Pagos (5 días)</h3>
-                            <button class="btn btn-small btn-primary" onclick="showPage('pagos', document.querySelectorAll('.nav-item')[2])">Ver Todos</button>
-                        </div>
-                        <div id="upcomingPayments">
-                            <div class="empty-state">
-                                <div class="empty-state-icon">✅</div>
-                                <p>No hay pagos próximos</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <!-- =============== INGRESOS PAGE =============== -->
-            <div id="ingresos" class="page">
-                <div class="welcome">
-                    <h1>💵 Ingresos</h1>
-                    <p>Gestiona tus fuentes de ingreso</p>
+                <div class="card">
+                    <h3 class="card-title">📈 Resumen Financiero</h3>
+                    <div class="stat-row">
+                        <span class="stat-label">💰 Ingresos</span>
+                        <span class="stat-value" style="color: var(--secondary)" id="totalIngresos">$0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">📌 Gastos Fijos</span>
+                        <span class="stat-value" id="totalGastosFijos">$0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">💸 Gastos Variables</span>
+                        <span class="stat-value" id="totalGastosVariables">$0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">💳 Deudas</span>
+                        <span class="stat-value" id="totalDeudas">$0</span>
+                    </div>
                 </div>
-                
-                <button class="btn btn-primary" onclick="openModal('addIngresoModal')" style="margin-bottom: 1.5rem;">
-                    ➕ Agregar Ingreso
-                </button>
-                
-                <div class="empty-state">
-                    <div class="empty-state-icon">💵</div>
-                    <p>No has registrado ingresos aún</p>
-                    <button class="btn btn-primary btn-small" style="margin-top:1rem" onclick="openModal('addIngresoModal')">Agregar Primer Ingreso</button>
-                </div>
-            </div>
 
-            <!-- =============== GASTOS FIJOS PAGE =============== -->
-            <div id="gastos-fijos" class="page">
-                <div class="welcome">
-                    <h1>📌 Gastos Fijos</h1>
-                    <p>Gastos recurrentes mensuales</p>
-                </div>
-                
-                <button class="btn btn-primary" onclick="openModal('addGastoFijoModal')" style="margin-bottom: 1.5rem;">
-                    ➕ Agregar Gasto Fijo
-                </button>
-                
-                <div class="empty-state">
-                    <div class="empty-state-icon">📌</div>
-                    <p>No tienes gastos fijos registrados</p>
-                    <button class="btn btn-primary btn-small" style="margin-top:1rem" onclick="openModal('addGastoFijoModal')">Agregar Primer Gasto Fijo</button>
-                </div>
-            </div>
-
-            <!-- =============== GASTOS VARIABLES PAGE =============== -->
-            <div id="gastos-variables" class="page">
-                <div class="welcome">
-                    <h1>💸 Gastos Variables</h1>
-                    <p>Gastos ocasionales y compras</p>
-                </div>
-                
-                <button class="btn btn-primary" onclick="openModal('quickAddModal')" style="margin-bottom: 1.5rem;">
-                    ➕ Agregar Gasto Variable
-                </button>
-                
-                <div class="empty-state">
-                    <div class="empty-state-icon">💸</div>
-                    <p>No has registrado gastos variables</p>
-                    <button class="btn btn-primary btn-small" style="margin-top:1rem" onclick="openModal('quickAddModal')">Agregar Primer Gasto</button>
-                </div>
-            </div>
-
-            <!-- =============== CATEGORÍAS PAGE =============== -->
-            <div id="categorias" class="page">
-                <div class="welcome">
-                    <h1>🏷️ Categorías</h1>
-                    <p>Organiza tus gastos por categorías</p>
-                </div>
-                
-                <button class="btn btn-primary" onclick="openModal('addCategoriaModal')" style="margin-bottom: 1.5rem;">
-                    ➕ Crear Categoría Personalizada
-                </button>
-                
                 <div class="grid">
                     <div class="card">
-                        <h3 class="card-title">Categorías Predefinidas</h3>
-                        <div style="margin-top: 1rem;">
-                            <span class="badge badge-primary">🏠 Vivienda</span>
-                            <span class="badge badge-primary">💡 Servicios</span>
-                            <span class="badge badge-primary">🍔 Comida</span>
-                            <span class="badge badge-primary">🚗 Transporte</span>
-                            <span class="badge badge-primary">🎮 Entretenimiento</span>
-                            <span class="badge badge-primary">👕 Ropa</span>
-                            <span class="badge badge-primary">💊 Salud</span>
-                            <span class="badge badge-primary">🎓 Educación</span>
-                            <span class="badge badge-primary">📦 Otros</span>
+                        <h3 class="card-title">💸 Últimos Gastos</h3>
+                        <div id="ultimosGastos" class="empty-state">
+                            <div class="empty-state-icon">🧾</div>
+                            <p>No hay gastos registrados</p>
                         </div>
                     </div>
-                    
+
                     <div class="card">
-                        <h3 class="card-title">Categorías Personalizadas</h3>
-                        <div class="empty-state">
-                            <div class="empty-state-icon">✨</div>
-                            <p style="font-size: 0.9rem;">Crea categorías personalizadas para tus necesidades</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        <!-- ========== PAGOS DEL MES PAGE ========== -->
-            <div id="pagos" class="page">
-                <div class="welcome">
-                    <h1>📅 Pagos del Mes</h1>
-                    <p>Control operativo de todos tus pagos</p>
-                </div>
-                
-                <!-- Resumen de Pagos -->
-                <div class="stat-cards" style="margin-bottom: 1.5rem;">
-                    <div class="stat-card expense">
-                        <div class="stat-label">Total del Mes</div>
-                        <div class="stat-value" id="pagosTot">$0</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Pagado</div>
-                        <div class="stat-value" style="color: var(--secondary);" id="pagosPagado">$0</div>
-                    </div>
-                    <div class="stat-card pending">
-                        <div class="stat-label">Pendiente</div>
-                        <div class="stat-value" id="pagosPendiente">$0</div>
-                    </div>
-                    <div class="stat-card danger">
-                        <div class="stat-label">Vencido</div>
-                        <div class="stat-value" id="pagosVencido">$0</div>
-                    </div>
-                </div>
-                
-                <div class="card">
-                    <h3 class="card-title">Todos los Pagos</h3>
-                    <div id="pagosContainer">
-                        <div class="empty-state">
-                            <div class="empty-state-icon">📅</div>
-                            <p>No hay pagos registrados para este mes</p>
+                        <h3 class="card-title">📅 Próximos Pagos</h3>
+                        <div id="proximosPagos" class="empty-state">
+                            <div class="empty-state-icon">📌</div>
+                            <p>No hay pagos próximos</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- ========== DEUDAS PAGE ========== -->
+            <!-- INGRESOS -->
+            <div id="ingresos" class="page">
+                <div class="card-header">
+                    <h2>💵 Ingresos</h2>
+                    <button class="btn btn-primary" onclick="openModal('modalIngreso')">+ Agregar</button>
+                </div>
+                <div class="info-box">
+                    📌 Registra tus fuentes de ingreso. El sistema calcula automáticamente los descuentos parafiscales.
+                </div>
+                <div id="listaIngresos" class="empty-state">
+                    <div class="empty-state-icon">💰</div>
+                    <p>No hay ingresos registrados</p>
+                </div>
+            </div>
+
+            <!-- GASTOS FIJOS -->
+            <div id="gastos-fijos" class="page">
+                <div class="card-header">
+                    <h2>📌 Gastos Fijos</h2>
+                    <button class="btn btn-primary" onclick="openModal('modalGastoFijo')">+ Agregar</button>
+                </div>
+                <div class="info-box">
+                    📌 Gastos recurrentes cada mes (arriendo, servicios, suscripciones, etc.)
+                </div>
+                <div id="listaGastosFijos" class="empty-state">
+                    <div class="empty-state-icon">📅</div>
+                    <p>No hay gastos fijos registrados</p>
+                </div>
+            </div>
+
+            <!-- GASTOS VARIABLES -->
+            <div id="gastos-variables" class="page">
+                <div class="card-header">
+                    <h2>💸 Gastos Variables</h2>
+                    <button class="btn btn-primary" onclick="openModal('modalGastoVariable')">+ Agregar</button>
+                </div>
+                <div class="info-box">
+                    📌 Gastos del día a día (comida, transporte, entretenimiento, etc.)
+                </div>
+                <div id="listaGastosVariables" class="empty-state">
+                    <div class="empty-state-icon">🛒</div>
+                    <p>No hay gastos variables este mes</p>
+                </div>
+            </div>
+
+            <!-- DEUDAS -->
             <div id="deudas" class="page">
-                <div class="welcome">
-                    <h1>💳 Deudas</h1>
-                    <p>Seguimiento de deudas a largo plazo</p>
+                <div class="card-header">
+                    <h2>💳 Deudas</h2>
+                    <button class="btn btn-primary" onclick="openModal('modalDeuda')">+ Agregar</button>
                 </div>
-                
-                <button class="btn btn-primary" onclick="openModal('addDeudaModal')" style="margin-bottom: 1.5rem;">
-                    ➕ Registrar Deuda
-                </button>
-                
-                <div id="deudasContainer">
-                    <div class="empty-state">
-                        <div class="empty-state-icon">💳</div>
-                        <p>No tienes deudas registradas</p>
-                        <button class="btn btn-primary btn-small" style="margin-top:1rem" onclick="openModal('addDeudaModal')">Registrar Primera Deuda</button>
-                    </div>
+                <div class="info-box">
+                    📌 Controla tus deudas y préstamos. Registra cada pago para ver tu progreso.
+                </div>
+                <div id="listaDeudas" class="empty-state">
+                    <div class="empty-state-icon">💳</div>
+                    <p>No tienes deudas registradas</p>
                 </div>
             </div>
 
-            <!-- ========== MERCADO PAGE ========== -->
+            <!-- MERCADO -->
             <div id="mercado" class="page">
-                <div class="welcome">
-                    <h1>🛒 Mercado</h1>
-                    <p>Control de presupuesto de mercado</p>
+                <div class="card-header">
+                    <h2>🛒 Lista de Mercado</h2>
+                    <button class="btn btn-primary" onclick="openModal('modalMercado')">+ Agregar Item</button>
                 </div>
-                
-                <div class="grid-2" style="margin-bottom: 1.5rem;">
-                    <button class="btn btn-primary" onclick="openModal('setBudgetModal')">
-                        💰 Establecer Presupuesto
-                    </button>
-                    <button class="btn btn-secondary" onclick="openModal('addCompraModal')">
-                        ➕ Registrar Compra
-                    </button>
+                <div class="grid" style="margin-bottom: 2rem;">
+                    <div class="card">
+                        <h4 style="color: var(--text-light); margin-bottom: 0.5rem;">Presupuesto</h4>
+                        <div style="font-size: 2rem; font-weight: 700; color: var(--primary);" id="presupuestoMercado">$0</div>
+                    </div>
+                    <div class="card">
+                        <h4 style="color: var(--text-light); margin-bottom: 0.5rem;">Gastado</h4>
+                        <div style="font-size: 2rem; font-weight: 700; color: var(--danger);" id="gastadoMercado">$0</div>
+                    </div>
+                    <div class="card">
+                        <h4 style="color: var(--text-light); margin-bottom: 0.5rem;">Restante</h4>
+                        <div style="font-size: 2rem; font-weight: 700; color: var(--secondary);" id="restanteMercado">$0</div>
+                    </div>
                 </div>
-                
-                <!-- Resumen de Mercado -->
-                <div class="comparison-card" style="margin-bottom: 1.5rem;">
-                    <h3 class="card-title" style="margin-bottom: 1rem;">📊 Resumen del Mes</h3>
-                    <div class="comparison-item">
-                        <span class="comparison-label">Presupuesto</span>
-                        <span class="comparison-value" id="mercadoPresupuesto">$0</span>
-                    </div>
-                    <div class="comparison-item">
-                        <span class="comparison-label">Gastado</span>
-                        <span class="comparison-value" style="color: var(--danger);" id="mercadoGastado">$0</span>
-                    </div>
-                    <div class="comparison-item">
-                        <span class="comparison-label">Disponible</span>
-                        <span class="comparison-value" style="color: var(--secondary);" id="mercadoDisponible">$0</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="mercadoProgress" style="width: 0%"></div>
-                    </div>
-                    <p style="text-align: center; margin-top: 0.5rem; font-size: 0.9rem; color: var(--text-light);">
-                        <span id="mercadoPercent">0%</span> consumido
-                    </p>
-                </div>
-                
-                <div class="card">
-                    <h3 class="card-title">Compras del Mes</h3>
-                    <div id="comprasContainer">
-                        <div class="empty-state">
-                            <div class="empty-state-icon">🛒</div>
-                            <p>No has registrado compras este mes</p>
-                        </div>
-                    </div>
+                <div id="listaMercado" class="empty-state">
+                    <div class="empty-state-icon">🛒</div>
+                    <p>Tu lista está vacía</p>
                 </div>
             </div>
 
-            <!-- ========== HISTÓRICO PAGE ========== -->
-            <div id="historico" class="page">
-                <div class="welcome">
-                    <h1>📈 Histórico</h1>
-                    <p>Análisis y reportes mensuales</p>
+            <!-- CATEGORÍAS -->
+            <div id="categorias" class="page">
+                <div class="card-header">
+                    <h2>🏷️ Categorías</h2>
+                    <button class="btn btn-primary" onclick="openModal('modalCategoria')">+ Crear</button>
                 </div>
-                
-                <!-- Filtros -->
-                <div class="card" style="margin-bottom: 1.5rem;">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">Desde</label>
-                            <input type="month" class="form-input" id="historicoDesde">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Hasta</label>
-                            <input type="month" class="form-input" id="historicoHasta">
-                        </div>
+                <div class="card">
+                    <h3 class="card-title">Predefinidas</h3>
+                    <div style="margin-top: 1rem;">
+                        <span class="badge badge-primary">🏠 Vivienda</span>
+                        <span class="badge badge-primary">💡 Servicios</span>
+                        <span class="badge badge-primary">🍔 Comida</span>
+                        <span class="badge badge-primary">🚗 Transporte</span>
+                        <span class="badge badge-primary">🎮 Entretenimiento</span>
+                        <span class="badge badge-primary">👕 Ropa</span>
+                        <span class="badge badge-primary">💊 Salud</span>
+                        <span class="badge badge-primary">🎓 Educación</span>
                     </div>
-                    <button class="btn btn-primary" onclick="loadHistorico()">🔍 Generar Reporte</button>
                 </div>
-                
-                <div id="historicoContainer">
-                    <div class="empty-state">
-                        <div class="empty-state-icon">📊</div>
-                        <p>Selecciona un rango de fechas para ver el histórico</p>
+                <div class="card">
+                    <h3 class="card-title">Personalizadas</h3>
+                    <div id="categoriasCustom" class="empty-state">
+                        <div class="empty-state-icon">✨</div>
+                        <p>No hay categorías personalizadas</p>
                     </div>
                 </div>
             </div>
         </main>
 
-        <!-- FAB Button -->
-        <button class="fab" onclick="openModal('quickAddModal')">+</button>
+        <button class="fab" onclick="openModal('modalGastoVariable')">+</button>
     </div>
 
-    <!-- =============== SIDEBAR (SETTINGS) =============== -->
+    <!-- ========================================
+         SIDEBAR (SETTINGS)
+         ======================================== -->
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSettings()"></div>
-    <div class="sidebar" id="settingsSidebar">
+    <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <h2 class="sidebar-title">⚙️ Configuración</h2>
             <button class="close-btn" onclick="closeSettings()" style="color: white;">×</button>
         </div>
         <div class="sidebar-content">
-            <!-- User Info -->
+            <!-- Usuario -->
             <div class="sidebar-section">
                 <div class="sidebar-section-header" onclick="toggleSection('user')">
                     <span class="sidebar-section-title">👤 Usuario</span>
                     <span class="sidebar-section-arrow" id="user-arrow">▼</span>
                 </div>
                 <div class="sidebar-section-content" id="user-content">
-                    <p style="margin-bottom: 0.5rem;"><strong>Email:</strong> <span id="userEmail">-</span></p>
-                    <div style="margin-bottom: 1rem;">
-                        <label class="form-label">Nombre</label>
-                        <input type="text" class="form-input" id="userNameInput" placeholder="Tu nombre">
-                        <button class="btn btn-primary btn-small" style="margin-top: 0.5rem;" onclick="updateUserName()">💾 Guardar Nombre</button>
-                    </div>
-                    <button class="btn btn-primary" style="width: 100%;" onclick="handleLogout()">🚪 Cerrar Sesión</button>
+                    <p style="margin-bottom: 1rem;"><strong>Email:</strong> <span id="userEmail">-</span></p>
+                    <button class="btn btn-danger" style="width: 100%;" onclick="handleLogout()">🚪 Cerrar Sesión</button>
                 </div>
             </div>
 
-            <!-- Preferences -->
+            <!-- Preferencias -->
             <div class="sidebar-section">
-                <div class="sidebar-section-header" onclick="toggleSection('preferences')">
+                <div class="sidebar-section-header" onclick="toggleSection('prefs')">
                     <span class="sidebar-section-title">🎨 Preferencias</span>
-                    <span class="sidebar-section-arrow" id="preferences-arrow">▼</span>
+                    <span class="sidebar-section-arrow" id="prefs-arrow">▼</span>
                 </div>
-                <div class="sidebar-section-content" id="preferences-content">
+                <div class="sidebar-section-content" id="prefs-content">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
                         <span>🌙 Modo Oscuro</span>
                         <label class="toggle-switch">
@@ -1460,142 +970,112 @@
                             <span class="toggle-slider"></span>
                         </label>
                     </div>
-                    
-                    <div style="margin-bottom: 1rem;">
-                        <label class="form-label">💰 Moneda</label>
-                        <select class="form-select" id="monedaSelect">
-                            <option value="COP">COP - Peso Colombiano</option>
-                            <option value="USD">USD - Dólar</option>
-                            <option value="EUR">EUR - Euro</option>
-                        </select>
-                    </div>
-                    
-                    <div style="margin-bottom: 1rem;">
+                    <div class="form-group">
                         <label class="form-label">📅 Día de Inicio del Ciclo</label>
-                        <input type="number" class="form-input" id="cicloInput" value="20" min="1" max="31">
-                        <p style="font-size: 0.85rem; color: var(--text-light); margin-top: 0.5rem;">El día del mes en que comienza tu ciclo de presupuesto</p>
+                        <input type="number" class="form-input" id="cycleDay" value="1" min="1" max="31">
                     </div>
-                    
-                    <button class="btn btn-primary" style="width: 100%;" onclick="savePreferences()">💾 Guardar Preferencias</button>
+                    <button class="btn btn-primary" style="width: 100%;" onclick="savePreferences()">💾 Guardar</button>
                 </div>
             </div>
 
-            <!-- About -->
+            <!-- Compartido -->
             <div class="sidebar-section">
-                <div class="sidebar-section-header" onclick="toggleSection('about')">
-                    <span class="sidebar-section-title">ℹ️ Acerca de</span>
-                    <span class="sidebar-section-arrow" id="about-arrow">▼</span>
+                <div class="sidebar-section-header" onclick="toggleSection('shared')">
+                    <span class="sidebar-section-title">💑 Presupuesto Compartido</span>
+                    <span class="sidebar-section-arrow" id="shared-arrow">▼</span>
                 </div>
-                <div class="sidebar-section-content" id="about-content">
-                    <p style="font-size: 0.9rem; margin-bottom: 0.5rem;"><strong>Presupuesta2</strong></p>
-                    <p style="font-size: 0.85rem; color: var(--text-light); margin-bottom: 1rem;">Versión 2.1.0</p>
-                    <p style="font-size: 0.85rem; color: var(--text-light);">Sistema de control financiero personal con dashboard inteligente.</p>
+                <div class="sidebar-section-content" id="shared-content">
+                    <p style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 1rem;">
+                        Comparte tu presupuesto con tu pareja o familia
+                    </p>
+                    <button class="btn btn-primary" style="width: 100%; margin-bottom: 0.5rem;" onclick="alert('🚧 Próximamente')">
+                        ➕ Crear Presupuesto Compartido
+                    </button>
+                    <button class="btn" style="width: 100%; background: var(--bg);" onclick="alert('🚧 Próximamente')">
+                        🔗 Unirme a uno
+                    </button>
+                </div>
+            </div>
+
+            <!-- Datos -->
+            <div class="sidebar-section">
+                <div class="sidebar-section-header" onclick="toggleSection('data')">
+                    <span class="sidebar-section-title">🗑️ Datos</span>
+                    <span class="sidebar-section-arrow" id="data-arrow">▼</span>
+                </div>
+                <div class="sidebar-section-content" id="data-content">
+                    <button class="btn btn-primary" style="width: 100%; margin-bottom: 0.5rem;" onclick="cleanOrphanData()">
+                        🧹 Limpiar Datos Huérfanos
+                    </button>
+                    <button class="btn btn-danger" style="width: 100%;" onclick="deleteAllData()">
+                        ⚠️ Eliminar Todos Mis Datos
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- =============== MODALS =============== -->
-    
-    <!-- Quick Add Expense Modal -->
-    <div class="modal" id="quickAddModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">💸 Agregar Gasto Rápido</h2>
-                <button class="close-btn" onclick="closeModal('quickAddModal')">×</button>
-            </div>
-            <form onsubmit="addQuickExpense(event)">
-                <div class="form-group">
-                    <label class="form-label">Monto (COP)</label>
-                    <input type="number" class="form-input" placeholder="50000" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Categoría</label>
-                    <select class="form-select" required>
-                        <option>🏠 Vivienda</option>
-                        <option>💡 Servicios</option>
-                        <option>🍔 Comida</option>
-                        <option>🚗 Transporte</option>
-                        <option>🎮 Entretenimiento</option>
-                        <option>👕 Ropa</option>
-                        <option>💊 Salud</option>
-                        <option>🎓 Educación</option>
-                        <option>📦 Otros</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Descripción (opcional)</label>
-                    <input type="text" class="form-input" placeholder="Ej: Almuerzo, Uber, Netflix">
-                </div>
-                <button type="submit" class="btn btn-primary" style="width:100%">Agregar Gasto</button>
-            </form>
-        </div>
-    </div>
+    <!-- ========================================
+         MODALS
+         ======================================== -->
 
-    <!-- Add Income Modal -->
-    <div class="modal" id="addIngresoModal">
+    <!-- Modal Ingreso -->
+    <div class="modal" id="modalIngreso">
         <div class="modal-content">
             <div class="modal-header">
                 <h2 class="modal-title">💵 Agregar Ingreso</h2>
-                <button class="close-btn" onclick="closeModal('addIngresoModal')">×</button>
+                <button class="close-btn" onclick="closeModal('modalIngreso')">×</button>
             </div>
             <form onsubmit="addIngreso(event)">
                 <div class="form-group">
-                    <label class="form-label">Fuente de Ingreso</label>
-                    <input type="text" class="form-input" id="ingresoFuente" placeholder="Ej: Salario Google, Freelance diseño" required>
+                    <label class="form-label">Fuente</label>
+                    <input type="text" class="form-input" id="ingresoFuente" placeholder="Ej: Salario Google" required>
                 </div>
-                
                 <div class="form-group">
                     <label class="form-label">Tipo de Contrato</label>
-                    <select class="form-select" id="ingresoTipo" onchange="updateIngresoCalculation()" required>
-                        <option value="laboral">💼 Contrato Laboral (Descuento 8%)</option>
-                        <option value="servicios">💰 Prestación de Servicios (Descuento 28.5%)</option>
-                        <option value="exento">🎁 Bonos/Otros (Sin descuento)</option>
+                    <select class="form-select" id="ingresoTipo" onchange="calcularIngresoNeto()">
+                        <option value="laboral">💼 Laboral (8% descuento)</option>
+                        <option value="servicios">💰 Servicios (28.5% descuento)</option>
+                        <option value="exento">🎁 Exento (sin descuento)</option>
                     </select>
                 </div>
-                
                 <div class="form-group">
-                    <label class="form-label">Monto Bruto (COP)</label>
-                    <input type="number" class="form-input" id="ingresoBruto" placeholder="0" oninput="updateIngresoCalculation()" required>
+                    <label class="form-label">Monto Bruto</label>
+                    <input type="number" class="form-input" id="ingresoBruto" oninput="calcularIngresoNeto()" required>
                 </div>
-                
                 <div class="form-group">
                     <label class="form-label">Frecuencia</label>
-                    <select class="form-select" id="ingresoFrecuencia" required>
-                        <option value="Único">Único</option>
-                        <option value="Mensual" selected>Mensual</option>
-                        <option value="Quincenal">Quincenal</option>
-                        <option value="Semanal">Semanal</option>
+                    <select class="form-select" id="ingresoFrecuencia">
+                        <option value="unico">Único</option>
+                        <option value="mensual">Mensual</option>
+                        <option value="quincenal">Quincenal</option>
                     </select>
                 </div>
-                
-                <!-- Cálculo Automático -->
                 <div class="calculation-box" id="ingresoCalculo">
                     <div class="calculation-row">
-                        <span>Monto Bruto:</span>
-                        <strong id="displayBruto">$0</strong>
+                        <span>Bruto:</span>
+                        <strong id="calcBruto">$0</strong>
                     </div>
                     <div class="calculation-row">
                         <span>Descuento:</span>
-                        <strong style="color: var(--danger);" id="displayDescuento">-$0</strong>
+                        <strong id="calcDescuento" style="color: var(--danger)">-$0</strong>
                     </div>
-                    <div class="calculation-row total">
-                        <span>Monto Neto:</span>
-                        <strong style="color: var(--secondary);" id="displayNeto">$0</strong>
+                    <div class="calculation-row" style="border-top: 2px solid var(--border); padding-top: 0.5rem; margin-top: 0.5rem;">
+                        <span><strong>Neto:</strong></span>
+                        <strong id="calcNeto" style="color: var(--secondary)">$0</strong>
                     </div>
                 </div>
-                
-                <button type="submit" class="btn btn-primary" style="width:100%; margin-top: 1rem;">Guardar Ingreso</button>
+                <button type="submit" class="btn btn-primary" style="width:100%">Agregar</button>
             </form>
         </div>
     </div>
 
-    <!-- Add Fixed Expense Modal -->
-    <div class="modal" id="addGastoFijoModal">
+    <!-- Modal Gasto Fijo -->
+    <div class="modal" id="modalGastoFijo">
         <div class="modal-content">
             <div class="modal-header">
                 <h2 class="modal-title">📌 Agregar Gasto Fijo</h2>
-                <button class="close-btn" onclick="closeModal('addGastoFijoModal')">×</button>
+                <button class="close-btn" onclick="closeModal('modalGastoFijo')">×</button>
             </div>
             <form onsubmit="addGastoFijo(event)">
                 <div class="form-group">
@@ -1603,48 +1083,124 @@
                     <select class="form-select" required>
                         <option>🏠 Vivienda</option>
                         <option>💡 Servicios</option>
-                        <option>🍔 Comida</option>
                         <option>🚗 Transporte</option>
-                        <option>🎮 Entretenimiento</option>
-                        <option>👕 Ropa</option>
-                        <option>💊 Salud</option>
-                        <option>🎓 Educación</option>
                         <option>📦 Otros</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Descripción</label>
-                    <input type="text" class="form-input" placeholder="Ej: Arriendo, Netflix, Internet" required>
+                    <input type="text" class="form-input" placeholder="Ej: Arriendo, Netflix" required>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Monto (COP)</label>
-                    <input type="number" class="form-input" placeholder="100000" required>
+                    <label class="form-label">Monto</label>
+                    <input type="number" class="form-input" required>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Día de Pago del Mes</label>
-                    <input type="number" class="form-input" placeholder="5" min="1" max="31" required>
+                    <label class="form-label">Día de Pago (1-31)</label>
+                    <input type="number" class="form-input" min="1" max="31" value="1" required>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Recordatorio (días antes)</label>
-                    <select class="form-select">
-                        <option value="">Sin recordatorio</option>
-                        <option value="1">1 día antes</option>
-                        <option value="3">3 días antes</option>
-                        <option value="5">5 días antes</option>
-                        <option value="7">7 días antes</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-primary" style="width:100%">Guardar Gasto Fijo</button>
+                <button type="submit" class="btn btn-primary" style="width:100%">Agregar</button>
             </form>
         </div>
     </div>
 
-    <!-- Add Category Modal -->
-    <div class="modal" id="addCategoriaModal">
+    <!-- Modal Gasto Variable -->
+    <div class="modal" id="modalGastoVariable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">💸 Agregar Gasto</h2>
+                <button class="close-btn" onclick="closeModal('modalGastoVariable')">×</button>
+            </div>
+            <form onsubmit="addGastoVariable(event)">
+                <div class="form-group">
+                    <label class="form-label">Categoría</label>
+                    <select class="form-select" required>
+                        <option>🍔 Comida</option>
+                        <option>🚗 Transporte</option>
+                        <option>🎮 Entretenimiento</option>
+                        <option>👕 Ropa</option>
+                        <option>💊 Salud</option>
+                        <option>📦 Otros</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Descripción</label>
+                    <input type="text" class="form-input" placeholder="Ej: Almuerzo, Uber" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Monto</label>
+                    <input type="number" class="form-input" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%">Agregar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Deuda -->
+    <div class="modal" id="modalDeuda">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">💳 Agregar Deuda</h2>
+                <button class="close-btn" onclick="closeModal('modalDeuda')">×</button>
+            </div>
+            <form onsubmit="addDeuda(event)">
+                <div class="form-group">
+                    <label class="form-label">Tipo</label>
+                    <select class="form-select" required>
+                        <option>💳 Tarjeta de Crédito</option>
+                        <option>🏦 Préstamo Bancario</option>
+                        <option>👤 Préstamo Personal</option>
+                        <option>📦 Otro</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Descripción</label>
+                    <input type="text" class="form-input" placeholder="Ej: Tarjeta Visa" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Monto Total</label>
+                    <input type="number" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Cuota Mensual</label>
+                    <input type="number" class="form-input" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%">Agregar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Mercado -->
+    <div class="modal" id="modalMercado">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">🛒 Agregar Item</h2>
+                <button class="close-btn" onclick="closeModal('modalMercado')">×</button>
+            </div>
+            <form onsubmit="addMercadoItem(event)">
+                <div class="form-group">
+                    <label class="form-label">Producto</label>
+                    <input type="text" class="form-input" placeholder="Ej: Arroz" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Cantidad</label>
+                    <input type="text" class="form-input" placeholder="Ej: 1kg, 2 unidades" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Precio Estimado</label>
+                    <input type="number" class="form-input" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%">Agregar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Categoría -->
+    <div class="modal" id="modalCategoria">
         <div class="modal-content">
             <div class="modal-header">
                 <h2 class="modal-title">🏷️ Crear Categoría</h2>
-                <button class="close-btn" onclick="closeModal('addCategoriaModal')">×</button>
+                <button class="close-btn" onclick="closeModal('modalCategoria')">×</button>
             </div>
             <form onsubmit="addCategoria(event)">
                 <div class="form-group">
@@ -1652,197 +1208,54 @@
                     <input type="text" class="form-input" placeholder="🎯" maxlength="2" required>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Nombre de la Categoría</label>
-                    <input type="text" class="form-input" placeholder="Ej: Mascotas, Inversiones" required>
+                    <label class="form-label">Nombre</label>
+                    <input type="text" class="form-input" placeholder="Ej: Mascotas" required>
                 </div>
-                <button type="submit" class="btn btn-primary" style="width:100%">Crear Categoría</button>
-            </form>
-        </div>
-    </div>
-    <!-- Add Deuda Modal -->
-    <div class="modal" id="addDeudaModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">💳 Registrar Deuda</h2>
-                <button class="close-btn" onclick="closeModal('addDeudaModal')">×</button>
-            </div>
-            <form onsubmit="addDeuda(event)">
-                <div class="form-group">
-                    <label class="form-label">Tipo de Deuda</label>
-                    <select class="form-select" id="deudaTipo" required>
-                        <option value="Tarjeta de Crédito">💳 Tarjeta de Crédito</option>
-                        <option value="Préstamo Bancario">🏦 Préstamo Bancario</option>
-                        <option value="Préstamo Personal">👤 Préstamo Personal</option>
-                        <option value="Crédito de Libranza">📄 Crédito de Libranza</option>
-                        <option value="Otro">📦 Otro</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Nombre/Descripción</label>
-                    <input type="text" class="form-input" id="deudaNombre" placeholder="Ej: Visa, Préstamo Carro" required>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">Monto Total</label>
-                        <input type="number" class="form-input" id="deudaMonto" placeholder="0" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Tasa (%)</label>
-                        <input type="number" class="form-input" id="deudaTasa" placeholder="0" step="0.01">
-                    </div>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">Número de Cuotas</label>
-                        <input type="number" class="form-input" id="deudaCuotas" placeholder="12" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Día de Pago</label>
-                        <input type="number" class="form-input" id="deudaDiaPago" placeholder="5" min="1" max="31" required>
-                    </div>
-                </div>
-                
-                <button type="submit" class="btn btn-primary" style="width:100%">Registrar Deuda</button>
+                <button type="submit" class="btn btn-primary" style="width:100%">Crear</button>
             </form>
         </div>
     </div>
 
-    <!-- Set Budget Modal -->
-    <div class="modal" id="setBudgetModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">💰 Establecer Presupuesto de Mercado</h2>
-                <button class="close-btn" onclick="closeModal('setBudgetModal')">×</button>
-            </div>
-            <form onsubmit="setMarketBudget(event)">
-                <div class="form-group">
-                    <label class="form-label">Presupuesto Mensual</label>
-                    <input type="number" class="form-input" id="marketBudgetInput" placeholder="500000" required>
-                    <p style="font-size: 0.85rem; color: var(--text-light); margin-top: 0.5rem;">
-                        Este será tu presupuesto de mercado para el mes actual
-                    </p>
-                </div>
-                <button type="submit" class="btn btn-primary" style="width:100%">Establecer Presupuesto</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Add Compra Modal -->
-    <div class="modal" id="addCompraModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">🛒 Registrar Compra</h2>
-                <button class="close-btn" onclick="closeModal('addCompraModal')">×</button>
-            </div>
-            <form onsubmit="addCompra(event)">
-                <div class="form-group">
-                    <label class="form-label">Descripción</label>
-                    <input type="text" class="form-input" id="compraDesc" placeholder="Ej: Compra del viernes" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Monto</label>
-                    <input type="number" class="form-input" id="compraAmount" placeholder="150000" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Fecha</label>
-                    <input type="date" class="form-input" id="compraDate" required>
-                </div>
-                <button type="submit" class="btn btn-primary" style="width:100%">Registrar Compra</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Confirm Delete Modal -->
-    <div class="modal" id="confirmDeleteModal">
-        <div class="confirm-dialog">
-            <h3>⚠️ Confirmar Eliminación</h3>
-            <p id="deleteMessage">¿Estás seguro de eliminar este registro?</p>
-            <p style="font-size: 0.85rem; color: var(--text-light);" id="deleteWarning">
-                Esta acción no se puede deshacer.
-            </p>
-            <div class="confirm-dialog-actions">
-                <button class="btn btn-secondary" onclick="closeModal('confirmDeleteModal')">Cancelar</button>
-                <button class="btn btn-danger" id="confirmDeleteBtn">Eliminar</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- =============== JAVASCRIPT =============== -->
+    <!-- ========================================
+         JAVASCRIPT
+         ======================================== -->
     <script>
-        // SUPABASE CONFIGURATION
+        // ============================================
+        // CONFIGURACIÓN
+        // ============================================
         const SUPABASE_URL = 'https://ctppigfvvqyizvzqfvzz.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN0cHBpZ2Z2dnF5aXp2enFmdnp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkzMDkzNDcsImV4cCI6MjA4NDg4NTM0N30.er70gArSteC92YMwk6GS7rD8EKlAKrrRn25vqtJRLas';
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN0cHBpZ2Z2dnF5aXp2enFmdnp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkzMDkzNDcsImV4cCI6MjA4NDg4NTM0N30.er70gArSteC92YMwk6GS7rD8EKlAKrrRn25vqtJRLas';
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         
         let currentUser = null;
-        let currentMonth = new Date();
-        let trendChart = null
 
-        // INIT
-       async function init() {
-            console.log('=== Iniciando Presupuesta2 v3 ===');
-            
-            try {
-                const { data, error } = await supabaseClient.auth.getSession();
-                
-                if (error) {
-                    console.error('Error al verificar sesión:', error);
-                    return;
-                }
-                
-                if (data?.session) {
-                    currentUser = data.session.user;
-                    console.log('Usuario autenticado:', currentUser.email);
-                    showApp();
-                } else {
-                    console.log('No hay sesión activa');
-                }
-            } catch (error) {
-                console.error('Error en init:', error);
+        // ============================================
+        // INICIALIZACIÓN
+        // ============================================
+        window.addEventListener('load', async () => {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (session) {
+                currentUser = session.user;
+                showApp();
             }
-            
-            // Load theme
-            const theme = localStorage.getItem('theme');
-            if (theme === 'dark') {
-                document.documentElement.setAttribute('data-theme', 'dark');
-                const toggle = document.getElementById('darkModeToggle');
-                if (toggle) toggle.checked = true;
-            }
-            
-            // Set today's date in forms
-            const today = new Date().toISOString().split('T')[0];
-            const dateInputs = document.querySelectorAll('input[type="date"]');
-            dateInputs.forEach(input => {
-                if (!input.value) input.value = today;
-            });
-        }
+            loadTheme();
+        });
 
-        // AUTH FUNCTIONS
+        // ============================================
+        // AUTENTICACIÓN
+        // ============================================
         function showAuthTab(tab) {
             document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
             document.getElementById('loginForm').style.display = 'none';
             document.getElementById('registerForm').style.display = 'none';
-            document.getElementById('recoveryForm').style.display = 'none';
-            document.getElementById('authMessage').className = 'auth-message';
             
             if (tab === 'login') {
                 document.querySelectorAll('.auth-tab')[0].classList.add('active');
                 document.getElementById('loginForm').style.display = 'block';
-            } else if (tab === 'register') {
+            } else {
                 document.querySelectorAll('.auth-tab')[1].classList.add('active');
                 document.getElementById('registerForm').style.display = 'block';
             }
-        }
-
-        function showPasswordRecovery() {
-            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
-            document.getElementById('loginForm').style.display = 'none';
-            document.getElementById('registerForm').style.display = 'none';
-            document.getElementById('recoveryForm').style.display = 'block';
-            document.getElementById('authMessage').className = 'auth-message';
         }
 
         async function handleLogin(e) {
@@ -1856,9 +1269,8 @@
                 
                 currentUser = data.user;
                 showApp();
-                
             } catch (error) {
-                showAuthMessage(error.message, 'error');
+                showMessage(error.message, 'error');
             }
         }
 
@@ -1870,37 +1282,16 @@
             
             try {
                 const { data, error } = await supabaseClient.auth.signUp({
-                    email,
-                    password,
+                    email, password,
                     options: { data: { name } }
                 });
                 
                 if (error) throw error;
                 
-                showAuthMessage('✅ Cuenta creada. Por favor verifica tu email.', 'success');
-                setTimeout(() => showAuthTab('login'), 3000);
-                
+                showMessage('✅ Cuenta creada exitosamente', 'success');
+                setTimeout(() => showAuthTab('login'), 2000);
             } catch (error) {
-                showAuthMessage(error.message, 'error');
-            }
-        }
-
-        async function handlePasswordRecovery(e) {
-            e.preventDefault();
-            const email = document.getElementById('recoveryEmail').value;
-            
-            try {
-                const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-                    redirectTo: window.location.origin
-                });
-                
-                if (error) throw error;
-                
-                showAuthMessage('✅ Enlace de recuperación enviado a tu email.', 'success');
-                setTimeout(() => showAuthTab('login'), 3000);
-                
-            } catch (error) {
-                showAuthMessage(error.message, 'error');
+                showMessage(error.message, 'error');
             }
         }
 
@@ -1909,44 +1300,59 @@
             location.reload();
         }
 
-        function showAuthMessage(message, type) {
-            const msg = document.getElementById('authMessage');
-            msg.textContent = message;
-            msg.className = `auth-message ${type}`;
+        function showMessage(msg, type) {
+            const el = document.getElementById('authMessage');
+            el.textContent = msg;
+            el.className = `auth-message ${type}`;
         }
 
         function showApp() {
             document.getElementById('authScreen').style.display = 'none';
             document.getElementById('mainApp').classList.add('active');
             
-            const userName = currentUser.user_metadata?.name || 'Usuario';
+            const userName = currentUser.user_metadata?.name || currentUser.email.split('@')[0];
             document.getElementById('userName').textContent = userName;
             document.getElementById('userEmail').textContent = currentUser.email;
-            document.getElementById('userNameInput').value = userName;
             
-            loadPreferences();
-            populateMonthSelector();
-            updateCicloDisplay();
-            loadAllData();
+            loadAll();
         }
 
-        // NAVIGATION
-        function showPage(pageId, element) {
+        async function loadAll() {
+            await Promise.all([
+                loadIngresos(),
+                loadGastosFijos(),
+                loadGastosVariables(),
+                loadCategorias()
+            ]);
+            updateDashboard();
+            updateCycleText();
+        }
+
+        // ============================================
+        // NAVEGACIÓN
+        // ============================================
+        function showPage(id, el) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            
-            document.getElementById(pageId).classList.add('active');
-            if (element) element.classList.add('active');
+            document.getElementById(id).classList.add('active');
+            if (el) el.classList.add('active');
         }
 
-        // SETTINGS
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
         function openSettings() {
-            document.getElementById('settingsSidebar').classList.add('active');
+            document.getElementById('sidebar').classList.add('active');
             document.getElementById('sidebarOverlay').classList.add('active');
         }
 
         function closeSettings() {
-            document.getElementById('settingsSidebar').classList.remove('active');
+            document.getElementById('sidebar').classList.remove('active');
             document.getElementById('sidebarOverlay').classList.remove('active');
         }
 
@@ -1957,206 +1363,70 @@
             arrow.classList.toggle('open');
         }
 
-        // MODAL FUNCTIONS
-        function openModal(id) {
-            document.getElementById(id).classList.add('active');
-        }
-
-        function closeModal(id) {
-            document.getElementById(id).classList.remove('active');
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.modal').forEach(m => {
-                m.addEventListener('click', e => {
-                    if(e.target === m) m.classList.remove('active');
-                });
-            });
-        });
-
-        // =============== FORM SUBMIT FUNCTIONS ===============
-
-        async function addIngreso(e) {
-            e.preventDefault();
-            
-            const fuente = document.getElementById('ingresoFuente').value;
+        // ============================================
+        // INGRESOS
+        // ============================================
+        function calcularIngresoNeto() {
             const tipo = document.getElementById('ingresoTipo').value;
-            const montoBruto = parseFloat(document.getElementById('ingresoBruto').value);
-            const frecuencia = document.getElementById('ingresoFrecuencia').value;
+            const bruto = parseFloat(document.getElementById('ingresoBruto').value) || 0;
             
-            let porcentajeDescuento = 0;
-            if (tipo === 'laboral') porcentajeDescuento = 0.08;
-            else if (tipo === 'servicios') porcentajeDescuento = 0.285;
-            else porcentajeDescuento = 0;
-            
-            const descuento = montoBruto * porcentajeDescuento;
-            const montoNeto = montoBruto - descuento;
-            
-            try {
-                const { data, error } = await supabaseClient
-                    .from('incomes')
-                    .insert([{
-                        user_id: currentUser.id,
-                        space_id: null,
-                        source: fuente,
-                        type: tipo,
-                        frequency: frecuencia,
-                        gross_amount: montoBruto,
-                        net_amount: montoNeto,
-                    }]);
-                
-                if (error) throw error;
-                
-                alert('✅ Ingreso agregado exitosamente');
-                closeModal('addIngresoModal');
-                e.target.reset();
+            if (bruto === 0) {
                 document.getElementById('ingresoCalculo').style.display = 'none';
-                
-                loadIngresos();
-                updateDashboard();
-                
-            } catch (error) {
-                alert('❌ Error al guardar: ' + error.message);
-                console.error('Error:', error);
-            }
-        }
-
-        function updateIngresoCalculation() {
-            const tipo = document.getElementById('ingresoTipo')?.value;
-            const montoBruto = parseFloat(document.getElementById('ingresoBruto')?.value) || 0;
-            
-            if (montoBruto === 0) {
-                const calculoBox = document.getElementById('ingresoCalculo');
-                if (calculoBox) calculoBox.style.display = 'none';
                 return;
             }
             
-            let porcentajeDescuento = 0;
-            if (tipo === 'laboral') porcentajeDescuento = 0.08;
-            else if (tipo === 'servicios') porcentajeDescuento = 0.285;
+            let descuento = 0;
+            if (tipo === 'laboral') descuento = bruto * 0.08;
+            else if (tipo === 'servicios') descuento = bruto * 0.285;
             
-            const descuento = montoBruto * porcentajeDescuento;
-            const montoNeto = montoBruto - descuento;
+            const neto = bruto - descuento;
             
-            const calculoBox = document.getElementById('ingresoCalculo');
-            const displayBruto = document.getElementById('displayBruto');
-            const displayDescuento = document.getElementById('displayDescuento');
-            const displayNeto = document.getElementById('displayNeto');
-            
-            if (calculoBox) calculoBox.style.display = 'block';
-            if (displayBruto) displayBruto.textContent = `$${montoBruto.toLocaleString('es-CO')}`;
-            if (displayDescuento) displayDescuento.textContent = `-$${descuento.toLocaleString('es-CO')} (${(porcentajeDescuento * 100)}%)`;
-            if (displayNeto) displayNeto.textContent = `$${montoNeto.toLocaleString('es-CO')}`;
+            document.getElementById('calcBruto').textContent = '$' + bruto.toLocaleString('es-CO');
+            document.getElementById('calcDescuento').textContent = '-$' + descuento.toLocaleString('es-CO');
+            document.getElementById('calcNeto').textContent = '$' + neto.toLocaleString('es-CO');
+            document.getElementById('ingresoCalculo').style.display = 'block';
         }
 
-        async function addQuickExpense(e) {
+        async function addIngreso(e) {
             e.preventDefault();
-            
             const form = e.target;
-            const monto = parseFloat(form.querySelectorAll('input')[0].value);
-            const categoria = form.querySelector('select').value;
-            const descripcion = form.querySelectorAll('input')[1].value;
+            
+            const fuente = document.getElementById('ingresoFuente').value;
+            const tipo = document.getElementById('ingresoTipo').value;
+            const bruto = parseFloat(document.getElementById('ingresoBruto').value);
+            const frecuencia = document.getElementById('ingresoFrecuencia').value;
+            
+            let descuento = 0;
+            if (tipo === 'laboral') descuento = bruto * 0.08;
+            else if (tipo === 'servicios') descuento = bruto * 0.285;
+            const neto = bruto - descuento;
             
             try {
-                const { data, error } = await supabaseClient
-                    .from('variable_expenses')
-                    .insert([{
-                        user_id: currentUser.id,
-                        space_id: null,
-                        category: categoria,
-                        description: descripcion || 'Sin descripción',
-                        amount: monto,
-                        expense_date: new Date().toISOString().split('T')[0]
-                    }]);
+                const { error } = await supabaseClient.from('incomes').insert([{
+                    user_id: currentUser.id,
+                    source: fuente,
+                    type: tipo,
+                    frequency: frecuencia,
+                    gross_amount: bruto,
+                    net_amount: neto
+                }]);
                 
                 if (error) throw error;
                 
-                alert('✅ Gasto agregado exitosamente');
-                closeModal('quickAddModal');
+                alert('✅ Ingreso agregado');
+                closeModal('modalIngreso');
                 form.reset();
-                
-                loadGastosVariables();
+                document.getElementById('ingresoCalculo').style.display = 'none';
+                loadIngresos();
                 updateDashboard();
-                
             } catch (error) {
-                alert('❌ Error al guardar: ' + error.message);
-                console.error('Error:', error);
+                alert('❌ Error: ' + error.message);
             }
         }
-
-        async function addGastoFijo(e) {
-            e.preventDefault();
-            
-            const form = e.target;
-            const categoria = form.querySelectorAll('select')[0].value;
-            const descripcion = form.querySelectorAll('input')[0].value;
-            const monto = parseFloat(form.querySelectorAll('input')[1].value);
-            const diaPago = parseInt(form.querySelectorAll('input')[2].value);
-            const recordatorio = form.querySelectorAll('select')[1].value;
-            
-            try {
-                const { data, error } = await supabaseClient
-                    .from('fixed_expenses')
-                    .insert([{
-                        user_id: currentUser.id,
-                        space_id: null,
-                        category: categoria,
-                        description: descripcion,
-                        amount: monto,
-                        payment_day: diaPago,
-                        reminder_days: recordatorio ? parseInt(recordatorio) : null,
-                        is_paid: false
-                    }]);
-                
-                if (error) throw error;
-                
-                alert('✅ Gasto fijo agregado exitosamente');
-                closeModal('addGastoFijoModal');
-                form.reset();
-                
-                loadGastosFijos();
-                updateDashboard();
-                
-            } catch (error) {
-                alert('❌ Error al guardar: ' + error.message);
-                console.error('Error:', error);
-            }
-        }
-
-        async function addCategoria(e) {
-            e.preventDefault();
-            
-            const form = e.target;
-            const emoji = form.querySelectorAll('input')[0].value;
-            const nombre = form.querySelectorAll('input')[1].value;
-            
-            try {
-                const { data, error } = await supabaseClient
-                    .from('custom_categories')
-                    .insert([{
-                        user_id: currentUser.id,
-                        space_id: null,
-                        emoji: emoji,
-                        name: nombre
-                    }]);
-                
-                if (error) throw error;
-                
-                alert('✅ Categoría creada exitosamente');
-                closeModal('addCategoriaModal');
-                form.reset();
-                
-            } catch (error) {
-                alert('❌ Error al guardar: ' + error.message);
-                console.error('Error:', error);
-            }
-        }
-
-        // =============== LOAD DATA FUNCTIONS ===============
 
         async function loadIngresos() {
             try {
-                const { data, error } = await supabaseClient
+                const { data, error } = await supabase
                     .from('incomes')
                     .select('*')
                     .eq('user_id', currentUser.id)
@@ -2164,89 +1434,68 @@
                 
                 if (error) throw error;
                 
-                const ingresosPage = document.getElementById('ingresos');
-                const emptyState = ingresosPage.querySelector('.empty-state');
+                const container = document.getElementById('listaIngresos');
                 
                 if (data && data.length > 0) {
-                    if (emptyState) emptyState.style.display = 'none';
+                    let html = '<div class="card"><table style="width:100%; border-collapse: collapse;">';
+                    html += '<thead><tr style="border-bottom: 2px solid var(--border);"><th style="padding: 1rem; text-align: left;">Fuente</th><th style="padding: 1rem; text-align: left;">Tipo</th><th style="padding: 1rem; text-align: right;">Neto</th></tr></thead><tbody>';
                     
-                    let table = ingresosPage.querySelector('.ingresos-table');
-                    if (!table) {
-                        const card = document.createElement('div');
-                        card.className = 'card';
-                        card.innerHTML = '<table class="ingresos-table" style="width:100%; border-collapse: collapse;"></table>';
-                        emptyState.parentNode.insertBefore(card, emptyState);
-                        table = card.querySelector('table');
-                    }
-                    
-                    let html = `
-                        <thead>
-                            <tr style="border-bottom: 2px solid var(--border);">
-                                <th style="padding: 1rem; text-align: left;">Fuente</th>
-                                <th style="padding: 1rem; text-align: left;">Frecuencia</th>
-                                <th style="padding: 1rem; text-align: right;">Monto</th>
-                                <th style="padding: 1rem; text-align: center;">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                    `;
-                    
-                    let totalIngresos = 0;
-                    
-                    data.forEach(ingreso => {
-                        totalIngresos += parseFloat(ingreso.net_amount || 0);
-                        
-                        const bruto = parseFloat(ingreso.gross_amount || 0);
-                        const neto = parseFloat(ingreso.net_amount || 0);
-                        const tipoLabel = ingreso.type === 'laboral' ? '💼' : ingreso.type === 'servicios' ? '💰' : '🎁';
-                        
-                        html += `
-                            <tr style="border-bottom: 1px solid var(--border);">
-                                <td style="padding: 1rem;">
-                                    <div style="font-weight: 600;">${ingreso.source}</div>
-                                    <div style="font-size: 0.85rem; color: var(--text-light);">${tipoLabel} ${ingreso.type}</div>
-                                </td>
-                                <td style="padding: 1rem;">${ingreso.frequency}</td>
-                                <td style="padding: 1rem; text-align: right;">
-                                    <div style="font-weight: 600; color: var(--secondary);">$${neto.toLocaleString('es-CO')}</div>
-                                    <div style="font-size: 0.85rem; color: var(--text-light);">Bruto: $${bruto.toLocaleString('es-CO')}</div>
-                                </td>
-                                <td style="padding: 1rem; text-align: center;">
-                                    <button class="btn btn-danger btn-icon" onclick="confirmDelete('income', '${ingreso.id}', '${ingreso.source}')">🗑️</button>
-                                </td>
-                            </tr>
-                        `;
+                    data.forEach(i => {
+                        const tipoIcon = i.type === 'laboral' ? '💼' : i.type === 'servicios' ? '💰' : '🎁';
+                        html += `<tr style="border-bottom: 1px solid var(--border);">
+                            <td style="padding: 1rem;">${i.source}</td>
+                            <td style="padding: 1rem;">${tipoIcon} ${i.type}</td>
+                            <td style="padding: 1rem; text-align: right; font-weight: 600; color: var(--secondary);">$${parseFloat(i.net_amount).toLocaleString('es-CO')}</td>
+                        </tr>`;
                     });
                     
-                    html += `
-                        </tbody>
-                        <tfoot>
-                            <tr style="border-top: 2px solid var(--border); font-weight: 700;">
-                                <td colspan="2" style="padding: 1rem;">TOTAL MENSUAL NETO</td>
-                                <td style="padding: 1rem; text-align: right; color: var(--secondary);">
-                                    $${totalIngresos.toLocaleString('es-CO')}
-                                </td>
-                                <td></td>
-                            </tr>
-                        </tfoot>
-                    `;
-                    
-                    table.innerHTML = html;
-                    
+                    html += '</tbody></table></div>';
+                    container.innerHTML = html;
                 } else {
-                    if (emptyState) emptyState.style.display = 'block';
-                    const existingTable = ingresosPage.querySelector('.card table');
-                    if (existingTable) existingTable.parentElement.remove();
+                    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">💰</div><p>No hay ingresos registrados</p></div>';
                 }
-                
             } catch (error) {
-                console.error('Error al cargar ingresos:', error);
+                console.error('Error:', error);
+            }
+        }
+
+        // ============================================
+        // GASTOS FIJOS
+        // ============================================
+        async function addGastoFijo(e) {
+            e.preventDefault();
+            const form = e.target;
+            
+            const categoria = form.querySelectorAll('select')[0].value;
+            const descripcion = form.querySelectorAll('input')[0].value;
+            const monto = parseFloat(form.querySelectorAll('input')[1].value);
+            const diaPago = parseInt(form.querySelectorAll('input')[2].value);
+            
+            try {
+                const { error } = await supabaseClient.from('fixed_expenses').insert([{
+                    user_id: currentUser.id,
+                    category: categoria,
+                    description: descripcion,
+                    amount: monto,
+                    payment_day: diaPago,
+                    is_paid: false
+                }]);
+                
+                if (error) throw error;
+                
+                alert('✅ Gasto fijo agregado');
+                closeModal('modalGastoFijo');
+                form.reset();
+                loadGastosFijos();
+                updateDashboard();
+            } catch (error) {
+                alert('❌ Error: ' + error.message);
             }
         }
 
         async function loadGastosFijos() {
             try {
-                const { data, error } = await supabaseClient
+                const { data, error } = await supabase
                     .from('fixed_expenses')
                     .select('*')
                     .eq('user_id', currentUser.id)
@@ -2254,84 +1503,65 @@
                 
                 if (error) throw error;
                 
-                const gastosFijosPage = document.getElementById('gastos-fijos');
-                const emptyState = gastosFijosPage.querySelector('.empty-state');
+                const container = document.getElementById('listaGastosFijos');
                 
                 if (data && data.length > 0) {
-                    if (emptyState) emptyState.style.display = 'none';
+                    let html = '<div class="card"><table style="width:100%; border-collapse: collapse;">';
+                    html += '<thead><tr style="border-bottom: 2px solid var(--border);"><th style="padding: 1rem; text-align: left;">Descripción</th><th style="padding: 1rem; text-align: center;">Día</th><th style="padding: 1rem; text-align: right;">Monto</th></tr></thead><tbody>';
                     
-                    let table = gastosFijosPage.querySelector('.gastos-fijos-table');
-                    if (!table) {
-                        const card = document.createElement('div');
-                        card.className = 'card';
-                        card.innerHTML = '<table class="gastos-fijos-table" style="width:100%; border-collapse: collapse;"></table>';
-                        emptyState.parentNode.insertBefore(card, emptyState);
-                        table = card.querySelector('table');
-                    }
-                    
-                    let html = `
-                        <thead>
-                            <tr style="border-bottom: 2px solid var(--border);">
-                                <th style="padding: 1rem; text-align: left;">Descripción</th>
-                                <th style="padding: 1rem; text-align: left;">Categoría</th>
-                                <th style="padding: 1rem; text-align: center;">Día de Pago</th>
-                                <th style="padding: 1rem; text-align: right;">Monto</th>
-                                <th style="padding: 1rem; text-align: center;">Estado</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                    `;
-                    
-                    let totalGastosFijos = 0;
-                    
-                    data.forEach(gasto => {
-                        totalGastosFijos += parseFloat(gasto.amount || 0);
-                        const estado = gasto.is_paid ? 
-                            '<span class="badge badge-success">✓ Pagado</span>' : 
-                            '<span class="badge badge-primary">⏳ Pendiente</span>';
-                        
-                        html += `
-                            <tr style="border-bottom: 1px solid var(--border);">
-                                <td style="padding: 1rem; font-weight: 600;">${gasto.description}</td>
-                                <td style="padding: 1rem;">${gasto.category}</td>
-                                <td style="padding: 1rem; text-align: center;">${gasto.payment_day}</td>
-                                <td style="padding: 1rem; text-align: right; font-weight: 600; color: var(--danger);">
-                                    $${parseFloat(gasto.amount).toLocaleString('es-CO')}
-                                </td>
-                                <td style="padding: 1rem; text-align: center;">${estado}</td>
-                            </tr>
-                        `;
+                    data.forEach(g => {
+                        html += `<tr style="border-bottom: 1px solid var(--border);">
+                            <td style="padding: 1rem; font-weight: 600;">${g.description}</td>
+                            <td style="padding: 1rem; text-align: center;">${g.payment_day}</td>
+                            <td style="padding: 1rem; text-align: right; font-weight: 600; color: var(--danger);">$${parseFloat(g.amount).toLocaleString('es-CO')}</td>
+                        </tr>`;
                     });
                     
-                    html += `
-                        </tbody>
-                        <tfoot>
-                            <tr style="border-top: 2px solid var(--border); font-weight: 700;">
-                                <td colspan="3" style="padding: 1rem;">TOTAL MENSUAL</td>
-                                <td style="padding: 1rem; text-align: right; color: var(--danger);">
-                                    $${totalGastosFijos.toLocaleString('es-CO')}
-                                </td>
-                                <td></td>
-                            </tr>
-                        </tfoot>
-                    `;
-                    
-                    table.innerHTML = html;
-                    
+                    html += '</tbody></table></div>';
+                    container.innerHTML = html;
                 } else {
-                    if (emptyState) emptyState.style.display = 'block';
-                    const existingTable = gastosFijosPage.querySelector('.card table');
-                    if (existingTable) existingTable.parentElement.remove();
+                    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📅</div><p>No hay gastos fijos</p></div>';
                 }
-                
             } catch (error) {
-                console.error('Error al cargar gastos fijos:', error);
+                console.error('Error:', error);
+            }
+        }
+
+        // ============================================
+        // GASTOS VARIABLES
+        // ============================================
+        async function addGastoVariable(e) {
+            e.preventDefault();
+            const form = e.target;
+            
+            const categoria = form.querySelectorAll('select')[0].value;
+            const descripcion = form.querySelectorAll('input')[0].value;
+            const monto = parseFloat(form.querySelectorAll('input')[1].value);
+            
+            try {
+                const { error } = await supabaseClient.from('variable_expenses').insert([{
+                    user_id: currentUser.id,
+                    category: categoria,
+                    description: descripcion,
+                    amount: monto,
+                    expense_date: new Date().toISOString().split('T')[0]
+                }]);
+                
+                if (error) throw error;
+                
+                alert('✅ Gasto agregado');
+                closeModal('modalGastoVariable');
+                form.reset();
+                loadGastosVariables();
+                updateDashboard();
+            } catch (error) {
+                alert('❌ Error: ' + error.message);
             }
         }
 
         async function loadGastosVariables() {
             try {
-                const { data, error } = await supabaseClient
+                const { data, error } = await supabase
                     .from('variable_expenses')
                     .select('*')
                     .eq('user_id', currentUser.id)
@@ -2339,467 +1569,199 @@
                 
                 if (error) throw error;
                 
-                const gastosVariablesPage = document.getElementById('gastos-variables');
-                const emptyState = gastosVariablesPage.querySelector('.empty-state');
+                const container = document.getElementById('listaGastosVariables');
                 
                 if (data && data.length > 0) {
-                    if (emptyState) emptyState.style.display = 'none';
+                    let html = '<div class="card"><table style="width:100%; border-collapse: collapse;">';
+                    html += '<thead><tr style="border-bottom: 2px solid var(--border);"><th style="padding: 1rem; text-align: left;">Descripción</th><th style="padding: 1rem; text-align: center;">Fecha</th><th style="padding: 1rem; text-align: right;">Monto</th></tr></thead><tbody>';
                     
-                    let table = gastosVariablesPage.querySelector('.gastos-variables-table');
-                    if (!table) {
-                        const card = document.createElement('div');
-                        card.className = 'card';
-                        card.innerHTML = '<table class="gastos-variables-table" style="width:100%; border-collapse: collapse;"></table>';
-                        emptyState.parentNode.insertBefore(card, emptyState);
-                        table = card.querySelector('table');
-                    }
-                    
-                    let html = `
-                        <thead>
-                            <tr style="border-bottom: 2px solid var(--border);">
-                                <th style="padding: 1rem; text-align: left;">Descripción</th>
-                                <th style="padding: 1rem; text-align: left;">Categoría</th>
-                                <th style="padding: 1rem; text-align: center;">Fecha</th>
-                                <th style="padding: 1rem; text-align: right;">Monto</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                    `;
-                    
-                    let totalGastosVariables = 0;
-                    
-                    data.forEach(gasto => {
-                        totalGastosVariables += parseFloat(gasto.amount || 0);
-                        const fecha = new Date(gasto.expense_date).toLocaleDateString('es-CO', { 
-                            day: 'numeric', 
-                            month: 'short',
-                            year: 'numeric'
-                        });
-                        
-                        html += `
-                            <tr style="border-bottom: 1px solid var(--border);">
-                                <td style="padding: 1rem; font-weight: 600;">${gasto.description}</td>
-                                <td style="padding: 1rem;">${gasto.category}</td>
-                                <td style="padding: 1rem; text-align: center;">${fecha}</td>
-                                <td style="padding: 1rem; text-align: right; font-weight: 600; color: var(--danger);">
-                                    $${parseFloat(gasto.amount).toLocaleString('es-CO')}
-                                </td>
-                            </tr>
-                        `;
+                    data.forEach(g => {
+                        const fecha = new Date(g.expense_date).toLocaleDateString('es-CO', { day: 'numeric', month: 'short' });
+                        html += `<tr style="border-bottom: 1px solid var(--border);">
+                            <td style="padding: 1rem; font-weight: 600;">${g.description}</td>
+                            <td style="padding: 1rem; text-align: center;">${fecha}</td>
+                            <td style="padding: 1rem; text-align: right; font-weight: 600; color: var(--danger);">$${parseFloat(g.amount).toLocaleString('es-CO')}</td>
+                        </tr>`;
                     });
                     
-                    html += `
-                        </tbody>
-                        <tfoot>
-                            <tr style="border-top: 2px solid var(--border); font-weight: 700;">
-                                <td colspan="3" style="padding: 1rem;">TOTAL</td>
-                                <td style="padding: 1rem; text-align: right; color: var(--danger);">
-                                    $${totalGastosVariables.toLocaleString('es-CO')}
-                                </td>
-                            </tr>
-                        </tfoot>
-                    `;
-                    
-                    table.innerHTML = html;
-                    
+                    html += '</tbody></table></div>';
+                    container.innerHTML = html;
                 } else {
-                    if (emptyState) emptyState.style.display = 'block';
-                    const existingTable = gastosVariablesPage.querySelector('.card table');
-                    if (existingTable) existingTable.parentElement.remove();
+                    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🛒</div><p>No hay gastos variables</p></div>';
                 }
-                
             } catch (error) {
-                console.error('Error al cargar gastos variables:', error);
+                console.error('Error:', error);
             }
         }
 
-        // =============== DASHBOARD UPDATE ===============
+        // ============================================
+        // OTRAS FUNCIONES
+        // ============================================
+        async function addDeuda(e) {
+            e.preventDefault();
+            alert('🚧 Función en desarrollo');
+            closeModal('modalDeuda');
+        }
 
+        async function addMercadoItem(e) {
+            e.preventDefault();
+            alert('🚧 Función en desarrollo');
+            closeModal('modalMercado');
+        }
+
+        async function addCategoria(e) {
+            e.preventDefault();
+            alert('🚧 Función en desarrollo');
+            closeModal('modalCategoria');
+        }
+
+        async function loadCategorias() {
+            // Placeholder
+        }
+
+        // ============================================
+        // DASHBOARD
+        // ============================================
         async function updateDashboard() {
             try {
-                const [ingresosData, gastosFijosData, gastosVariablesData] = await Promise.all([
+                const [ingresos, gastosFijos, gastosVariables] = await Promise.all([
                     supabaseClient.from('incomes').select('*').eq('user_id', currentUser.id),
                     supabaseClient.from('fixed_expenses').select('*').eq('user_id', currentUser.id),
                     supabaseClient.from('variable_expenses').select('*').eq('user_id', currentUser.id)
                 ]);
                 
-                const totalIngresos = (ingresosData.data || []).reduce((sum, item) => sum + parseFloat(item.net_amount || 0), 0);
-                const totalGastosFijos = (gastosFijosData.data || []).reduce((sum, item) => sum + parseFloat(item.amount || 0), 0);
-                const totalGastosVariables = (gastosVariablesData.data || []).reduce((sum, item) => sum + parseFloat(item.amount || 0), 0);
-                const totalGastos = totalGastosFijos + totalGastosVariables;
-                const balance = totalIngresos - totalGastos;
+                const totalIngresos = (ingresos.data || []).reduce((sum, i) => sum + parseFloat(i.net_amount || 0), 0);
+                const totalGastosFijos = (gastosFijos.data || []).reduce((sum, g) => sum + parseFloat(g.amount || 0), 0);
+                const totalGastosVariables = (gastosVariables.data || []).reduce((sum, g) => sum + parseFloat(g.amount || 0), 0);
+                const balance = totalIngresos - totalGastosFijos - totalGastosVariables;
                 
-                // Calcular pagados y pendientes
-                const totalPagado = (gastosFijosData.data || [])
-                    .filter(g => g.is_paid)
-                    .reduce((sum, item) => sum + parseFloat(item.amount || 0), 0);
-                const totalPendiente = totalGastosFijos - totalPagado;
+                document.getElementById('balanceAmount').textContent = '$' + balance.toLocaleString('es-CO');
+                document.getElementById('totalIngresos').textContent = '$' + totalIngresos.toLocaleString('es-CO');
+                document.getElementById('totalGastosFijos').textContent = '$' + totalGastosFijos.toLocaleString('es-CO');
+                document.getElementById('totalGastosVariables').textContent = '$' + totalGastosVariables.toLocaleString('es-CO');
                 
-                // Balance Principal
-                const balanceAmount = document.getElementById('balanceAmount');
-                if (balanceAmount) {
-                    balanceAmount.textContent = `$${balance.toLocaleString('es-CO')}`;
-                    const balanceCard = document.querySelector('.balance-card');
-                    if (balance < 0) {
-                        balanceCard.style.background = 'linear-gradient(135deg, var(--danger), #DC2626)';
-                    } else {
-                        balanceCard.style.background = 'linear-gradient(135deg, var(--secondary), #059669)';
-                    }
+                const balanceCard = document.querySelector('.balance-card');
+                if (balance < 0) {
+                    balanceCard.style.background = 'linear-gradient(135deg, var(--danger), #DC2626)';
+                } else {
+                    balanceCard.style.background = 'linear-gradient(135deg, var(--secondary), #059669)';
                 }
                 
-                // Resumen Principal
-                document.getElementById('dashBudget').textContent = `$${totalIngresos.toLocaleString('es-CO')}`;
-                document.getElementById('dashIncomes').textContent = `$${totalIngresos.toLocaleString('es-CO')}`;
-                document.getElementById('dashExpenses').textContent = `$${totalGastos.toLocaleString('es-CO')}`;
-                document.getElementById('dashPaid').textContent = `$${totalPagado.toLocaleString('es-CO')}`;
-                document.getElementById('dashPending').textContent = `$${totalPendiente.toLocaleString('es-CO')}`;
-                
-                // Próximos Pagos
-                updateUpcomingPayments(gastosFijosData.data || []);
-                
+                updateUltimosGastos(gastosVariables.data || []);
             } catch (error) {
-                console.error('Error al actualizar dashboard:', error);
+                console.error('Error:', error);
             }
         }
 
-        // THEME FUNCTIONS
-        function toggleDarkMode() {
-            const dark = document.getElementById('darkModeToggle').checked;
-            if(dark) {
-                document.documentElement.setAttribute('data-theme', 'dark');
-                localStorage.setItem('theme', 'dark');
-            } else {
-                document.documentElement.removeAttribute('data-theme');
-                localStorage.setItem('theme', 'light');
-            }
-        }
-
-        // PREFERENCES FUNCTIONS
-        async function savePreferences() {
-            const moneda = document.getElementById('monedaSelect').value;
-            const ciclo = parseInt(document.getElementById('cicloInput').value);
+        function updateUltimosGastos(gastos) {
+            const container = document.getElementById('ultimosGastos');
             
-            if (ciclo < 1 || ciclo > 31) {
-                alert('❌ El día del ciclo debe estar entre 1 y 31');
-                return;
-            }
-            
-            try {
-                localStorage.setItem('moneda', moneda);
-                localStorage.setItem('ciclo_inicio', ciclo);
-                
-                const { error } = await supabaseClient
-                    .from('users')
-                    .update({
-                        preferences: {
-                            moneda: moneda,
-                            ciclo_inicio: ciclo
-                        }
-                    })
-                    .eq('id', currentUser.id);
-                
-                if (error) console.log('No se pudo guardar en DB:', error);
-                
-                alert('✅ Preferencias guardadas exitosamente');
-                updateCicloDisplay();
-                
-            } catch (error) {
-                console.error('Error al guardar preferencias:', error);
-                alert('⚠️ Preferencias guardadas localmente');
-            }
-        }
-
-        function loadPreferences() {
-            const moneda = localStorage.getItem('moneda') || 'COP';
-            const monedaSelect = document.getElementById('monedaSelect');
-            if (monedaSelect) monedaSelect.value = moneda;
-            
-            const ciclo = localStorage.getItem('ciclo_inicio') || '20';
-            const cicloInput = document.getElementById('cicloInput');
-            if (cicloInput) cicloInput.value = ciclo;
-            
-            updateCicloDisplay();
-        }
-
-        function updateCicloDisplay() {
-            const cicloInicio = parseInt(localStorage.getItem('ciclo_inicio') || '20');
-            const hoy = new Date();
-            const mesActual = hoy.getMonth();
-            const añoActual = hoy.getFullYear();
-            
-            let fechaInicio, fechaFin;
-            
-            if (hoy.getDate() >= cicloInicio) {
-                fechaInicio = new Date(añoActual, mesActual, cicloInicio);
-                fechaFin = new Date(añoActual, mesActual + 1, cicloInicio - 1);
-            } else {
-                fechaInicio = new Date(añoActual, mesActual - 1, cicloInicio);
-                fechaFin = new Date(añoActual, mesActual, cicloInicio - 1);
-            }
-            
-            const opciones = { day: 'numeric', month: 'short', year: 'numeric' };
-            const textoInicio = fechaInicio.toLocaleDateString('es-CO', opciones);
-            const textoFin = fechaFin.toLocaleDateString('es-CO', opciones);
-            
-            const cicloDisplay = document.getElementById('cycleDisplay');
-            if (cicloDisplay) {
-                cicloDisplay.textContent = `Ciclo actual: ${textoInicio} - ${textoFin}`;
-            }
-        }
-
-        // UPDATE USER NAME
-        async function updateUserName() {
-            const newName = document.getElementById('userNameInput').value.trim();
-            
-            if (!newName) {
-                alert('❌ Por favor ingresa un nombre');
-                return;
-            }
-            
-            try {
-                const { data, error } = await supabaseClient.auth.updateUser({
-                    data: { name: newName }
-                });
-                
-                if (error) throw error;
-                
-                currentUser = data.user;
-                document.getElementById('userName').textContent = newName;
-                
-                try {
-                    await supabaseClient
-                        .from('users')
-                        .update({ name: newName })
-                        .eq('id', currentUser.id);
-                } catch (dbError) {
-                    console.log('Users table update skipped');
-                }
-                
-                alert('✅ Nombre actualizado exitosamente');
-                
-            } catch (error) {
-                alert('❌ Error al actualizar: ' + error.message);
-            }
-        }
-        // FORMAT CURRENCY
-        function formatCurrency(amount) {
-            return `$${parseFloat(amount || 0).toLocaleString('es-CO')}`;
-        }
-
-        // GET CURRENT PERIOD
-        function getCurrentPeriod() {
-            const year = currentMonth.getFullYear();
-            const month = currentMonth.getMonth();
-            
-            return {
-                year,
-                month: month + 1,
-                key: `${year}-${String(month + 1).padStart(2, '0')}`
-            };
-        }
-        // MONTH SELECTOR
-        function populateMonthSelector() {
-            const selector = document.getElementById('monthSelector');
-            const now = new Date();
-            
-            selector.innerHTML = '';
-            
-            // Generate last 12 months
-            for (let i = 0; i < 12; i++) {
-                const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
-                const option = document.createElement('option');
-                option.value = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-                option.textContent = date.toLocaleDateString('es-CO', { month: 'long', year: 'numeric' });
-                if (i === 0) option.selected = true;
-                selector.appendChild(option);
-            }
-        }
-
-        function changeMonth() {
-            const selector = document.getElementById('monthSelector');
-            const [year, month] = selector.value.split('-');
-            currentMonth = new Date(parseInt(year), parseInt(month) - 1, 1);
-            loadAllData();
-        }
-
-        // LOAD ALL DATA
-        async function loadAllData() {
-            console.log('Cargando datos para:', getCurrentPeriod().key);
-            await Promise.all([
-                updateDashboard(),
-                loadIngresos(),
-                loadGastosFijos(),
-                loadGastosVariables()
-            ]);
-        }
-
-        // CONFIRM DELETE
-        async function confirmDelete(type, id, name) {
-            const modal = document.getElementById('confirmDeleteModal');
-            const message = document.getElementById('deleteMessage');
-            const warning = document.getElementById('deleteWarning');
-            const confirmBtn = document.getElementById('confirmDeleteBtn');
-            
-            const messages = {
-                income: {
-                    title: `¿Eliminar el ingreso "${name}"?`,
-                    warning: 'Solo se eliminará del mes actual. El histórico no se verá afectado.'
-                },
-                expense: {
-                    title: `¿Eliminar el gasto "${name}"?`,
-                    warning: 'Solo se eliminará del mes actual. El histórico no se verá afectado.'
-                }
-            };
-            
-            message.textContent = messages[type]?.title || `¿Eliminar "${name}"?`;
-            warning.textContent = messages[type]?.warning || 'Esta acción no se puede deshacer.';
-            
-            const tables = {
-                income: 'incomes',
-                expense: 'fixed_expenses'
-            };
-            
-            confirmBtn.onclick = async () => {
-                try {
-                    const { error } = await supabaseClient
-                        .from(tables[type])
-                        .delete()
-                        .eq('id', id);
-                    
-                    if (error) throw error;
-                    
-                    alert('✅ Eliminado exitosamente');
-                    closeModal('confirmDeleteModal');
-                    
-                    // Recargar datos
-                    loadAllData();
-                    
-                } catch (error) {
-                    alert('❌ Error al eliminar: ' + error.message);
-                }
-            };
-            
-            openModal('confirmDeleteModal');
-        }
-
-        // FUNCIONES PLACEHOLDER PARA NUEVOS MÓDULOS
-    
-        async function loadDeudas() {
-            console.log('loadDeudas - en desarrollo');
-        }
-
-        async function loadMercado() {
-            console.log('loadMercado - en desarrollo');
-        }
-
-        function loadHistorico() {
-            alert('Funcionalidad de histórico en desarrollo');
-        }
-
-        function addDeuda(e) {
-            e.preventDefault();
-            alert('Funcionalidad de deudas en desarrollo');
-        }
-
-        function setMarketBudget(e) {
-            e.preventDefault();
-            alert('Funcionalidad de mercado en desarrollo');
-        }
-
-        function addCompra(e) {
-            e.preventDefault();
-            alert('Funcionalidad de mercado en desarrollo');
-        }
-        // LOAD PAGOS (CONSOLIDADO)
-        async function loadPagos() {
-            try {
-                const { data, error } = await supabaseClient
-                    .from('fixed_expenses')
-                    .select('*')
-                    .eq('user_id', currentUser.id)
-                    .order('payment_day', { ascending: true });
-                
-                if (error) throw error;
-                
-                const container = document.getElementById('pagosContainer');
-                
-                if (!data || data.length === 0) {
-                    container.innerHTML = `
-                        <div class="empty-state">
-                            <div class="empty-state-icon">📅</div>
-                            <p>No hay pagos registrados para este mes</p>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                // Calcular totales
-                const totalPagos = data.reduce((sum, item) => sum + parseFloat(item.amount || 0), 0);
-                const totalPagado = data.filter(g => g.is_paid).reduce((sum, item) => sum + parseFloat(item.amount || 0), 0);
-                const totalPendiente = totalPagos - totalPagado;
-                
-                const today = new Date().getDate();
-                const totalVencido = data.filter(g => !g.is_paid && g.payment_day < today).reduce((sum, item) => sum + parseFloat(item.amount || 0), 0);
-                
-                document.getElementById('pagosTot').textContent = formatCurrency(totalPagos);
-                document.getElementById('pagosPagado').textContent = formatCurrency(totalPagado);
-                document.getElementById('pagosPendiente').textContent = formatCurrency(totalPendiente);
-                document.getElementById('pagosVencido').textContent = formatCurrency(totalVencido);
-                
-                // Renderizar lista
+            if (gastos && gastos.length > 0) {
                 let html = '';
-                data.forEach(pago => {
-                    const isPaid = pago.is_paid;
-                    const isOverdue = !isPaid && pago.payment_day < today;
-                    const status = isPaid ? 
-                        '<span class="badge badge-success">✓ Pagado</span>' :
-                        isOverdue ?
-                            '<span class="badge badge-danger">⚠️ Vencido</span>' :
-                            '<span class="badge badge-warning">⏳ Pendiente</span>';
-                    
-                    html += `
-                        <div class="payment-item">
-                            <div class="payment-info">
-                                <div class="payment-name">${pago.description}</div>
-                                <div class="payment-date">${pago.category} • Día ${pago.payment_day}</div>
-                            </div>
-                            <div class="payment-amount" style="color: var(--danger);">
-                                ${formatCurrency(pago.amount)}
-                            </div>
-                            <div class="payment-actions">
-                                ${status}
-                                ${!isPaid ? `<button class="btn btn-small btn-secondary" onclick="markAsPaid('${pago.id}')">✓ Pagar</button>` : ''}
-                                <button class="btn btn-danger btn-icon" onclick="confirmDelete('expense', '${pago.id}', '${pago.description}')">🗑️</button>
-                            </div>
+                gastos.slice(0, 5).forEach(g => {
+                    const fecha = new Date(g.expense_date).toLocaleDateString('es-CO', { day: 'numeric', month: 'short' });
+                    html += `<div style="display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid var(--border);">
+                        <div>
+                            <div style="font-weight: 600;">${g.description}</div>
+                            <div style="font-size: 0.85rem; color: var(--text-light);">${g.category} • ${fecha}</div>
                         </div>
-                    `;
+                        <div style="font-weight: 600; color: var(--danger);">$${parseFloat(g.amount).toLocaleString('es-CO')}</div>
+                    </div>`;
                 });
-                
                 container.innerHTML = html;
-                
-            } catch (error) {
-                console.error('Error al cargar pagos:', error);
+            } else {
+                container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🧾</div><p>No hay gastos</p></div>';
             }
         }
 
-        // MARK AS PAID
-        async function markAsPaid(expenseId) {
+        // ============================================
+        // CONFIGURACIÓN
+        // ============================================
+        function toggleDarkMode() {
+            const isDark = document.getElementById('darkModeToggle').checked;
+            document.documentElement.setAttribute('data-theme', isDark ? 'dark' : '');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        }
+
+        function loadTheme() {
+            const theme = localStorage.getItem('theme');
+            if (theme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                const toggle = document.getElementById('darkModeToggle');
+                if (toggle) toggle.checked = true;
+            }
+        }
+
+        function savePreferences() {
+            const cycleDay = document.getElementById('cycleDay').value;
+            localStorage.setItem('cycleDay', cycleDay);
+            alert('✅ Preferencias guardadas');
+            updateCycleText();
+        }
+
+        function updateCycleText() {
+            const cycleDay = parseInt(localStorage.getItem('cycleDay') || '1');
+            const today = new Date();
+            const month = today.getMonth();
+            const year = today.getFullYear();
+            
+            let startDate, endDate;
+            if (today.getDate() >= cycleDay) {
+                startDate = new Date(year, month, cycleDay);
+                endDate = new Date(year, month + 1, cycleDay - 1);
+            } else {
+                startDate = new Date(year, month - 1, cycleDay);
+                endDate = new Date(year, month, cycleDay - 1);
+            }
+            
+            const opts = { day: 'numeric', month: 'short' };
+            const start = startDate.toLocaleDateString('es-CO', opts);
+            const end = endDate.toLocaleDateString('es-CO', opts);
+            
+            document.getElementById('cycleText').textContent = `Ciclo actual: ${start} - ${end}`;
+        }
+
+        async function cleanOrphanData() {
+            if (!confirm('¿Limpiar datos huérfanos?')) return;
+            
             try {
-                const { error } = await supabaseClient
-                    .from('fixed_expenses')
-                    .update({ is_paid: true })
-                    .eq('id', expenseId);
+                await Promise.all([
+                    supabaseClient.from('variable_expenses').delete().is('user_id', null),
+                    supabaseClient.from('fixed_expenses').delete().is('user_id', null),
+                    supabaseClient.from('incomes').delete().is('user_id', null)
+                ]);
                 
-                if (error) throw error;
-                
-                loadAllData();
+                alert('✅ Datos limpiados');
+                loadAll();
             } catch (error) {
-                alert('❌ Error al marcar como pagado: ' + error.message);
+                alert('❌ Error: ' + error.message);
             }
         }
 
-        // Initialize app
-        init();
+        async function deleteAllData() {
+            const confirm = prompt('Escribe "ELIMINAR" para confirmar:');
+            if (confirm !== 'ELIMINAR') return;
+            
+            try {
+                await Promise.all([
+                    supabaseClient.from('variable_expenses').delete().eq('user_id', currentUser.id),
+                    supabaseClient.from('fixed_expenses').delete().eq('user_id', currentUser.id),
+                    supabaseClient.from('incomes').delete().eq('user_id', currentUser.id)
+                ]);
+                
+                alert('✅ Todos los datos eliminados');
+                loadAll();
+            } catch (error) {
+                alert('❌ Error: ' + error.message);
+            }
+        }
+
+        // Cerrar modales al hacer clic fuera
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal')) {
+                e.target.classList.remove('active');
+            }
+        });
     </script>
 </body>
 </html>
