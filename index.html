@@ -1235,6 +1235,23 @@
             const { data: { session } } = await supabaseClient.auth.getSession();
             if (session) {
                 currentUser = session.user;
+                
+                // Verificar si el usuario existe en la tabla users
+                const { data: userData } = await supabaseClient
+                    .from('users')
+                    .select('id')
+                    .eq('id', currentUser.id)
+                    .single();
+                
+                // Si no existe, crearlo
+                if (!userData) {
+                    await supabaseClient.from('users').insert([{
+                        id: currentUser.id,
+                        email: currentUser.email,
+                        name: currentUser.user_metadata?.name || currentUser.email.split('@')[0]
+                    }]);
+                }
+                
                 showApp();
             }
             loadTheme();
@@ -1267,6 +1284,23 @@
                 if (error) throw error;
                 
                 currentUser = data.user;
+                
+                // Verificar si el usuario existe en la tabla users
+                const { data: userData, error: userError } = await supabaseClient
+                    .from('users')
+                    .select('id')
+                    .eq('id', currentUser.id)
+                    .single();
+                
+                // Si no existe, crearlo
+                if (!userData) {
+                    await supabaseClient.from('users').insert([{
+                        id: currentUser.id,
+                        email: currentUser.email,
+                        name: currentUser.user_metadata?.name || currentUser.email.split('@')[0]
+                    }]);
+                }
+                
                 showApp();
             } catch (error) {
                 showMessage(error.message, 'error');
@@ -1286,6 +1320,19 @@
                 });
                 
                 if (error) throw error;
+                
+                // Crear usuario en la tabla users
+                if (data.user) {
+                    try {
+                        await supabaseClient.from('users').insert([{
+                            id: data.user.id,
+                            email: email,
+                            name: name
+                        }]);
+                    } catch (dbError) {
+                        console.log('Usuario ya existe en tabla users o se creará automáticamente');
+                    }
+                }
                 
                 showMessage('✅ Cuenta creada exitosamente', 'success');
                 setTimeout(() => showAuthTab('login'), 2000);
