@@ -1490,7 +1490,7 @@
                 
                 if (data && data.length > 0) {
                     let html = '<div class="card"><table style="width:100%; border-collapse: collapse;">';
-                    html += '<thead><tr style="border-bottom: 2px solid var(--border);"><th style="padding: 1rem; text-align: left;">Fuente</th><th style="padding: 1rem; text-align: left;">Tipo</th><th style="padding: 1rem; text-align: right;">Neto</th></tr></thead><tbody>';
+                    html += '<thead><tr style="border-bottom: 2px solid var(--border);"><th style="padding: 1rem; text-align: left;">Fuente</th><th style="padding: 1rem; text-align: left;">Tipo</th><th style="padding: 1rem; text-align: right;">Neto</th><th style="padding: 1rem; text-align: center; width: 120px;">Acciones</th></tr></thead><tbody>';
                     
                     data.forEach(i => {
                         const tipoIcon = i.type === 'laboral' ? '💼' : i.type === 'servicios' ? '💰' : '🎁';
@@ -1498,6 +1498,10 @@
                             <td style="padding: 1rem;">${i.source}</td>
                             <td style="padding: 1rem;">${tipoIcon} ${i.type}</td>
                             <td style="padding: 1rem; text-align: right; font-weight: 600; color: var(--secondary);">$${parseFloat(i.net_amount).toLocaleString('es-CO')}</td>
+                            <td style="padding: 1rem; text-align: center;">
+                                <button onclick="editIngreso('${i.id}')" style="background: var(--primary); color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer; margin-right: 0.25rem; font-size: 0.85rem;">✏️ Editar</button>
+                                <button onclick="deleteIngreso('${i.id}')" style="background: var(--danger); color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer; font-size: 0.85rem;">🗑️</button>
+                            </td>
                         </tr>`;
                     });
                     
@@ -1559,13 +1563,17 @@
                 
                 if (data && data.length > 0) {
                     let html = '<div class="card"><table style="width:100%; border-collapse: collapse;">';
-                    html += '<thead><tr style="border-bottom: 2px solid var(--border);"><th style="padding: 1rem; text-align: left;">Descripción</th><th style="padding: 1rem; text-align: center;">Día</th><th style="padding: 1rem; text-align: right;">Monto</th></tr></thead><tbody>';
+                    html += '<thead><tr style="border-bottom: 2px solid var(--border);"><th style="padding: 1rem; text-align: left;">Descripción</th><th style="padding: 1rem; text-align: center;">Día</th><th style="padding: 1rem; text-align: right;">Monto</th><th style="padding: 1rem; text-align: center; width: 120px;">Acciones</th></tr></thead><tbody>';
                     
                     data.forEach(g => {
                         html += `<tr style="border-bottom: 1px solid var(--border);">
                             <td style="padding: 1rem; font-weight: 600;">${g.description}</td>
                             <td style="padding: 1rem; text-align: center;">${g.payment_day}</td>
                             <td style="padding: 1rem; text-align: right; font-weight: 600; color: var(--danger);">$${parseFloat(g.amount).toLocaleString('es-CO')}</td>
+                            <td style="padding: 1rem; text-align: center;">
+                                <button onclick="editGastoFijo('${g.id}')" style="background: var(--primary); color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer; margin-right: 0.25rem; font-size: 0.85rem;">✏️ Editar</button>
+                                <button onclick="deleteGastoFijo('${g.id}')" style="background: var(--danger); color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer; font-size: 0.85rem;">🗑️</button>
+                            </td>
                         </tr>`;
                     });
                     
@@ -1625,7 +1633,7 @@
                 
                 if (data && data.length > 0) {
                     let html = '<div class="card"><table style="width:100%; border-collapse: collapse;">';
-                    html += '<thead><tr style="border-bottom: 2px solid var(--border);"><th style="padding: 1rem; text-align: left;">Descripción</th><th style="padding: 1rem; text-align: center;">Fecha</th><th style="padding: 1rem; text-align: right;">Monto</th></tr></thead><tbody>';
+                    html += '<thead><tr style="border-bottom: 2px solid var(--border);"><th style="padding: 1rem; text-align: left;">Descripción</th><th style="padding: 1rem; text-align: center;">Fecha</th><th style="padding: 1rem; text-align: right;">Monto</th><th style="padding: 1rem; text-align: center; width: 120px;">Acciones</th></tr></thead><tbody>';
                     
                     data.forEach(g => {
                         const fecha = new Date(g.expense_date).toLocaleDateString('es-CO', { day: 'numeric', month: 'short' });
@@ -1633,6 +1641,10 @@
                             <td style="padding: 1rem; font-weight: 600;">${g.description}</td>
                             <td style="padding: 1rem; text-align: center;">${fecha}</td>
                             <td style="padding: 1rem; text-align: right; font-weight: 600; color: var(--danger);">$${parseFloat(g.amount).toLocaleString('es-CO')}</td>
+                            <td style="padding: 1rem; text-align: center;">
+                                <button onclick="editGastoVariable('${g.id}')" style="background: var(--primary); color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer; margin-right: 0.25rem; font-size: 0.85rem;">✏️ Editar</button>
+                                <button onclick="deleteGastoVariable('${g.id}')" style="background: var(--danger); color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer; font-size: 0.85rem;">🗑️</button>
+                            </td>
                         </tr>`;
                     });
                     
@@ -1803,6 +1815,247 @@
                 
                 alert('✅ Todos los datos eliminados');
                 loadAll();
+            } catch (error) {
+                alert('❌ Error: ' + error.message);
+            }
+        }
+
+        // ============================================
+        // FUNCIONES DE ELIMINAR
+        // ============================================
+
+        async function deleteIngreso(id) {
+            if (!confirm('¿Estás seguro de eliminar este ingreso?')) return;
+            
+            try {
+                const { error } = await supabaseClient
+                    .from('incomes')
+                    .delete()
+                    .eq('id', id);
+                
+                if (error) throw error;
+                
+                alert('✅ Ingreso eliminado');
+                loadIngresos();
+                updateDashboard();
+            } catch (error) {
+                alert('❌ Error: ' + error.message);
+            }
+        }
+
+        async function deleteGastoFijo(id) {
+            if (!confirm('¿Estás seguro de eliminar este gasto fijo?')) return;
+            
+            try {
+                const { error } = await supabaseClient
+                    .from('fixed_expenses')
+                    .delete()
+                    .eq('id', id);
+                
+                if (error) throw error;
+                
+                alert('✅ Gasto fijo eliminado');
+                loadGastosFijos();
+                updateDashboard();
+            } catch (error) {
+                alert('❌ Error: ' + error.message);
+            }
+        }
+
+        async function deleteGastoVariable(id) {
+            if (!confirm('¿Estás seguro de eliminar este gasto?')) return;
+            
+            try {
+                const { error } = await supabaseClient
+                    .from('variable_expenses')
+                    .delete()
+                    .eq('id', id);
+                
+                if (error) throw error;
+                
+                alert('✅ Gasto eliminado');
+                loadGastosVariables();
+                updateDashboard();
+            } catch (error) {
+                alert('❌ Error: ' + error.message);
+            }
+        }
+
+        // ============================================
+        // FUNCIONES DE EDITAR
+        // ============================================
+
+        async function editIngreso(id) {
+            try {
+                // Obtener datos actuales
+                const { data, error } = await supabaseClient
+                    .from('incomes')
+                    .select('*')
+                    .eq('id', id)
+                    .single();
+                
+                if (error) throw error;
+                
+                // Llenar el formulario con los datos actuales
+                document.getElementById('ingresoFuente').value = data.source;
+                document.getElementById('ingresoTipo').value = data.type;
+                document.getElementById('ingresoBruto').value = data.gross_amount;
+                document.getElementById('ingresoFrecuencia').value = data.frequency;
+                
+                // Calcular y mostrar
+                calcularIngresoNeto();
+                
+                // Abrir modal
+                openModal('modalIngreso');
+                
+                // Cambiar el comportamiento del formulario
+                const form = document.querySelector('#modalIngreso form');
+                form.onsubmit = async (e) => {
+                    e.preventDefault();
+                    
+                    const fuente = document.getElementById('ingresoFuente').value;
+                    const tipo = document.getElementById('ingresoTipo').value;
+                    const bruto = parseFloat(document.getElementById('ingresoBruto').value);
+                    const frecuencia = document.getElementById('ingresoFrecuencia').value;
+                    
+                    let descuento = 0;
+                    if (tipo === 'laboral') descuento = bruto * 0.08;
+                    else if (tipo === 'servicios') descuento = bruto * 0.285;
+                    const neto = bruto - descuento;
+                    
+                    try {
+                        const { error } = await supabaseClient
+                            .from('incomes')
+                            .update({
+                                source: fuente,
+                                type: tipo,
+                                frequency: frecuencia,
+                                gross_amount: bruto,
+                                net_amount: neto
+                            })
+                            .eq('id', id);
+                        
+                        if (error) throw error;
+                        
+                        alert('✅ Ingreso actualizado');
+                        closeModal('modalIngreso');
+                        form.onsubmit = addIngreso; // Restaurar función original
+                        form.reset();
+                        document.getElementById('ingresoCalculo').style.display = 'none';
+                        loadIngresos();
+                        updateDashboard();
+                    } catch (error) {
+                        alert('❌ Error: ' + error.message);
+                    }
+                };
+                
+            } catch (error) {
+                alert('❌ Error: ' + error.message);
+            }
+        }
+
+        async function editGastoFijo(id) {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('fixed_expenses')
+                    .select('*')
+                    .eq('id', id)
+                    .single();
+                
+                if (error) throw error;
+                
+                const form = document.querySelector('#modalGastoFijo form');
+                form.querySelectorAll('select')[0].value = data.category;
+                form.querySelectorAll('input')[0].value = data.description;
+                form.querySelectorAll('input')[1].value = data.amount;
+                form.querySelectorAll('input')[2].value = data.payment_day;
+                
+                openModal('modalGastoFijo');
+                
+                form.onsubmit = async (e) => {
+                    e.preventDefault();
+                    
+                    const categoria = form.querySelectorAll('select')[0].value;
+                    const descripcion = form.querySelectorAll('input')[0].value;
+                    const monto = parseFloat(form.querySelectorAll('input')[1].value);
+                    const diaPago = parseInt(form.querySelectorAll('input')[2].value);
+                    
+                    try {
+                        const { error } = await supabaseClient
+                            .from('fixed_expenses')
+                            .update({
+                                category: categoria,
+                                description: descripcion,
+                                amount: monto,
+                                payment_day: diaPago
+                            })
+                            .eq('id', id);
+                        
+                        if (error) throw error;
+                        
+                        alert('✅ Gasto fijo actualizado');
+                        closeModal('modalGastoFijo');
+                        form.onsubmit = addGastoFijo;
+                        form.reset();
+                        loadGastosFijos();
+                        updateDashboard();
+                    } catch (error) {
+                        alert('❌ Error: ' + error.message);
+                    }
+                };
+                
+            } catch (error) {
+                alert('❌ Error: ' + error.message);
+            }
+        }
+
+        async function editGastoVariable(id) {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('variable_expenses')
+                    .select('*')
+                    .eq('id', id)
+                    .single();
+                
+                if (error) throw error;
+                
+                const form = document.querySelector('#modalGastoVariable form');
+                form.querySelectorAll('select')[0].value = data.category;
+                form.querySelectorAll('input')[0].value = data.description;
+                form.querySelectorAll('input')[1].value = data.amount;
+                
+                openModal('modalGastoVariable');
+                
+                form.onsubmit = async (e) => {
+                    e.preventDefault();
+                    
+                    const categoria = form.querySelectorAll('select')[0].value;
+                    const descripcion = form.querySelectorAll('input')[0].value;
+                    const monto = parseFloat(form.querySelectorAll('input')[1].value);
+                    
+                    try {
+                        const { error } = await supabaseClient
+                            .from('variable_expenses')
+                            .update({
+                                category: categoria,
+                                description: descripcion,
+                                amount: monto
+                            })
+                            .eq('id', id);
+                        
+                        if (error) throw error;
+                        
+                        alert('✅ Gasto actualizado');
+                        closeModal('modalGastoVariable');
+                        form.onsubmit = addGastoVariable;
+                        form.reset();
+                        loadGastosVariables();
+                        updateDashboard();
+                    } catch (error) {
+                        alert('❌ Error: ' + error.message);
+                    }
+                };
+                
             } catch (error) {
                 alert('❌ Error: ' + error.message);
             }
