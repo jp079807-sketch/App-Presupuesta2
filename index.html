@@ -825,9 +825,11 @@
                 <div class="info-box">
                     📌 Registra tus fuentes de ingreso. El sistema calcula automáticamente los descuentos parafiscales.
                 </div>
-                <div id="listaIngresos" class="empty-state">
-                    <div class="empty-state-icon">💰</div>
-                    <p>No hay ingresos registrados</p>
+                <div id="listaIngresos">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">💰</div>
+                        <p>No hay ingresos registrados</p>
+                    </div>
                 </div>
             </div>
 
@@ -840,9 +842,11 @@
                 <div class="info-box">
                     📌 Gastos recurrentes cada mes (arriendo, servicios, suscripciones, etc.)
                 </div>
-                <div id="listaGastosFijos" class="empty-state">
-                    <div class="empty-state-icon">📅</div>
-                    <p>No hay gastos fijos registrados</p>
+                <div id="listaGastosFijos">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📅</div>
+                        <p>No hay gastos fijos registrados</p>
+                    </div>
                 </div>
             </div>
 
@@ -855,9 +859,11 @@
                 <div class="info-box">
                     📌 Gastos del día a día (comida, transporte, entretenimiento, etc.)
                 </div>
-                <div id="listaGastosVariables" class="empty-state">
-                    <div class="empty-state-icon">🛒</div>
-                    <p>No hay gastos variables este mes</p>
+                <div id="listaGastosVariables">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🛒</div>
+                        <p>No hay gastos variables este mes</p>
+                    </div>
                 </div>
             </div>
 
@@ -1472,7 +1478,7 @@
 
         async function loadIngresos() {
             try {
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('incomes')
                     .select('*')
                     .eq('user_id', currentUser.id)
@@ -1541,7 +1547,7 @@
 
         async function loadGastosFijos() {
             try {
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('fixed_expenses')
                     .select('*')
                     .eq('user_id', currentUser.id)
@@ -1607,7 +1613,7 @@
 
         async function loadGastosVariables() {
             try {
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('variable_expenses')
                     .select('*')
                     .eq('user_id', currentUser.id)
