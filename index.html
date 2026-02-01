@@ -1402,6 +1402,128 @@
         </form>
     </div>
 </div>
+    <!-- Modal Crear Presupuesto Compartido -->
+<div id="modalCrearCompartido" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">Crear Presupuesto Compartido</h2>
+            <button class="close-modal" onclick="closeModal('modalCrearCompartido')">✕</button>
+        </div>
+        <form onsubmit="crearPresupuestoCompartido(event)">
+            <div class="form-group">
+                <label class="form-label">Nombre del Presupuesto</label>
+                <input type="text" class="form-input" id="nombreCompartido" placeholder="Ej: Presupuesto de Pareja" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Agregar Miembros (correos electrónicos)</label>
+                <div id="membersInputs">
+                    <div class="flex gap-2 mb-2">
+                        <input type="email" class="form-input" placeholder="correo@ejemplo.com" required>
+                        <button type="button" class="btn btn-outline" onclick="removeMemberInput(this)">✕</button>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-outline btn-block" onclick="addMemberInput()">+ Agregar Otro Miembro</button>
+            </div>
+            <div class="alert alert-info mt-3">
+                <strong>ℹ️ Nota:</strong> Los miembros recibirán una invitación por correo para unirse a este presupuesto compartido.
+            </div>
+            <div class="flex gap-2 mt-3">
+                <button type="button" class="btn btn-outline" onclick="closeModal('modalCrearCompartido')">Cancelar</button>
+                <button type="submit" class="btn btn-primary" style="flex: 1;">Crear Presupuesto</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Ver Presupuesto Compartido -->
+<div id="modalVerCompartido" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title" id="sharedBudgetTitle"></h2>
+            <button class="close-modal" onclick="closeModal('modalVerCompartido')">✕</button>
+        </div>
+
+        <div class="stats-grid mb-3">
+            <div class="stat-card">
+                <div class="stat-label">Ingresos Totales del Grupo</div>
+                <div class="stat-value success" id="sharedTotalIngresos">$0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Gastos Totales del Grupo</div>
+                <div class="stat-value" id="sharedTotalGastos">$0</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h4 class="mb-2">Miembros y Contribuciones</h4>
+            <div id="membersList" class="members-list"></div>
+        </div>
+
+        <div class="card">
+            <h4 class="mb-2">Gastos Compartidos</h4>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Descripción</th>
+                            <th>Monto</th>
+                            <th>Tipo</th>
+                            <th>Fecha</th>
+                        </tr>
+                    </thead>
+                    <tbody id="sharedExpensesTable"></tbody>
+                </table>
+            </div>
+            <button class="btn btn-primary btn-block mt-2" onclick="openModal('modalAgregarGastoCompartido')">+ Agregar Gasto Compartido</button>
+        </div>
+
+        <div class="alert alert-warning mt-3">
+            <strong>💡 Cómo funciona:</strong> El porcentaje de contribución de cada miembro se calcula en base a sus ingresos respecto al total del grupo. Cada uno aporta proporcionalmente según lo que gana.
+        </div>
+    </div>
+</div>
+
+<!-- Modal Agregar Gasto a Presupuesto Compartido -->
+<div id="modalAgregarGastoCompartido" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">Agregar Gasto Compartido</h2>
+            <button class="close-modal" onclick="closeModal('modalAgregarGastoCompartido')">✕</button>
+        </div>
+        <form onsubmit="agregarGastoCompartido(event)">
+            <div class="form-group">
+                <label class="form-label">Tipo de Gasto</label>
+                <select class="form-select" id="tipoGastoCompartido" required>
+                    <option value="fijo">Gasto Fijo</option>
+                    <option value="variable">Gasto Variable</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Descripción</label>
+                <input type="text" class="form-input" id="descripcionGastoCompartido" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Monto</label>
+                <input type="number" class="form-input" id="montoGastoCompartido" step="0.01" required>
+            </div>
+            <div class="form-group" id="categoriaDivCompartido">
+                <label class="form-label">Categoría</label>
+                <select class="form-select" id="categoriaGastoCompartido">
+                    <option value="vivienda">Vivienda</option>
+                    <option value="transporte">Transporte</option>
+                    <option value="alimentacion">Alimentación</option>
+                    <option value="servicios">Servicios</option>
+                    <option value="entretenimiento">Entretenimiento</option>
+                    <option value="otros">Otros</option>
+                </select>
+            </div>
+            <div class="flex gap-2 mt-3">
+                <button type="button" class="btn btn-outline" onclick="closeModal('modalAgregarGastoCompartido')">Cancelar</button>
+                <button type="submit" class="btn btn-primary" style="flex: 1;">Agregar Gasto</button>
+            </div>
+        </form>
+    </div>
+</div>
 
     <!-- ========================================
          JAVASCRIPT
@@ -2607,128 +2729,6 @@ async function agregarGastoCompartido(e) {
                 e.target.classList.remove('active');
             }
         });
-        <!-- Modal Crear Presupuesto Compartido -->
-<div id="modalCrearCompartido" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h2 class="modal-title">Crear Presupuesto Compartido</h2>
-            <button class="close-modal" onclick="closeModal('modalCrearCompartido')">✕</button>
-        </div>
-        <form onsubmit="crearPresupuestoCompartido(event)">
-            <div class="form-group">
-                <label class="form-label">Nombre del Presupuesto</label>
-                <input type="text" class="form-input" id="nombreCompartido" placeholder="Ej: Presupuesto de Pareja" required>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Agregar Miembros (correos electrónicos)</label>
-                <div id="membersInputs">
-                    <div class="flex gap-2 mb-2">
-                        <input type="email" class="form-input" placeholder="correo@ejemplo.com" required>
-                        <button type="button" class="btn btn-outline" onclick="removeMemberInput(this)">✕</button>
-                    </div>
-                </div>
-                <button type="button" class="btn btn-outline btn-block" onclick="addMemberInput()">+ Agregar Otro Miembro</button>
-            </div>
-            <div class="alert alert-info mt-3">
-                <strong>ℹ️ Nota:</strong> Los miembros recibirán una invitación por correo para unirse a este presupuesto compartido.
-            </div>
-            <div class="flex gap-2 mt-3">
-                <button type="button" class="btn btn-outline" onclick="closeModal('modalCrearCompartido')">Cancelar</button>
-                <button type="submit" class="btn btn-primary" style="flex: 1;">Crear Presupuesto</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- Modal Ver Presupuesto Compartido -->
-<div id="modalVerCompartido" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h2 class="modal-title" id="sharedBudgetTitle"></h2>
-            <button class="close-modal" onclick="closeModal('modalVerCompartido')">✕</button>
-        </div>
-
-        <div class="stats-grid mb-3">
-            <div class="stat-card">
-                <div class="stat-label">Ingresos Totales del Grupo</div>
-                <div class="stat-value success" id="sharedTotalIngresos">$0</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">Gastos Totales del Grupo</div>
-                <div class="stat-value" id="sharedTotalGastos">$0</div>
-            </div>
-        </div>
-
-        <div class="card">
-            <h4 class="mb-2">Miembros y Contribuciones</h4>
-            <div id="membersList" class="members-list"></div>
-        </div>
-
-        <div class="card">
-            <h4 class="mb-2">Gastos Compartidos</h4>
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Descripción</th>
-                            <th>Monto</th>
-                            <th>Tipo</th>
-                            <th>Fecha</th>
-                        </tr>
-                    </thead>
-                    <tbody id="sharedExpensesTable"></tbody>
-                </table>
-            </div>
-            <button class="btn btn-primary btn-block mt-2" onclick="openModal('modalAgregarGastoCompartido')">+ Agregar Gasto Compartido</button>
-        </div>
-
-        <div class="alert alert-warning mt-3">
-            <strong>💡 Cómo funciona:</strong> El porcentaje de contribución de cada miembro se calcula en base a sus ingresos respecto al total del grupo. Cada uno aporta proporcionalmente según lo que gana.
-        </div>
-    </div>
-</div>
-
-<!-- Modal Agregar Gasto a Presupuesto Compartido -->
-<div id="modalAgregarGastoCompartido" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h2 class="modal-title">Agregar Gasto Compartido</h2>
-            <button class="close-modal" onclick="closeModal('modalAgregarGastoCompartido')">✕</button>
-        </div>
-        <form onsubmit="agregarGastoCompartido(event)">
-            <div class="form-group">
-                <label class="form-label">Tipo de Gasto</label>
-                <select class="form-select" id="tipoGastoCompartido" required>
-                    <option value="fijo">Gasto Fijo</option>
-                    <option value="variable">Gasto Variable</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Descripción</label>
-                <input type="text" class="form-input" id="descripcionGastoCompartido" required>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Monto</label>
-                <input type="number" class="form-input" id="montoGastoCompartido" step="0.01" required>
-            </div>
-            <div class="form-group" id="categoriaDivCompartido">
-                <label class="form-label">Categoría</label>
-                <select class="form-select" id="categoriaGastoCompartido">
-                    <option value="vivienda">Vivienda</option>
-                    <option value="transporte">Transporte</option>
-                    <option value="alimentacion">Alimentación</option>
-                    <option value="servicios">Servicios</option>
-                    <option value="entretenimiento">Entretenimiento</option>
-                    <option value="otros">Otros</option>
-                </select>
-            </div>
-            <div class="flex gap-2 mt-3">
-                <button type="button" class="btn btn-outline" onclick="closeModal('modalAgregarGastoCompartido')">Cancelar</button>
-                <button type="submit" class="btn btn-primary" style="flex: 1;">Agregar Gasto</button>
-            </div>
-        </form>
-    </div>
-</div>;
     </script>
 </body>
 </html>
