@@ -2437,6 +2437,14 @@ async function crearPresupuestoCompartido(e) {
     const memberEmails = Array.from(memberInputs).map(input => input.value);
 
     try {
+        // Obtener usuario autenticado real
+const { data: { user }, error: userError } =
+    await supabaseClient.auth.getUser();
+
+if (!user) {
+    throw new Error('Usuario no autenticado');
+}
+
         // Crear el presupuesto compartido
         const { data: budget, error: budgetError } = await supabaseClient
             .from('shared_budgets')
