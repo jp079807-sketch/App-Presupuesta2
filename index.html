@@ -126,6 +126,20 @@
             color: var(--secondary);
             display: block;
         }
+        
+        .forgot-password-link {
+    display: block;
+    text-align: center;
+    margin-top: 1rem;
+    color: var(--primary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.forgot-password-link:hover {
+    text-decoration: underline;
+}
 
         /* ========================================
            MAIN APP LAYOUT
@@ -690,8 +704,124 @@
 
             .grid {
                 grid-template-columns: 1fr;
-            }
+            }   
         }
+        /* Sistema de tabs para presupuestos */
+.budget-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    background: var(--bg);
+    padding: 0.5rem;
+    border-radius: 12px;
+}
+
+.budget-tab {
+    flex: 1;
+    padding: 1rem;
+    border: none;
+    background: transparent;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--text);
+    transition: all 0.2s;
+    text-align: center;
+}
+
+.budget-tab.active {
+    background: var(--card);
+    color: var(--primary);
+    box-shadow: var(--shadow);
+}
+
+.budget-content {
+    display: none;
+}
+
+.budget-content.active {
+    display: block;
+    animation: fadeIn 0.3s;
+}
+
+/* Miembros del presupuesto compartido */
+.members-list {
+    margin-top: 1rem;
+}
+
+.member-item {
+    background: var(--bg);
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 0.75rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.member-info {
+    flex: 1;
+}
+
+.member-name {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.member-email {
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+
+.member-contribution {
+    text-align: right;
+    margin-right: 1rem;
+}
+
+.contribution-percentage {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.contribution-amount {
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+
+/* Selector de presupuesto compartido */
+.shared-budget-selector {
+    margin-bottom: 1.5rem;
+}
+
+.shared-budget-option {
+    background: var(--card);
+    border: 2px solid var(--border);
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.shared-budget-option:hover {
+    border-color: var(--primary);
+}
+
+.shared-budget-option.active {
+    border-color: var(--primary);
+    background: rgba(79, 70, 229, 0.05);
+}
+
+.shared-budget-name {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.shared-budget-members {
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -721,6 +851,7 @@
                     <input type="password" class="form-input" id="loginPassword" required>
                 </div>
                 <button type="submit" class="btn btn-primary" style="width:100%">Iniciar Sesión</button>
+                <a class="forgot-password-link" onclick="showForgotPassword()">¿Olvidaste tu contraseña?</a>
             </form>
 
             <form id="registerForm" style="display:none" onsubmit="handleRegister(event)">
@@ -984,24 +1115,53 @@
                 </div>
             </div>
 
-            <!-- Compartido -->
-            <div class="sidebar-section">
-                <div class="sidebar-section-header" onclick="toggleSection('shared')">
-                    <span class="sidebar-section-title">💑 Presupuesto Compartido</span>
-                    <span class="sidebar-section-arrow" id="shared-arrow">▼</span>
+            <!-- PRESUPUESTO COMPARTIDO -->
+<div id="compartido" class="page">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Presupuestos Compartidos</h3>
+            <button class="btn btn-primary" onclick="openModal('modalCrearCompartido')">+ Crear Presupuesto Compartido</button>
+        </div>
+
+        <!-- Tabs para Personal y Compartidos -->
+        <div class="budget-tabs">
+            <button class="budget-tab active" onclick="switchBudgetTab('personal')">Mi Presupuesto Personal</button>
+            <button class="budget-tab" onclick="switchBudgetTab('shared')">Presupuestos Compartidos</button>
+        </div>
+
+        <!-- Contenido Personal -->
+        <div id="budgetPersonal" class="budget-content active">
+            <div class="alert alert-info">
+                <strong>📌 Vista Previa de tus Datos Personales</strong><br>
+                Estos son los datos que se tomarán en cuenta cuando participes en un presupuesto compartido.
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Ingresos Mensuales</div>
+                    <div class="stat-value success" id="personalIngresos">$0</div>
                 </div>
-                <div class="sidebar-section-content" id="shared-content">
-                    <p style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 1rem;">
-                        Comparte tu presupuesto con tu pareja o familia
-                    </p>
-                    <button class="btn btn-primary" style="width: 100%; margin-bottom: 0.5rem;" onclick="alert('🚧 Próximamente')">
-                        ➕ Crear Presupuesto Compartido
-                    </button>
-                    <button class="btn" style="width: 100%; background: var(--bg);" onclick="alert('🚧 Próximamente')">
-                        🔗 Unirme a uno
-                    </button>
+                <div class="stat-card">
+                    <div class="stat-label">Gastos Totales</div>
+                    <div class="stat-value" id="personalGastos">$0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Disponible</div>
+                    <div class="stat-value" id="personalDisponible">$0</div>
                 </div>
             </div>
+        </div>
+
+        <!-- Contenido Compartidos -->
+        <div id="budgetShared" class="budget-content">
+            <div id="sharedBudgetsList">
+                <p class="text-center" style="color: var(--text-light); padding: 2rem;">
+                    No tienes presupuestos compartidos aún. Crea uno para empezar.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
 
             <!-- Datos -->
             <div class="sidebar-section">
@@ -1220,6 +1380,28 @@
             </form>
         </div>
     </div>
+    <!-- Modal de Recuperación de Contraseña -->
+<div id="modalForgotPassword" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">Recuperar Contraseña</h2>
+            <button class="close-modal" onclick="closeModal('modalForgotPassword')">✕</button>
+        </div>
+        <form onsubmit="handlePasswordReset(event)">
+            <div class="alert alert-info mb-3">
+                Te enviaremos un enlace a tu correo electrónico para restablecer tu contraseña.
+            </div>
+            <div class="form-group">
+                <label class="form-label">Correo Electrónico</label>
+                <input type="email" id="resetEmail" class="form-input" required>
+            </div>
+            <div class="flex gap-2">
+                <button type="button" class="btn btn-outline" onclick="closeModal('modalForgotPassword')">Cancelar</button>
+                <button type="submit" class="btn btn-primary" style="flex: 1;">Enviar Enlace</button>
+            </div>
+        </form>
+    </div>
+</div>
 
     <!-- ========================================
          JAVASCRIPT
@@ -1233,6 +1415,7 @@
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         
         let currentUser = null;
+        let currentSharedBudget = null;
 
         // ============================================
         // INICIALIZACIÓN
@@ -1357,7 +1540,28 @@
             el.textContent = msg;
             el.className = `auth-message ${type}`;
         }
+        function showForgotPassword() {
+           openModal('modalForgotPassword');
+        }
 
+        async function handlePasswordReset(e) {
+          e.preventDefault();
+          const email = document.getElementById('resetEmail').value;
+
+        try {
+        const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+            redirectTo: window.location.origin
+        });
+
+        if (error) throw error;
+
+        alert('✅ Se ha enviado un enlace de recuperación a tu correo electrónico');
+        closeModal('modalForgotPassword');
+        document.getElementById('resetEmail').value = '';
+    } catch (error) {
+        alert('❌ Error: ' + error.message);
+          }
+         }
         function showApp() {
             document.getElementById('authScreen').style.display = 'none';
             document.getElementById('mainApp').classList.add('active');
@@ -1384,11 +1588,19 @@
         // NAVEGACIÓN
         // ============================================
         function showPage(id, el) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            if (el) el.classList.add('active');
-        }
+    // Navegación existente
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    if (el) el.classList.add('active');
+
+    // 🔹 Lógica adicional para módulos
+    if (id === 'historico') {
+        loadHistorico();
+    } else if (id === 'compartido') {
+        loadPresupuestosCompartidos();
+    }
+}
 
         function openModal(id) {
             document.getElementById(id).classList.add('active');
@@ -1414,6 +1626,20 @@
             content.classList.toggle('open');
             arrow.classList.toggle('open');
         }
+        function switchBudgetTab(tab) {
+    document.querySelectorAll('.budget-tab').forEach(t => t.classList.remove('active'));
+    event.target.classList.add('active');
+
+    if (tab === 'personal') {
+        document.getElementById('budgetPersonal').classList.add('active');
+        document.getElementById('budgetShared').classList.remove('active');
+        loadPersonalBudgetSummary();
+    } else {
+        document.getElementById('budgetPersonal').classList.remove('active');
+        document.getElementById('budgetShared').classList.add('active');
+        loadSharedBudgetsList();
+    }
+}
 
         // ============================================
         // INGRESOS
@@ -2061,12 +2287,448 @@
             }
         }
 
+        // ============================================
+// PRESUPUESTOS COMPARTIDOS
+// ============================================
+
+function addMemberInput() {
+    const container = document.getElementById('membersInputs');
+    const div = document.createElement('div');
+    div.className = 'flex gap-2 mb-2';
+    div.innerHTML = `
+        <input type="email" class="form-input" placeholder="correo@ejemplo.com" required>
+        <button type="button" class="btn btn-outline" onclick="removeMemberInput(this)">✕</button>
+    `;
+    container.appendChild(div);
+}
+
+function removeMemberInput(button) {
+    button.parentElement.remove();
+}
+
+async function crearPresupuestoCompartido(e) {
+    e.preventDefault();
+    
+    const nombre = document.getElementById('nombreCompartido').value;
+    const memberInputs = document.querySelectorAll('#membersInputs input[type="email"]');
+    const memberEmails = Array.from(memberInputs).map(input => input.value);
+
+    try {
+        // Crear el presupuesto compartido
+        const { data: budget, error: budgetError } = await supabaseClient
+            .from('shared_budgets')
+            .insert([{
+                name: nombre,
+                created_by: currentUser.id
+            }])
+            .select()
+            .single();
+
+        if (budgetError) throw budgetError;
+
+        // Agregar al creador como miembro
+        await supabaseClient
+            .from('shared_budget_members')
+            .insert([{
+                budget_id: budget.id,
+                user_id: currentUser.id,
+                email: currentUser.email
+            }]);
+
+        // Agregar otros miembros
+        for (const email of memberEmails) {
+            // Buscar si el usuario existe
+            const { data: userData } = await supabaseClient
+                .from('profiles')
+                .select('id')
+                .eq('email', email)
+                .single();
+
+            await supabaseClient
+                .from('shared_budget_members')
+                .insert([{
+                    budget_id: budget.id,
+                    user_id: userData ? userData.id : null,
+                    email: email,
+                    status: 'pending'
+                }]);
+        }
+
+        alert('✅ Presupuesto compartido creado exitosamente');
+        closeModal('modalCrearCompartido');
+        document.getElementById('nombreCompartido').value = '';
+        document.getElementById('membersInputs').innerHTML = `
+            <div class="flex gap-2 mb-2">
+                <input type="email" class="form-input" placeholder="correo@ejemplo.com" required>
+                <button type="button" class="btn btn-outline" onclick="removeMemberInput(this)">✕</button>
+            </div>
+        `;
+        loadPresupuestosCompartidos();
+    } catch (error) {
+        alert('❌ Error: ' + error.message);
+    }
+}
+
+async function loadPresupuestosCompartidos() {
+    await loadPersonalBudgetSummary();
+    await loadSharedBudgetsList();
+}
+
+async function loadPersonalBudgetSummary() {
+    try {
+        // Obtener ingresos
+        const { data: ingresos } = await supabaseClient
+            .from('incomes')
+            .select('net_amount')
+            .eq('user_id', currentUser.id);
+
+        const totalIngresos = ingresos.reduce((sum, i) => sum + i.net_amount, 0);
+
+        // Obtener gastos fijos
+        const { data: gastosFijos } = await supabaseClient
+            .from('fixed_expenses')
+            .select('amount')
+            .eq('user_id', currentUser.id);
+
+        const totalGastosFijos = gastosFijos.reduce((sum, g) => sum + g.amount, 0);
+
+        // Obtener gastos variables del mes actual
+        const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
+        const endOfMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).toISOString();
+
+        const { data: gastosVariables } = await supabaseClient
+            .from('variable_expenses')
+            .select('amount')
+            .eq('user_id', currentUser.id)
+            .gte('created_at', startOfMonth)
+            .lte('created_at', endOfMonth);
+
+        const totalGastosVariables = gastosVariables.reduce((sum, g) => sum + g.amount, 0);
+        const totalGastos = totalGastosFijos + totalGastosVariables;
+        const disponible = totalIngresos - totalGastos;
+
+        document.getElementById('personalIngresos').textContent = '$' + totalIngresos.toFixed(2);
+        document.getElementById('personalGastos').textContent = '$' + totalGastos.toFixed(2);
+        const dispEl = document.getElementById('personalDisponible');
+        dispEl.textContent = '$' + disponible.toFixed(2);
+        dispEl.className = 'stat-value ' + (disponible >= 0 ? 'success' : 'danger');
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+async function loadSharedBudgetsList() {
+    try {
+        // Obtener presupuestos donde el usuario es miembro
+        const { data: memberships, error } = await supabaseClient
+            .from('shared_budget_members')
+            .select(`
+                budget_id,
+                shared_budgets (
+                    id,
+                    name,
+                    created_at
+                )
+            `)
+            .eq('email', currentUser.email);
+
+        if (error) throw error;
+
+        const container = document.getElementById('sharedBudgetsList');
+        
+        if (!memberships || memberships.length === 0) {
+            container.innerHTML = `
+                <p class="text-center" style="color: var(--text-light); padding: 2rem;">
+                    No tienes presupuestos compartidos aún. Crea uno para empezar.
+                </p>
+            `;
+            return;
+        }
+
+        container.innerHTML = '';
+        
+        for (const membership of memberships) {
+            const budget = membership.shared_budgets;
+            
+            // Contar miembros
+            const { data: members } = await supabaseClient
+                .from('shared_budget_members')
+                .select('email')
+                .eq('budget_id', budget.id);
+
+            const div = document.createElement('div');
+            div.className = 'shared-budget-option';
+            div.onclick = () => verPresupuestoCompartido(budget.id);
+            div.innerHTML = `
+                <div class="shared-budget-name">${budget.name}</div>
+                <div class="shared-budget-members">${members.length} miembro(s)</div>
+            `;
+            container.appendChild(div);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+async function verPresupuestoCompartido(budgetId) {
+    currentSharedBudget = budgetId;
+    
+    try {
+        // Obtener información del presupuesto
+        const { data: budget } = await supabaseClient
+            .from('shared_budgets')
+            .select('name')
+            .eq('id', budgetId)
+            .single();
+
+        document.getElementById('sharedBudgetTitle').textContent = budget.name;
+
+        // Obtener miembros
+        const { data: members } = await supabaseClient
+            .from('shared_budget_members')
+            .select('*')
+            .eq('budget_id', budgetId);
+
+        // Calcular ingresos de cada miembro
+        let totalIngresosGrupo = 0;
+        const membersData = [];
+
+        for (const member of members) {
+            if (member.user_id) {
+                const { data: ingresos } = await supabaseClient
+                    .from('incomes')
+                    .select('net_amount')
+                    .eq('user_id', member.user_id);
+
+                const ingresoMiembro = ingresos.reduce((sum, i) => sum + i.net_amount, 0);
+                totalIngresosGrupo += ingresoMiembro;
+                
+                membersData.push({
+                    email: member.email,
+                    ingresos: ingresoMiembro,
+                    user_id: member.user_id
+                });
+            } else {
+                membersData.push({
+                    email: member.email,
+                    ingresos: 0,
+                    user_id: null
+                });
+            }
+        }
+
+        // Obtener gastos compartidos
+        const { data: gastosCompartidos } = await supabaseClient
+            .from('shared_expenses')
+            .select('*')
+            .eq('budget_id', budgetId);
+
+        const totalGastosGrupo = gastosCompartidos.reduce((sum, g) => sum + g.amount, 0);
+
+        // Actualizar UI
+        document.getElementById('sharedTotalIngresos').textContent = '$' + totalIngresosGrupo.toFixed(2);
+        document.getElementById('sharedTotalGastos').textContent = '$' + totalGastosGrupo.toFixed(2);
+
+        // Mostrar miembros con contribuciones
+        const membersList = document.getElementById('membersList');
+        membersList.innerHTML = membersData.map(member => {
+            const porcentaje = totalIngresosGrupo > 0 ? (member.ingresos / totalIngresosGrupo * 100) : 0;
+            const contribucion = totalGastosGrupo * (porcentaje / 100);
+            
+            return `
+                <div class="member-item">
+                    <div class="member-info">
+                        <div class="member-name">${member.email}</div>
+                        <div class="member-email">Ingresos: $${member.ingresos.toFixed(2)}</div>
+                    </div>
+                    <div class="member-contribution">
+                        <div class="contribution-percentage">${porcentaje.toFixed(1)}%</div>
+                        <div class="contribution-amount">Debe aportar: $${contribucion.toFixed(2)}</div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        // Mostrar gastos compartidos
+        const expensesTable = document.getElementById('sharedExpensesTable');
+        expensesTable.innerHTML = gastosCompartidos.map(gasto => `
+            <tr>
+                <td>${gasto.description}</td>
+                <td>$${gasto.amount.toFixed(2)}</td>
+                <td>${gasto.expense_type === 'fijo' ? 'Fijo' : 'Variable'}</td>
+                <td>${new Date(gasto.created_at).toLocaleDateString()}</td>
+            </tr>
+        `).join('');
+
+        if (gastosCompartidos.length === 0) {
+            expensesTable.innerHTML = '<tr><td colspan="4" class="text-center" style="color: var(--text-light);">No hay gastos compartidos aún</td></tr>';
+        }
+
+        openModal('modalVerCompartido');
+    } catch (error) {
+        alert('❌ Error: ' + error.message);
+    }
+}
+
+async function agregarGastoCompartido(e) {
+    e.preventDefault();
+    
+    const tipo = document.getElementById('tipoGastoCompartido').value;
+    const descripcion = document.getElementById('descripcionGastoCompartido').value;
+    const monto = parseFloat(document.getElementById('montoGastoCompartido').value);
+    const categoria = document.getElementById('categoriaGastoCompartido').value;
+
+    try {
+        const { error } = await supabaseClient
+            .from('shared_expenses')
+            .insert([{
+                budget_id: currentSharedBudget,
+                description: descripcion,
+                amount: monto,
+                expense_type: tipo,
+                category: categoria,
+                added_by: currentUser.id
+            }]);
+
+        if (error) throw error;
+
+        alert('✅ Gasto compartido agregado');
+        closeModal('modalAgregarGastoCompartido');
+        e.target.reset();
+        verPresupuestoCompartido(currentSharedBudget);
+    } catch (error) {
+        alert('❌ Error: ' + error.message);
+    }
+}
+
         // Cerrar modales al hacer clic fuera
         document.addEventListener('click', (e) => {
             if (e.target.classList.contains('modal')) {
                 e.target.classList.remove('active');
             }
-        });
+        })
+        <!-- Modal Crear Presupuesto Compartido -->
+<div id="modalCrearCompartido" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">Crear Presupuesto Compartido</h2>
+            <button class="close-modal" onclick="closeModal('modalCrearCompartido')">✕</button>
+        </div>
+        <form onsubmit="crearPresupuestoCompartido(event)">
+            <div class="form-group">
+                <label class="form-label">Nombre del Presupuesto</label>
+                <input type="text" class="form-input" id="nombreCompartido" placeholder="Ej: Presupuesto de Pareja" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Agregar Miembros (correos electrónicos)</label>
+                <div id="membersInputs">
+                    <div class="flex gap-2 mb-2">
+                        <input type="email" class="form-input" placeholder="correo@ejemplo.com" required>
+                        <button type="button" class="btn btn-outline" onclick="removeMemberInput(this)">✕</button>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-outline btn-block" onclick="addMemberInput()">+ Agregar Otro Miembro</button>
+            </div>
+            <div class="alert alert-info mt-3">
+                <strong>ℹ️ Nota:</strong> Los miembros recibirán una invitación por correo para unirse a este presupuesto compartido.
+            </div>
+            <div class="flex gap-2 mt-3">
+                <button type="button" class="btn btn-outline" onclick="closeModal('modalCrearCompartido')">Cancelar</button>
+                <button type="submit" class="btn btn-primary" style="flex: 1;">Crear Presupuesto</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Ver Presupuesto Compartido -->
+<div id="modalVerCompartido" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title" id="sharedBudgetTitle"></h2>
+            <button class="close-modal" onclick="closeModal('modalVerCompartido')">✕</button>
+        </div>
+
+        <div class="stats-grid mb-3">
+            <div class="stat-card">
+                <div class="stat-label">Ingresos Totales del Grupo</div>
+                <div class="stat-value success" id="sharedTotalIngresos">$0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Gastos Totales del Grupo</div>
+                <div class="stat-value" id="sharedTotalGastos">$0</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h4 class="mb-2">Miembros y Contribuciones</h4>
+            <div id="membersList" class="members-list"></div>
+        </div>
+
+        <div class="card">
+            <h4 class="mb-2">Gastos Compartidos</h4>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Descripción</th>
+                            <th>Monto</th>
+                            <th>Tipo</th>
+                            <th>Fecha</th>
+                        </tr>
+                    </thead>
+                    <tbody id="sharedExpensesTable"></tbody>
+                </table>
+            </div>
+            <button class="btn btn-primary btn-block mt-2" onclick="openModal('modalAgregarGastoCompartido')">+ Agregar Gasto Compartido</button>
+        </div>
+
+        <div class="alert alert-warning mt-3">
+            <strong>💡 Cómo funciona:</strong> El porcentaje de contribución de cada miembro se calcula en base a sus ingresos respecto al total del grupo. Cada uno aporta proporcionalmente según lo que gana.
+        </div>
+    </div>
+</div>
+
+<!-- Modal Agregar Gasto a Presupuesto Compartido -->
+<div id="modalAgregarGastoCompartido" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">Agregar Gasto Compartido</h2>
+            <button class="close-modal" onclick="closeModal('modalAgregarGastoCompartido')">✕</button>
+        </div>
+        <form onsubmit="agregarGastoCompartido(event)">
+            <div class="form-group">
+                <label class="form-label">Tipo de Gasto</label>
+                <select class="form-select" id="tipoGastoCompartido" required>
+                    <option value="fijo">Gasto Fijo</option>
+                    <option value="variable">Gasto Variable</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Descripción</label>
+                <input type="text" class="form-input" id="descripcionGastoCompartido" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Monto</label>
+                <input type="number" class="form-input" id="montoGastoCompartido" step="0.01" required>
+            </div>
+            <div class="form-group" id="categoriaDivCompartido">
+                <label class="form-label">Categoría</label>
+                <select class="form-select" id="categoriaGastoCompartido">
+                    <option value="vivienda">Vivienda</option>
+                    <option value="transporte">Transporte</option>
+                    <option value="alimentacion">Alimentación</option>
+                    <option value="servicios">Servicios</option>
+                    <option value="entretenimiento">Entretenimiento</option>
+                    <option value="otros">Otros</option>
+                </select>
+            </div>
+            <div class="flex gap-2 mt-3">
+                <button type="button" class="btn btn-outline" onclick="closeModal('modalAgregarGastoCompartido')">Cancelar</button>
+                <button type="submit" class="btn btn-primary" style="flex: 1;">Agregar Gasto</button>
+            </div>
+        </form>
+    </div>
+</div>;
     </script>
 </body>
 </html>
